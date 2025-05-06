@@ -36,6 +36,90 @@
    </div>
    ```
 
+## Implementasi dengan Atomic Design
+
+Atomic Design adalah metodologi untuk menciptakan sistem desain yang modular dan terstruktur. Berikut adalah penerapan Atomic Design dalam proyek Jangur Keramik:
+
+### 1. Atoms (Atom)
+Komponen terkecil dan paling dasar yang tidak dapat dipecah lagi:
+- Button
+- Input
+- Label
+- Icon
+- Typography (headings, paragraphs)
+- Color swatches
+- Spacing units
+
+### 2. Molecules (Molekul)
+Kombinasi dari beberapa atom yang berfungsi sebagai unit:
+- Form fields (label + input)
+- Search bar (input + button)
+- Navigation links
+- Product badges
+- Alert messages
+- Card headers
+
+### 3. Organisms (Organisme)
+Kombinasi dari molekul dan/atau atom yang membentuk bagian antarmuka yang kompleks:
+- Navigation bars
+- Forms
+- Product cards
+- Feature sections
+- Testimonial blocks
+- Footer sections
+
+### 4. Templates (Template)
+Kerangka halaman yang terdiri dari organisme:
+- Home page layout
+- Product listing layout
+- Product detail layout
+- Checkout flow
+- Account pages
+
+### 5. Pages (Halaman)
+Implementasi spesifik dari template dengan konten nyata:
+- Home page
+- Category page
+- Product detail page
+- About us page
+- Contact page
+
+## Struktur Folder untuk Atomic Design
+
+```
+src/
+├── components/
+│   ├── atoms/
+│   │   ├── AppButton.vue
+│   │   ├── AppInput.vue
+│   │   ├── AppIcon.vue
+│   │   ├── AppBadge.vue
+│   │   └── ...
+│   ├── molecules/
+│   │   ├── AppFormField.vue
+│   │   ├── AppSearchBar.vue
+│   │   ├── AppNavLink.vue
+│   │   ├── AppCardHeader.vue
+│   │   └── ...
+│   ├── organisms/
+│   │   ├── AppNavbar.vue
+│   │   ├── AppFooter.vue
+│   │   ├── AppProductCard.vue
+│   │   ├── AppFeatureSection.vue
+│   │   └── ...
+│   └── templates/
+│       ├── HomeTemplate.vue
+│       ├── ProductListTemplate.vue
+│       ├── ProductDetailTemplate.vue
+│       └── ...
+├── pages/
+│   ├── HomePage.vue
+│   ├── ProductsPage.vue
+│   ├── ProductDetailPage.vue
+│   ├── AboutPage.vue
+│   └── ...
+```
+
 ## Langkah Selanjutnya
 
 1. **Buat Komponen UI yang Konsisten**
@@ -94,30 +178,27 @@
    - Implementasi lazy loading untuk gambar dan komponen berat
    - Monitor ukuran bundle CSS dan JavaScript
 
-## Contoh Struktur Komponen
+## Konvensi Penamaan dengan Atomic Design
 
-```
-src/
-├── components/
-│   ├── ui/
-│   │   ├── Button.vue
-│   │   ├── Card.vue
-│   │   ├── Input.vue
-│   │   └── ...
-│   ├── layout/
-│   │   ├── Header.vue
-│   │   ├── Footer.vue
-│   │   ├── Sidebar.vue
-│   │   └── ...
-│   └── features/
-│       ├── ProductCard.vue
-│       ├── CategoryFilter.vue
-│       └── ...
-```
+Untuk menghindari konflik dengan komponen bawaan Quasar dan memperjelas hierarki Atomic Design:
+- Prefix "App" untuk semua komponen kustom
+- Atoms: AppButton, AppInput, AppIcon, dll
+- Molecules: AppFormField, AppSearchBar, dll
+- Organisms: AppNavbar, AppFooter, AppProductCard, dll
+- Templates: HomeTemplate, ProductListTemplate, dll
+
+## Prinsip Atomic Design yang Wajib Diikuti
+
+1. **Reusabilitas**: Komponen atom dan molekul harus dapat digunakan kembali di berbagai konteks
+2. **Single Responsibility**: Setiap komponen harus memiliki satu tanggung jawab yang jelas
+3. **Composability**: Komponen level tinggi dibuat dari komposisi komponen level rendah
+4. **Dokumentasi**: Setiap komponen harus memiliki dokumentasi yang jelas tentang props, slots, dan penggunaannya
+5. **Konsistensi**: Gunakan pola desain yang konsisten di seluruh komponen
 
 ## Referensi Penting
 
 - [Dokumentasi Tailwind CSS](https://tailwindcss.com/docs)
 - [Dokumentasi Quasar](https://quasar.dev/docs)
+- [Atomic Design by Brad Frost](https://atomicdesign.bradfrost.com/)
 - [Tailwind CSS Cheat Sheet](https://nerdcave.com/tailwind-cheat-sheet)
 - [Quasar + Tailwind Best Practices](https://quasar.dev/style/tailwindcss)

@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-col items-center justify-center">
+  <div class="flex flex-col items-center justify-center">
     <img
       alt="Quasar logo"
       src="~assets/quasar-logo-vertical.svg"
@@ -17,7 +17,7 @@
         Jika Anda melihat teks ini dengan styling yang benar, Tailwind berhasil diimplementasikan!
       </p>
     </div>
-  </q-page>
+  </div>
 </template>
 
 <script setup>

@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-col">
+  <div class="flex flex-col">
     <!-- Header dengan Tailwind + Quasar -->
     <div class="bg-gradient-to-r from-primary to-secondary p-4">
       <h1 class="text-2xl font-bold text-white">Jangur Keramik</h1>
@@ -47,5 +47,9 @@
         &copy; 2024 Jangur Keramik. All rights reserved.
       </div>
     </div>
-  </q-page>
+  </div>
 </template>
+
+<script setup>
+// Script kosong karena halaman ini tidak memerlukan logika
+</script>
