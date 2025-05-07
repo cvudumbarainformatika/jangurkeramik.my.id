@@ -2,3 +2,49 @@
 @tailwind components;
 @tailwind utilities;
 
+
+/* Responsive utility classes */
+@media (max-width: 767px) {
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .desktop-hidden {
+    display: none !important;
+  }
+}
+
+/* Mobile-only display */
+.mobile-only {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+/* Desktop-only flex display */
+.desktop-only-flex {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .desktop-only-flex {
+    display: flex !important;
+  }
+}
+
+/* Hide scrollbar but allow scrolling */
+.scrollbar-none {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+

@@ -12,26 +12,26 @@
     
     <!-- Content -->
     <div class="absolute inset-0 flex flex-col justify-between p-6 text-white">
-      <!-- Top Section with Discount Badge -->
+      <!-- Top Section with Badge -->
       <div class="flex justify-end">
-        <div class="relative overflow-hidden rounded-lg bg-gradient-to-r from-red-600 to-orange-500 px-4 py-2 shadow-lg">
+        <div class="relative overflow-hidden rounded-lg bg-gradient-to-r from-blue-600 to-primary px-4 py-2 shadow-lg">
           <div class="absolute -right-5 -top-5 h-10 w-10 rounded-full bg-white/20"></div>
           <div class="absolute -left-5 -bottom-5 h-10 w-10 rounded-full bg-white/10"></div>
-          <span class="relative z-10 font-bold tracking-wider">{{ promo.discount }}</span>
+          <span class="relative z-10 font-bold tracking-wider">{{ promo.views }} kali dilihat</span>
         </div>
       </div>
       
       <!-- Bottom Section with Title, Description, and CTA -->
       <div class="mt-auto">
-        <h3 class="mb-2 text-2xl font-bold tracking-tight text-white group-hover:text-orange-300 transition-colors">
+        <div class="mb-2 text-2xl font-bold tracking-tight text-white group-hover:text-orange-300 transition-colors">
           {{ promo.title }}
-        </h3>
-        <p class="mb-4 text-white/90 line-clamp-2 text-base">{{ promo.description }}</p>
+        </div>
+        <!-- <p class="mb-4 text-white/90 line-clamp-2 text-base">{{ promo.description }}</p> -->
         
         <div class="flex flex-wrap items-center justify-between gap-4">
           <div class="rounded-lg bg-black/30 backdrop-blur-sm px-3 py-2">
-            <p class="text-xs text-white/80">Berlaku hingga:</p>
-            <p class="font-medium text-white">{{ promo.validUntil }}</p>
+            <p class="text-xs text-white/80">Harga:</p>
+            <p class="font-medium text-white">Rp {{ formatPrice(promo?.price) }}</p>
           </div>
           
           <router-link 
@@ -54,13 +54,18 @@ defineProps({
     required: true
   }
 });
+
+// Format price with thousand separator
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('id-ID').format(price);
+};
 </script>
 
 <script>
 /**
  * @component AppPromoCard
- * @description Komponen molekul untuk menampilkan kartu promosi dengan desain elegan
+ * @description Komponen molekul untuk menampilkan kartu produk populer dengan desain elegan
  * @example
- * <AppPromoCard :promo="promoItem" />
+ * <AppPromoCard :promo="popularProduct" />
  */
 </script>
