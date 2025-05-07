@@ -1,37 +1,124 @@
 <template>
   <div class="home-page">
-    <AppNavbar :navItems="navItems" />
-    
-    <!-- Hero Section -->
-    <div class="relative bg-gradient-to-r from-blue-600 to-blue-800 text-white">
-      <div class="container mx-auto px-4 py-16 md:py-24">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <div>
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">Keramik Berkualitas untuk Rumah Impian Anda</h1>
-            <p class="text-xl mb-8">Temukan koleksi keramik terlengkap dengan kualitas terbaik dan harga terjangkau.</p>
+    <!-- Navbar - Menggunakan komponen AppNavbar -->
+    <AppNavbar 
+      title="Jangur Keramik"
+      logo="/images/logo.png"
+      :navItems="navItems"
+      customClass="sticky top-0 z-50 transition-all duration-300 width-full"
+    >
+      
+     
+    </AppNavbar>
+
+    <!-- product list session -->
+    <section class="py-16 bg-gray-50">
+      <div class="container mx-auto">
+        <ProductListTemplate 
+          pageTitle="Produk Unggulan"
+          pageSubtitle="Koleksi keramik terbaik dengan desain eksklusif dan kualitas premium"
+        />
+      </div>
+    </section>
+
+    <!-- Hero Section - Elegan & Futuristik -->
+    <div class="relative overflow-hidden">
+      <!-- Background with overlay gradient -->
+      <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-indigo-900/90 z-10"></div>
+      
+      <!-- Background pattern/mesh -->
+      <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1748&q=80')] bg-cover bg-center opacity-30 z-0"></div>
+      
+      <!-- Floating geometric shapes -->
+      <div class="absolute top-20 right-20 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl z-0"></div>
+      <div class="absolute bottom-20 left-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl z-0"></div>
+      
+      <!-- Content -->
+      <div class="container mx-auto px-4 py-20 md:py-32 relative z-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <div class="text-white">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              Keramik Premium untuk <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-300 to-indigo-300">Rumah Impian</span> Anda
+            </h1>
+            <p class="text-xl mb-8 text-blue-100/90 max-w-lg">
+              Temukan koleksi keramik terlengkap dengan desain eksklusif, kualitas terbaik, dan harga terjangkau.
+            </p>
             <div class="flex flex-wrap gap-4">
-              <router-link 
-                to="/products" 
-                class="bg-white text-blue-600 px-6 py-3 rounded-md font-bold hover:bg-gray-100 transition-colors"
-              >
-                Lihat Produk
-              </router-link>
-              <router-link 
-                to="/promotions" 
-                class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-md font-bold hover:bg-white hover:text-blue-600 transition-colors"
-              >
-                Promo Spesial
-              </router-link>
+              <AppButton 
+                label="Lihat Koleksi"
+                color="primary"
+                variant="custom"
+                customClass="px-8 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full font-bold hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300"
+                @click="$router.push('/products')"
+              />
+              <AppButton 
+                label="Promo Spesial"
+                variant="outline"
+                customClass="px-8 py-3 bg-white/10 backdrop-blur-md border border-white/20 rounded-full font-bold hover:bg-white/20 transition-all duration-300 text-white"
+                @click="$router.push('/promotions')"
+              />
+            </div>
+            
+            <!-- Trust badges -->
+            <div class="mt-12 flex items-center space-x-6">
+              <div class="flex items-center">
+                <AppIcon name="verified" class="text-blue-300 mr-2" />
+                <span class="text-sm">Kualitas Terjamin</span>
+              </div>
+              <div class="flex items-center">
+                <AppIcon name="local_shipping" class="text-blue-300 mr-2" />
+                <span class="text-sm">Pengiriman Cepat</span>
+              </div>
+              <div class="flex items-center">
+                <AppIcon name="payments" class="text-blue-300 mr-2" />
+                <span class="text-sm">Pembayaran Aman</span>
+              </div>
             </div>
           </div>
+          
           <div class="hidden md:block">
-            <img 
-              src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1350&q=80" 
-              alt="Jangur Keramik" 
-              class="rounded-lg shadow-xl"
-            >
+            <div class="relative">
+              <!-- Main image with shadow and border -->
+              <img 
+                src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1350&q=80" 
+                alt="Jangur Keramik Premium" 
+                class="rounded-2xl shadow-2xl shadow-blue-500/20 border border-white/10 w-full h-auto object-cover transform transition-transform duration-500 hover:scale-[1.02]"
+              >
+              
+              <!-- Floating elements -->
+              <div class="absolute -bottom-6 -left-6 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl p-4 shadow-lg">
+                <div class="flex items-center space-x-2">
+                  <div class="bg-white rounded-full p-2">
+                    <AppIcon name="star" class="text-blue-600" />
+                  </div>
+                  <div>
+                    <p class="text-white font-bold">4.9/5.0</p>
+                    <p class="text-blue-200 text-sm">1200+ Reviews</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="absolute -top-6 -right-6 bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-lg">
+                <div class="flex items-center space-x-2">
+                  <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full p-2">
+                    <AppIcon name="local_offer" class="text-white" />
+                  </div>
+                  <div>
+                    <p class="font-bold text-gray-800">Diskon 30%</p>
+                    <p class="text-gray-600 text-sm">Hingga 31 Des</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+      
+      <!-- Wave divider -->
+      <div class="absolute bottom-0 left-0 right-0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" class="w-full h-auto">
+          <path fill="#f9fafb" fill-opacity="1" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+        </svg>
       </div>
     </div>
     
@@ -228,6 +315,10 @@
 // import { ref } from 'vue';
 import AppNavbar from '../components/organisms/AppNavbar.vue';
 import AppFooter from '../components/organisms/AppFooter.vue';
+import AppButton from '../components/atoms/AppButton.vue';
+import AppIcon from '../components/atoms/AppIcon.vue';
+import ProductListTemplate from '../components/templates/ProductListTemplate.vue';
+// import AppSearchBar from '../components/molecules/AppSearchBar.vue';
 
 // Navigation items
 const navItems = [

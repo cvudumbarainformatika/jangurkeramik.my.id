@@ -40,6 +40,40 @@
 
 Atomic Design adalah metodologi untuk menciptakan sistem desain yang modular dan terstruktur. Berikut adalah penerapan Atomic Design dalam proyek Jangur Keramik:
 
+## Catatan Penting: Kelas Utilitas Responsif
+
+Untuk menangani tampilan responsif yang konsisten, gunakan kelas-kelas utilitas kustom berikut (bukan kelas Tailwind seperti `hidden md:block` yang mungkin bermasalah dengan CSS yang menggunakan `!important`):
+
+### Kelas Utilitas Responsif:
+
+1. **Untuk menyembunyikan di mobile, tampilkan di desktop:**
+   - `desktop-only` - Tampil sebagai block di desktop
+   - `desktop-only-flex` - Tampil sebagai flex di desktop
+   - `desktop-only-inline` - Tampil sebagai inline di desktop
+   - `desktop-only-inline-block` - Tampil sebagai inline-block di desktop
+
+2. **Untuk menampilkan di mobile, sembunyikan di desktop:**
+   - `mobile-only` - Tampil di mobile, tersembunyi di desktop
+
+3. **Untuk menyembunyikan di desktop, tampilkan di mobile:**
+   - `desktop-hidden` - Tersembunyi di desktop, tampil di mobile
+
+### Contoh Penggunaan:
+
+```vue
+<!-- Elemen yang hanya tampil di desktop -->
+<div class="desktop-only">Hanya tampil di desktop</div>
+
+<!-- Elemen yang hanya tampil di mobile -->
+<div class="mobile-only">Hanya tampil di mobile</div>
+
+<!-- Flex container yang hanya tampil di desktop -->
+<div class="desktop-only-flex">
+  <div>Item 1</div>
+  <div>Item 2</div>
+</div>
+```
+
 ### 1. Atoms (Atom)
 Komponen terkecil dan paling dasar yang tidak dapat dipecah lagi:
 - Button

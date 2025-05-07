@@ -1,47 +1,34 @@
 <template>
-  <router-link
-    v-if="to"
+  <component
+    :is="to ? 'router-link' : href ? 'a' : 'span'"
     :to="to"
-    :class="[
-      'transition-colors',
-      active ? activeClass : inactiveClass,
-      customClass
-    ]"
-  >
-    <AppIcon v-if="icon" :name="icon" class="mr-2" />
-    <span>{{ label }}</span>
-  </router-link>
-  <a
-    v-else
     :href="href"
     :target="external ? '_blank' : undefined"
     :rel="external ? 'noopener noreferrer' : undefined"
-    :class="[inactiveClass, customClass]"
+    :class="[
+      customClass,
+      isActive ? activeClass : inactiveClass
+    ]"
+    @click="$emit('click', $event)"
   >
-    <AppIcon v-if="icon" :name="icon" class="mr-2" />
-    <span>{{ label }}</span>
-  </a>
+    <slot :active="isActive">{{ label }}</slot>
+  </component>
 </template>
 
 <script setup>
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import AppIcon from '../atoms/AppIcon.vue';
 
 const props = defineProps({
   label: {
     type: String,
-    required: true
+    default: ''
   },
   to: {
-    type: String,
+    type: [String, Object],
     default: ''
   },
   href: {
-    type: String,
-    default: ''
-  },
-  icon: {
     type: String,
     default: ''
   },
@@ -53,37 +40,49 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  customClass: {
+    type: String,
+    default: ''
+  },
   activeClass: {
     type: String,
     default: 'text-primary font-medium'
   },
   inactiveClass: {
     type: String,
-    default: 'text-gray-600 hover:text-primary'
-  },
-  customClass: {
-    type: String,
-    default: ''
+    default: 'text-gray-700 hover:text-primary'
   }
 });
 
+defineEmits(['click']);
+
 const route = useRoute();
 
-const active = computed(() => {
+const isActive = computed(() => {
   if (!props.to) return false;
-  return props.exact 
-    ? route.path === props.to 
-    : route.path === props.to || route.path.startsWith(`${props.to}/`);
+  
+  const toPath = typeof props.to === 'string' ? props.to : props.to.path;
+  
+  if (props.exact) {
+    return route.path === toPath;
+  }
+  
+  return route.path.startsWith(toPath);
 });
 </script>
 
 <script>
 /**
  * @component AppNavLink
- * @description Komponen molekul untuk link navigasi yang dapat digunakan di navbar, sidebar, atau footer
+ * @description Komponen molekul untuk link navigasi dengan dukungan router-link dan state aktif
  * @example
- * <AppNavLink label="Beranda" to="/" icon="home" />
- * <AppNavLink label="Produk" to="/products" />
- * <AppNavLink label="Blog" href="https://blog.example.com" external />
+ * <AppNavLink 
+ *   label="Beranda"
+ *   to="/"
+ *   exact
+ *   customClass="py-2"
+ *   activeClass="text-primary font-bold"
+ *   inactiveClass="text-gray-700 hover:text-primary"
+ * />
  */
 </script>

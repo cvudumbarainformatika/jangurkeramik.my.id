@@ -1,39 +1,18 @@
 <template>
-  <span 
-    class="inline-flex items-center justify-center"
+  <component 
+    :is="iconComponent" 
+    v-if="iconComponent"
     :class="[
-      sizeClasses,
-      colorClasses
+      sizeClasses[size] || '',
+      colorClasses[color] || '',
+      customClass
     ]"
-  >
-    <component 
-      :is="iconComponent" 
-      v-if="iconComponent"
-      class="fill-current"
-    />
-    <span v-else class="text-red-500">
-      <!-- Fallback for missing icon -->
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-full h-full">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
-      </svg>
-    </span>
-  </span>
+  />
+  <span v-else class="icon-fallback">{{ name }}</span>
 </template>
 
 <script setup>
 import { computed } from 'vue';
-import IconSearch from '../icons/IconSearch.vue';
-import IconHeart from '../icons/IconHeart.vue';
-import IconCart from '../icons/IconCart.vue';
-import IconStar from '../icons/IconStar.vue';
-import IconStarFilled from '../icons/IconStarFilled.vue';
-import IconClose from '../icons/IconClose.vue';
-import IconChevronDown from '../icons/IconChevronDown.vue';
-import IconChevronLeft from '../icons/IconChevronLeft.vue';
-import IconChevronRight from '../icons/IconChevronRight.vue';
-import IconGrid from '../icons/IconGrid.vue';
-import IconList from '../icons/IconList.vue';
-import IconCheck from '../icons/IconCheck.vue';
 
 const props = defineProps({
   name: {
@@ -47,65 +26,70 @@ const props = defineProps({
   },
   color: {
     type: String,
-    default: 'current'
+    default: 'default',
+    validator: (value) => ['default', 'primary', 'secondary', 'white', 'gray', 'success', 'warning', 'danger', 'info'].includes(value)
+  },
+  customClass: {
+    type: String,
+    default: ''
   }
 });
 
-// Map icon names to components
-const iconMap = {
-  'search': IconSearch,
-  'heart': IconHeart,
-  'cart': IconCart,
-  'star': IconStar,
-  'star-filled': IconStarFilled,
-  'close': IconClose,
-  'chevron-down': IconChevronDown,
-  'chevron-left': IconChevronLeft,
-  'chevron-right': IconChevronRight,
-  'grid': IconGrid,
-  'list': IconList,
-  'check': IconCheck
+const sizeClasses = {
+  xs: 'w-3 h-3',
+  sm: 'w-4 h-4',
+  md: 'w-5 h-5',
+  lg: 'w-6 h-6',
+  xl: 'w-8 h-8'
 };
 
-// Get the icon component based on name
+const colorClasses = {
+  default: 'text-gray-700',
+  primary: 'text-primary',
+  secondary: 'text-secondary',
+  white: 'text-white',
+  gray: 'text-gray-500',
+  success: 'text-green-500',
+  warning: 'text-yellow-500',
+  danger: 'text-red-500',
+  info: 'text-blue-500'
+};
+
+// Get Lucide icon component
 const iconComponent = computed(() => {
-  return iconMap[props.name] || null;
-});
-
-// Size classes
-const sizeClasses = computed(() => {
-  const sizes = {
-    'xs': 'w-3 h-3',
-    'sm': 'w-4 h-4',
-    'md': 'w-6 h-6',
-    'lg': 'w-8 h-8',
-    'xl': 'w-10 h-10'
-  };
-  return sizes[props.size] || sizes.md;
-});
-
-// Color classes
-const colorClasses = computed(() => {
-  const colors = {
-    'current': 'text-current',
-    'primary': 'text-primary',
-    'white': 'text-white',
-    'black': 'text-black',
-    'gray': 'text-gray-500',
-    'red': 'text-red-500',
-    'green': 'text-green-500',
-    'blue': 'text-blue-500',
-    'yellow': 'text-yellow-400'
-  };
-  return colors[props.color] || colors.current;
+  try {
+    // Convert kebab-case or snake_case to PascalCase for Lucide naming convention
+    const pascalCaseName = props.name
+      .split(/[-_]/)
+      .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+      .join('');
+    
+    // Lucide icons are registered with their original names
+    return pascalCaseName;
+  } catch (error) {
+    console.warn(`Error processing icon "${props.name}":`, error);
+    return null;
+  }
 });
 </script>
 
 <script>
 /**
  * @component AppIcon
- * @description Komponen ikon yang konsisten dengan berbagai ukuran dan warna
+ * @description Komponen atom untuk menampilkan ikon Lucide
  * @example
- * <AppIcon name="heart" size="md" color="primary" />
+ * <AppIcon name="home" size="md" color="primary" />
+ * <AppIcon name="shopping-cart" size="lg" color="success" />
+ * <AppIcon name="alert-circle" size="sm" color="danger" />
  */
 </script>
+
+<style scoped>
+.icon-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75em;
+  opacity: 0.5;
+}
+</style>
