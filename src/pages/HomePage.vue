@@ -34,58 +34,38 @@
     <AppPromotionsSection :promotions="promotions" />
     
     <!-- Testimonials Section -->
-    <div class="py-16">
-      <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl font-bold mb-4">Testimoni Pelanggan</h2>
-          <p class="text-gray-600 max-w-2xl mx-auto">Apa kata pelanggan kami tentang produk dan layanan Jangur Keramik.</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div 
-            v-for="testimonial in testimonials" 
-            :key="testimonial.id" 
-            class="bg-white rounded-lg shadow-md p-6"
-          >
-            <div class="flex text-yellow-400 mb-4">
-              <i v-for="i in 5" :key="i" class="material-icons">
-                {{ i <= testimonial.rating ? 'star' : 'star_border' }}
-              </i>
-            </div>
-            <p class="text-gray-700 mb-4">{{ testimonial.text }}</p>
-            <div class="flex items-center">
-              <img 
-                :src="testimonial.avatar" 
-                :alt="testimonial.name" 
-                class="w-12 h-12 rounded-full mr-4"
-              >
-              <div>
-                <h4 class="font-bold">{{ testimonial.name }}</h4>
-                <p class="text-gray-600 text-sm">{{ testimonial.location }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <AppTestimonialsSection 
+      title="Testimoni Pelanggan"
+      subtitle="Pengalaman nyata dari pelanggan yang telah menggunakan produk Jangur Keramik."
+      :testimonials="testimonials"
+      ctaText="Lihat Semua Testimoni"
+      ctaLink="/testimonials"
+    />
     
     <!-- CTA Section -->
-    <div class="py-16 bg-primary text-white">
+    <div class="py-16 bg-gradient-to-r from-orange-500 to-blue-950 text-white">
       <div class="container mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold mb-4">Siap Mempercantik Rumah Anda?</h2>
-        <p class="text-xl mb-8 max-w-2xl mx-auto">Konsultasikan kebutuhan keramik Anda dengan tim ahli kami dan dapatkan penawaran terbaik.</p>
+        <div class="text-3xl font-bold mb-4">Siap Mempercantik Rumah Anda?</div>
+        <div class="text-lg mb-8 max-w-2xl mx-auto">Konsultasikan kebutuhan keramik Anda dengan tim ahli kami dan dapatkan penawaran terbaik.</div>
         <div class="flex flex-wrap justify-center gap-4">
           <router-link 
             to="/contact" 
-            class="bg-white text-primary px-6 py-3 rounded-md font-bold hover:bg-gray-100 transition-colors"
+            class="bg-white text-blue-600 px-6 py-3 rounded-full font-bold hover:bg-orange-50 transition-colors duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
             Hubungi Kami
           </router-link>
           <router-link 
             to="/products" 
-            class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-md font-bold hover:bg-white hover:text-primary transition-colors"
+            class="bg-transparent border-2 border-white text-white px-6 py-3 rounded-full font-bold hover:bg-white/10 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
           >
-            Lihat Katalog
+            <span class="relative z-10 flex items-center">
+              Lihat Katalog
+              <span class="ml-2 text-orange-300 group-hover:translate-x-1 transition-transform duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </span>
+            </span>
           </router-link>
         </div>
       </div>
@@ -106,6 +86,7 @@ const AppFooter = defineAsyncComponent(()=> import('components/organisms/AppFoot
 // const AppButton = defineAsyncComponent(()=> import('components/atoms/AppButton.vue'))
 const ProductListTemplate = defineAsyncComponent(()=> import('components/templates/ProductListTemplate.vue'))
 const AppPromotionsSection = defineAsyncComponent(()=> import('components/organisms/AppPromotionsSection.vue'))
+const AppTestimonialsSection = defineAsyncComponent(()=> import('components/organisms/AppTestimonialsSection.vue'))
 
 const containerRef = ref(null)
 const productListRef = ref(null)
