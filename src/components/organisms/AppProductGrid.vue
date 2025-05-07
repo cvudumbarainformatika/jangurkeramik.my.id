@@ -1,52 +1,17 @@
 <template>
   <div>
     <!-- Header with sorting and view options -->
-    <div class="flex flex-wrap items-center justify-between mb-6">
-      <div class="mb-4 md:mb-0">
-        <div class="text-2xl font-bold text-gray-800">{{ title }}</div>
-        <p class="text-gray-600">{{ subtitle }}</p>
-      </div>
-      
-      <div class="flex items-center space-x-4">
-        <!-- Sort Dropdown -->
-        <div class="relative">
-          <select 
-            v-model="sortOption" 
-            @change="$emit('sort', sortOption)"
-            class="appearance-none bg-white border border-gray-300 rounded-lg py-2 pl-4 pr-10 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-          >
-            <option v-for="option in sortOptions" :key="option.value" :value="option.value">
-              {{ option.label }}
-            </option>
-          </select>
-          <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-            <AppIcon name="chevron-down" size="sm" class="text-gray-500" />
-          </div>
-        </div>
-        
-        <!-- View Toggle -->
-        <div class="flex items-center space-x-2 bg-white border border-gray-300 rounded-lg p-1">
-          <button 
-            @click="$emit('view-mode-change', 'grid')"
-            :class="[
-              'p-1 rounded transition-colors',
-              viewMode === 'grid' ? 'bg-orange-500 text-white' : 'text-gray-500 hover:text-orange-500'
-            ]"
-          >
-            <AppIcon name="grid" size="sm" />
-          </button>
-          <button 
-            @click="$emit('view-mode-change', 'list')"
-            :class="[
-              'p-1 rounded transition-colors',
-              viewMode === 'list' ? 'bg-orange-500 text-white' : 'text-gray-500 hover:text-orange-500'
-            ]"
-          >
-            <AppIcon name="list" size="sm" />
-          </button>
-        </div>
-      </div>
-    </div>
+    <AppGridHeader
+      :title="title"
+      :subtitle="subtitle"
+      :viewMode="viewMode"
+      :sortOption="sortOption"
+      :sortOptions="sortOptions"
+      :showSort="true"
+      :showViewToggle="true"
+      @sort="$emit('sort', $event)"
+      @view-mode-change="$emit('view-mode-change', $event)"
+    />
     
     <!-- Active Filters -->
     <div v-if="Object.keys(activeFilters).length > 0" class="flex flex-wrap items-center gap-2 mb-6 p-4 bg-gray-50 rounded-lg">
@@ -142,6 +107,7 @@
 import { ref, computed } from 'vue';
 import AppIcon from '../atoms/AppIcon.vue';
 import AppProductCard from '../molecules/AppProductCard.vue';
+import AppGridHeader from '../molecules/AppGridHeader.vue';
 
 const props = defineProps({
   title: {

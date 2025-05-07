@@ -141,7 +141,7 @@
         </div>
         
         <!-- Navigation -->
-        <nav class="py-2 mt-2 border-t border-gray-100/30 bg-gradient-to-b from-white/0 to-white/20 backdrop-blur-sm rounded-b-lg" v-if="showMainNav">
+        <nav class="px-4 py-2 border-t border-gray-100/30 bg-gradient-to-b from-white/0 to-white/20 backdrop-blur-sm rounded-b-lg" v-if="showMainNav">
           <div class="flex justify-between items-center">
             <!-- Main Navigation (center) - Dihapus untuk mengubah konsep menjadi List Product -->
             <div class="desktop-hidden">
@@ -153,12 +153,23 @@
             </div>
             <div class="desktop-only">.</div>
             <!-- Action Buttons (right) -->
-            <AppActionButtons 
+            <!-- <AppActionButtons 
               :productCount="128"
               @view-mode-change="handleViewModeChange"
               @sort-change="handleSortChange"
               @filter-click="toggleFilterPanel"
               custom-class="px-4"
+            /> -->
+
+            <AppGridHeader
+              title=""
+              subtitle=""
+              viewMode="grid"
+              
+              :showSort="true"
+              :showViewToggle="true"
+              @sort="$emit('sort', $event)"
+              @view-mode-change="$emit('view-mode-change', $event)"
             />
           </div>
         </nav>
@@ -255,8 +266,9 @@
 import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
 import AppIcon from '../atoms/AppIcon.vue';
 import AppNavLink from '../molecules/AppNavLink.vue';
-import AppActionButtons from '../molecules/AppActionButtons.vue';
+// import AppActionButtons from '../molecules/AppActionButtons.vue';
 import AppIconButton from '../atoms/AppIconButton.vue';
+import AppGridHeader from '../molecules/AppGridHeader.vue';
 
 defineProps({
   title: {
@@ -322,12 +334,14 @@ const searchQuery = ref('');
 const searchInput = ref(null);
 
 // Fungsi untuk menangani perubahan mode tampilan
+// eslint-disable-next-line no-unused-vars
 const handleViewModeChange = (mode) => {
   console.log('View mode changed to:', mode);
   emit('view-mode-change', mode);
 };
 
 // Fungsi untuk menangani perubahan pengurutan
+// eslint-disable-next-line no-unused-vars
 const handleSortChange = (sortValue) => {
   console.log('Sort changed to:', sortValue);
   emit('sort-change', sortValue);

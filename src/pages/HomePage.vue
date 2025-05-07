@@ -6,13 +6,14 @@
       logo="/images/logo.png"
       :navItems="navItems"
       customClass="sticky top-0 z-50 transition-all duration-300 width-full"
+      :show-main-nav="true"
     >
       
      
     </AppNavbar>
 
     <!-- product list session -->
-    <section class="py-16 bg-gray-50">
+    <section class="py-16 bg-gray-100 px-4">
       <div class="container mx-auto">
         <ProductListTemplate 
           pageTitle="Produk Unggulan"
