@@ -164,7 +164,7 @@
             <AppGridHeader
               title=""
               subtitle=""
-              viewMode="grid"
+              :viewMode="viewMode"
               
               :showSort="true"
               :showViewToggle="true"
@@ -332,6 +332,10 @@ defineProps({
   mainNavClass: {
     type: String,
     default: ''
+  },
+  viewMode: {
+    type: String,
+    default: 'grid'
   }
 });
 

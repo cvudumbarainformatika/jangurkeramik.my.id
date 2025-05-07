@@ -28,6 +28,7 @@
           :active-filters="activeFiltersFormatted"
           :current-page="currentPage"
           :total-pages="totalPages"
+          :sort-options="sortOptions"
           @sort="sortProducts"
           @view-mode-change="changeViewMode"
           @clear-filter="clearFilter"
@@ -47,6 +48,7 @@
         :active-filters="activeFiltersFormatted"
         :current-page="currentPage"
         :total-pages="totalPages"
+        :sort-options="sortOptions"
         @sort="sortProducts"
         @view-mode-change="changeViewMode"
         @clear-filter="clearFilter"
@@ -95,13 +97,15 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, defineAsyncComponent } from 'vue';
+import { ref, computed, onMounted, defineAsyncComponent, watch } from 'vue';
 import AppIcon from '../atoms/AppIcon.vue';
 import AppIconButton from '../atoms/AppIconButton.vue';
+import { useProductStore } from 'src/stores/product-store';
+import { storeToRefs } from 'pinia';
 const AppProductFilter = defineAsyncComponent(() => import('../organisms/AppProductFilter.vue'))
 const AppProductGrid = defineAsyncComponent(() => import('../organisms/AppProductGrid.vue'))
 
-// Props
+// ============================================================================================================Props
 // eslint-disable-next-line no-unused-vars
 const props = defineProps({
   pageTitle: {
@@ -114,20 +118,14 @@ const props = defineProps({
   }
 });
 
-// State
+// ============================================================================================================State
 const showMobileFilter = ref(true);
-const viewMode = ref('grid');
-const currentPage = ref(1);
-const itemsPerPage = ref(12);
-const sortBy = ref('newest');
 
-const filters = ref({
-  categories: [],
-  materials: [],
-  sizes: [],
-  colors: [],
-  priceRange: [0, 1000000]
-});
+const productStore = useProductStore()
+
+const { viewMode, filters, filteredProducts, currentPage, itemsPerPage, sortOptions } = storeToRefs(productStore)
+const { changeViewMode, sortProducts, clearFilter, resetFilters } = productStore
+
 
 // Sample data for filters
 const filterOptions = {
@@ -166,184 +164,7 @@ const filterOptions = {
   ]
 };
 
-// Sample product data
-const products = ref([
-  {
-    id: 1,
-    name: 'Keramik Lantai Marmer Putih',
-    category: 'Lantai',
-    price: 185000,
-    discountPrice: 165000,
-    discount: 10,
-    rating: 4.5,
-    isNew: true,
-    image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 2,
-    name: 'Keramik Dinding Motif Geometris',
-    category: 'Dinding',
-    price: 210000,
-    discountPrice: null,
-    discount: 0,
-    rating: 4.2,
-    isNew: false,
-    image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 3,
-    name: 'Keramik Kamar Mandi Anti Slip',
-    category: 'Kamar Mandi',
-    price: 175000,
-    discountPrice: 140000,
-    discount: 20,
-    rating: 4.8,
-    isNew: false,
-    image: 'https://images.unsplash.com/photo-1620626011761-996317b8d101?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 4,
-    name: 'Keramik Dapur Modern',
-    category: 'Dapur',
-    price: 195000,
-    discountPrice: null,
-    discount: 0,
-    rating: 4.0,
-    isNew: true,
-    image: 'https://images.unsplash.com/photo-1615529328331-f8917597711f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 5,
-    name: 'Keramik Outdoor Tahan Cuaca',
-    category: 'Outdoor',
-    price: 230000,
-    discountPrice: 207000,
-    discount: 10,
-    rating: 4.6,
-    isNew: false,
-    image: 'https://images.unsplash.com/photo-1618221118493-9cfa1a1c00da?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 6,
-    name: 'Keramik Dekorasi Dinding 3D',
-    category: 'Dekorasi',
-    price: 250000,
-    discountPrice: null,
-    discount: 0,
-    rating: 4.9,
-    isNew: true,
-    image: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 7,
-    name: 'Keramik Lantai Kayu',
-    category: 'Lantai',
-    price: 220000,
-    discountPrice: 198000,
-    discount: 10,
-    rating: 4.3,
-    isNew: false,
-    image: 'https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 8,
-    name: 'Keramik Dinding Tekstur Batu',
-    category: 'Dinding',
-    price: 190000,
-    discountPrice: 152000,
-    discount: 20,
-    rating: 4.1,
-    isNew: false,
-    image: 'https://images.unsplash.com/photo-1560448204-603b3fc33ddb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 9,
-    name: 'Keramik Mozaik Premium',
-    category: 'Dekorasi',
-    price: 280000,
-    discountPrice: 224000,
-    discount: 20,
-    rating: 4.7,
-    isNew: true,
-    image: 'https://images.unsplash.com/photo-1532323544230-7191fd51bc1b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 10,
-    name: 'Keramik Lantai Granit Hitam',
-    category: 'Lantai',
-    price: 320000,
-    discountPrice: null,
-    discount: 0,
-    rating: 4.4,
-    isNew: false,
-    image: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 11,
-    name: 'Keramik Dinding Minimalis',
-    category: 'Dinding',
-    price: 175000,
-    discountPrice: 148750,
-    discount: 15,
-    rating: 4.2,
-    isNew: false,
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 12,
-    name: 'Keramik Kamar Mandi Pola Geometris',
-    category: 'Kamar Mandi',
-    price: 195000,
-    discountPrice: null,
-    discount: 0,
-    rating: 4.5,
-    isNew: true,
-    image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-  }
-]);
-
-// Computed
-const filteredProducts = computed(() => {
-  let result = [...products.value];
-  
-  // Filter by category
-  if (filters.value.categories.length > 0) {
-    result = result.filter(product => 
-      filters.value.categories.some(cat => 
-        product.category.toLowerCase().includes(cat.toLowerCase())
-      )
-    );
-  }
-  
-  // Filter by price range
-  result = result.filter(product => {
-    const price = product.discountPrice || product.price;
-    return price >= filters.value.priceRange[0] && price <= filters.value.priceRange[1];
-  });
-  
-  // Sort products
-  switch (sortBy.value) {
-    case 'price_asc':
-      result.sort((a, b) => (a.discountPrice || a.price) - (b.discountPrice || b.price));
-      break;
-    case 'price_desc':
-      result.sort((a, b) => (b.discountPrice || b.price) - (a.discountPrice || a.price));
-      break;
-    case 'newest':
-      result.sort((a, b) => (b.isNew === a.isNew) ? 0 : b.isNew ? 1 : -1);
-      break;
-    case 'rating':
-      result.sort((a, b) => b.rating - a.rating);
-      break;
-    default:
-      // Default sorting (newest)
-      result.sort((a, b) => (b.isNew === a.isNew) ? 0 : b.isNew ? 1 : -1);
-  }
-  
-  return result;
-});
-
- 
+// ============================================================================================================Computed
 const paginatedProducts = computed(() => {
   const startIndex = (currentPage.value - 1) * itemsPerPage.value;
   return filteredProducts.value.slice(startIndex, startIndex + itemsPerPage.value);
@@ -404,15 +225,11 @@ const activeFiltersFormatted = computed(() => {
   return result;
 });
 
-// Methods
-function sortProducts(option) {
-  sortBy.value = option;
-  currentPage.value = 1; // Reset to first page when sorting changes
-}
 
-function changeViewMode(mode) {
-  viewMode.value = mode;
-}
+
+// ============================================================================================================Methods
+
+
 
 function changePage(page) {
   currentPage.value = page;
@@ -429,31 +246,17 @@ function applyFiltersAndCloseDrawer() {
   showMobileFilter.value = false;
 }
 
-function resetFilters() {
-  filters.value = {
-    categories: [],
-    materials: [],
-    sizes: [],
-    colors: [],
-    priceRange: [0, 1000000]
-  };
-  currentPage.value = 1;
-  showMobileFilter.value = false;
-}
 
-function clearFilter(filterType) {
-  if (filterType === 'priceRange') {
-    filters.value.priceRange = [0, 1000000];
-  } else if (Object.prototype.hasOwnProperty.call(filters.value, filterType)) {
-    filters.value[filterType] = [];
-  }
-  currentPage.value = 1;
-}
 
-// Lifecycle
+// ============================================================================================================Lifecycle
 onMounted(() => {
   // Any initialization logic can go here
 });
+
+watch(()=> viewMode, (newVal)=>{
+  console.log('watch on productListTemplate',newVal);
+  
+})
 </script>
 
 <style scoped>

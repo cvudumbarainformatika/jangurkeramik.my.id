@@ -43,7 +43,7 @@
       viewMode === 'grid' ? 'grid grid-flow-col max-sm:grid-rows-12 sm:grid-rows-6 lg:grid-rows-4 xl:grid-rows-4 gap-4' : 'space-y-4'
     ]">
     <!-- <div class="grid grid-flow-col grid-rows-4 gap-4"> -->
-      <template v-if="products.length > 0">
+      <template v-if="products?.length > 0">
         <AppProductCard 
           v-for="product in products" 
           :key="product.id" 
@@ -120,7 +120,7 @@ const props = defineProps({
   },
   products: {
     type: Array,
-    required: true
+    default: () => []
   },
   viewMode: {
     type: String,
@@ -129,11 +129,7 @@ const props = defineProps({
   sortOptions: {
     type: Array,
     default: () => [
-      { label: 'Terbaru', value: 'newest' },
-      { label: 'Harga: Rendah ke Tinggi', value: 'price_asc' },
-      { label: 'Harga: Tinggi ke Rendah', value: 'price_desc' },
-      { label: 'Popularitas', value: 'popularity' },
-      { label: 'Rating', value: 'rating' }
+     
     ]
   },
   activeFilters: {
