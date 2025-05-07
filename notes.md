@@ -189,6 +189,7 @@ src/
    ```
 
 4. **Optimalkan untuk Produksi**
+   - Harus selalu Lazy Load Components
    - Pastikan content array di tailwind.config.cjs mencakup semua file yang menggunakan class Tailwind
    - Gunakan mode JIT (Just-In-Time) untuk build yang lebih cepat
    - Pertimbangkan untuk menggunakan strategi splitting CSS untuk performa yang lebih baik

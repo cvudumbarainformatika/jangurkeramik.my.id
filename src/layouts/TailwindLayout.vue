@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
     <!-- Main content -->
-    <main class="max-w-7xl mx-auto ">
+    <main class="max-w-7xl mx-auto bg-gray-100">
       <router-view />
     </main>
   </div>

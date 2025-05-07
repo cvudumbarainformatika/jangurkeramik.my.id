@@ -4,7 +4,7 @@
     <div class="desktop-only-flex flex-row gap-8">
       <!-- Sidebar Filter (Left) - Sticky -->
       <div class="w-1/4">
-        <div class="sticky top-4 max-h-[calc(100vh-2rem)] overflow-y-auto">
+        <div class="sticky top-35 max-h-[calc(100vh-2rem)] overflow-y-auto">
           <AppProductFilter 
             v-model:filters="filters"
             :categories="filterOptions.categories"
@@ -95,11 +95,11 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, defineAsyncComponent } from 'vue';
 import AppIcon from '../atoms/AppIcon.vue';
 import AppIconButton from '../atoms/AppIconButton.vue';
-import AppProductFilter from '../organisms/AppProductFilter.vue';
-import AppProductGrid from '../organisms/AppProductGrid.vue';
+const AppProductFilter = defineAsyncComponent(() => import('../organisms/AppProductFilter.vue'))
+const AppProductGrid = defineAsyncComponent(() => import('../organisms/AppProductGrid.vue'))
 
 // Props
 // eslint-disable-next-line no-unused-vars

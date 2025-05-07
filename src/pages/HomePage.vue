@@ -1,19 +1,19 @@
 <template>
-  <div class="home-page">
+  <div class="home-page" ref="containerRef">
     <!-- Navbar - Menggunakan komponen AppNavbar -->
     <AppNavbar 
       title="Jangur Keramik"
       logo="/images/logo.png"
       :navItems="navItems"
       customClass="sticky top-0 z-50 transition-all duration-300 width-full"
-      :show-main-nav="true"
+      :show-main-nav="scrollOnTop"
     >
       
      
     </AppNavbar>
 
     <!-- product list session -->
-    <section class="py-16 bg-gray-100 px-4">
+    <section class="py-16  px-4 product-list-session" ref="productListRef">
       <div class="container mx-auto">
         <ProductListTemplate 
           pageTitle="Produk Unggulan"
@@ -313,13 +313,22 @@
 </template>
 
 <script setup>
-// import { ref } from 'vue';
-import AppNavbar from '../components/organisms/AppNavbar.vue';
-import AppFooter from '../components/organisms/AppFooter.vue';
-import AppButton from '../components/atoms/AppButton.vue';
+import { ref, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue';
 import AppIcon from '../components/atoms/AppIcon.vue';
-import ProductListTemplate from '../components/templates/ProductListTemplate.vue';
+// import AppNavbar from '../components/organisms/AppNavbar.vue';
+// import AppFooter from '../components/organisms/AppFooter.vue';
+// import AppButton from '../components/atoms/AppButton.vue';
+// import ProductListTemplate from '../components/templates/ProductListTemplate.vue';
 // import AppSearchBar from '../components/molecules/AppSearchBar.vue';
+
+const AppNavbar = defineAsyncComponent(()=> import('components/organisms/AppNavbar.vue'))
+const AppFooter = defineAsyncComponent(()=> import('components/organisms/AppFooter.vue'))
+const AppButton = defineAsyncComponent(()=> import('components/atoms/AppButton.vue'))
+const ProductListTemplate = defineAsyncComponent(()=> import('components/templates/ProductListTemplate.vue'))
+
+const containerRef = ref(null)
+const productListRef = ref(null)
+const scrollOnTop = ref(false)
 
 // Navigation items
 const navItems = [
@@ -476,4 +485,60 @@ const footerLinkSections = [
     ]
   }
 ];
+
+
+
+
+// Action
+
+
+
+let scrollHandler = null
+// Status internal untuk deteksi perubahan
+let wasAbove = false
+
+function checkPosition() {
+  if (!productListRef.value) return
+
+  const top = productListRef.value.getBoundingClientRect().top
+
+  if (top <= -50 && !wasAbove) {
+    wasAbove = true
+    // console.log('⬆️ Menyentuh atau lewat atas viewport (scroll pelan pun terdeteksi)')
+    scrollOnTop.value = true
+  }
+
+  if (top > -50 && wasAbove) {
+    wasAbove = false
+    // console.log('⬇️ Kembali ke posisi asal di bawah')
+    scrollOnTop.value = false
+  }
+}
+
+// Fungsi throttle
+function throttle(fn, delay) {
+  let lastCall = 0
+  return function (...args) {
+    const now = new Date().getTime()
+    if (now - lastCall >= delay) {
+      lastCall = now
+      return fn(...args)
+    }
+  }
+}
+
+onMounted(() => {
+  scrollHandler = throttle(() => {
+    checkPosition()
+  }, 50) // << throttle interval di sini (ms)
+
+  window.addEventListener('scroll', scrollHandler, { passive: true })
+})
+
+onBeforeUnmount(() => {
+  if (scrollHandler) {
+    window.removeEventListener('scroll', scrollHandler)
+  }
+})
+
 </script>

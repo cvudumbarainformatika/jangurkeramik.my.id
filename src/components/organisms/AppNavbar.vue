@@ -263,12 +263,22 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
-import AppIcon from '../atoms/AppIcon.vue';
-import AppNavLink from '../molecules/AppNavLink.vue';
-// import AppActionButtons from '../molecules/AppActionButtons.vue';
-import AppIconButton from '../atoms/AppIconButton.vue';
-import AppGridHeader from '../molecules/AppGridHeader.vue';
+import { ref, onMounted, onUnmounted, nextTick, watch, defineAsyncComponent } from 'vue';
+const AppIcon = defineAsyncComponent(() =>
+  import('../atoms/AppIcon.vue')
+)
+
+const AppNavLink = defineAsyncComponent(() =>
+  import('../molecules/AppNavLink.vue')
+)
+
+const AppIconButton = defineAsyncComponent(() =>
+  import('../atoms/AppIconButton.vue')
+)
+
+const AppGridHeader = defineAsyncComponent(() =>
+  import('../molecules/AppGridHeader.vue')
+)
 
 defineProps({
   title: {
