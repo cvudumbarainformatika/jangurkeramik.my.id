@@ -151,15 +151,8 @@
                 @click="toggleFilterPanel"
               />
             </div>
-            <div class="desktop-only">.</div>
-            <!-- Action Buttons (right) -->
-            <!-- <AppActionButtons 
-              :productCount="128"
-              @view-mode-change="handleViewModeChange"
-              @sort-change="handleSortChange"
-              @filter-click="toggleFilterPanel"
-              custom-class="px-4"
-            /> -->
+            <div class="desktop-only-flex">.</div>
+            
 
             <AppGridHeader
               title=""

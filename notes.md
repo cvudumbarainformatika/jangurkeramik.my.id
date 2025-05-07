@@ -237,3 +237,56 @@ Untuk menghindari konflik dengan komponen bawaan Quasar dan memperjelas hierarki
 - [Atomic Design by Brad Frost](https://atomicdesign.bradfrost.com/)
 - [Tailwind CSS Cheat Sheet](https://nerdcave.com/tailwind-cheat-sheet)
 - [Quasar + Tailwind Best Practices](https://quasar.dev/style/tailwindcss)
+
+## Komponen Promosi Elegan
+
+Untuk membuat tampilan promosi yang eye-catching dan elegan, saya telah mengimplementasikan komponen-komponen berikut mengikuti prinsip Atomic Design:
+
+### 1. AppPromoCard (Molekul)
+
+Komponen kartu promosi dengan desain modern dan elegan yang menampilkan:
+- Gambar latar belakang dengan efek overlay gradient
+- Badge diskon dengan efek visual menarik
+- Judul dan deskripsi promosi
+- Tanggal berlaku promosi
+- Tombol CTA dengan efek hover yang menarik
+
+```vue
+<AppPromoCard :promo="promoItem" />
+```
+
+### 2. AppPromotionsSection (Organisme)
+
+Komponen section yang menampilkan koleksi kartu promosi dengan:
+- Header section dengan styling elegan
+- Grid responsif untuk kartu promosi
+- Elemen latar belakang dengan efek blur untuk menambah kedalaman visual
+- Tombol "Lihat Semua Promo" dengan efek hover yang menarik
+
+```vue
+<AppPromotionsSection :promotions="promotionsData" />
+```
+
+### Fitur Desain Elegan
+
+1. **Efek Hover yang Halus**
+   - Scaling dan shadow yang berubah saat hover
+   - Perubahan warna teks yang halus
+   - Animasi background pada tombol
+
+2. **Elemen Visual yang Menarik**
+   - Gradient overlay pada gambar
+   - Badge diskon dengan desain modern
+   - Elemen blur di background untuk kedalaman
+
+3. **Tipografi yang Kuat**
+   - Ukuran font yang tepat untuk hierarki visual
+   - Tracking dan spacing yang dioptimalkan
+   - Penggunaan font weight untuk emphasis
+
+4. **Konsistensi dengan Brand**
+   - Menggunakan warna primary dan orange yang konsisten
+   - Rounded corners yang konsisten
+   - Transisi dan animasi yang konsisten
+
+Komponen-komponen ini dirancang untuk memberikan pengalaman visual yang "WOW" sambil tetap mempertahankan konsistensi dengan sistem desain keseluruhan.

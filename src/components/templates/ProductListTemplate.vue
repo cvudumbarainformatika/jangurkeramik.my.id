@@ -4,7 +4,7 @@
     <div class="desktop-only-flex flex-row gap-8">
       <!-- Sidebar Filter (Left) - Sticky -->
       <div class="w-1/4">
-        <div class="sticky top-35 max-h-[calc(100vh-2rem)] overflow-y-auto">
+        <div class="sticky top-35 max-h-[calc(100vh-9rem)] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-gray-100">
           <AppProductFilter 
             v-model:filters="filters"
             :categories="filterOptions.categories"
@@ -15,6 +15,89 @@
             @reset="resetFilters"
             @clear-filter="clearFilter"
           />
+        </div>
+      </div>
+      
+      <!-- Mobile Horizontal Scrollable Filter -->
+      <div class="desktop-hidden w-full mb-6 overflow-x-auto scrollbar-none">
+        <div class="flex space-x-4 px-4 pb-4 w-max">
+          <!-- Category Pills -->
+          <div v-for="category in filterOptions.categories" :key="category.value" 
+               class="flex-shrink-0 bg-white rounded-full shadow px-4 py-2 border border-gray-200">
+            <label class="flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                :value="category.value" 
+                v-model="filters.categories"
+                class="hidden" 
+                @change="applyFilters"
+              >
+              <span class="w-4 h-4 mr-2 rounded-full flex items-center justify-center"
+                    :class="filters.categories.includes(category.value) ? 'bg-orange-500 text-white' : 'bg-gray-200'">
+                <AppIcon v-if="filters.categories.includes(category.value)" name="check" size="xs" />
+              </span>
+              <span>{{ category.label }}</span>
+              <span class="ml-1 text-xs text-gray-500">({{ category.count }})</span>
+            </label>
+          </div>
+          
+          <!-- Material Pills -->
+          <div v-for="material in filterOptions.materials" :key="material.value" 
+               class="flex-shrink-0 bg-white rounded-full shadow px-4 py-2 border border-gray-200">
+            <label class="flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                :value="material.value" 
+                v-model="filters.materials"
+                class="hidden" 
+                @change="applyFilters"
+              >
+              <span class="w-4 h-4 mr-2 rounded-full flex items-center justify-center"
+                    :class="filters.materials.includes(material.value) ? 'bg-orange-500 text-white' : 'bg-gray-200'">
+                <AppIcon v-if="filters.materials.includes(material.value)" name="check" size="xs" />
+              </span>
+              <span>{{ material.label }}</span>
+              <span class="ml-1 text-xs text-gray-500">({{ material.count }})</span>
+            </label>
+          </div>
+          
+          <!-- Size Pills -->
+          <div v-for="size in filterOptions.sizes" :key="size.value" 
+               class="flex-shrink-0 bg-white rounded-full shadow px-4 py-2 border border-gray-200">
+            <label class="flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                :value="size.value" 
+                v-model="filters.sizes"
+                class="hidden" 
+                @change="applyFilters"
+              >
+              <span class="w-4 h-4 mr-2 rounded-full flex items-center justify-center"
+                    :class="filters.sizes.includes(size.value) ? 'bg-orange-500 text-white' : 'bg-gray-200'">
+                <AppIcon v-if="filters.sizes.includes(size.value)" name="check" size="xs" />
+              </span>
+              <span>{{ size.label }}</span>
+            </label>
+          </div>
+          
+          <!-- Color Pills -->
+          <div v-for="color in filterOptions.colors" :key="color.value" 
+               class="flex-shrink-0 bg-white rounded-full shadow px-4 py-2 border border-gray-200">
+            <label class="flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                :value="color.value" 
+                v-model="filters.colors"
+                class="hidden" 
+                @change="applyFilters"
+              >
+              <span class="w-4 h-4 mr-2 rounded-full" 
+                    :style="{ backgroundColor: color.hex }"
+                    :class="filters.colors.includes(color.value) ? 'ring-2 ring-orange-500 ring-offset-1' : ''">
+              </span>
+              <span>{{ color.label }}</span>
+            </label>
+          </div>
         </div>
       </div>
       

@@ -31,49 +31,7 @@
    
     
     <!-- Promotions Section -->
-    <div class="py-16 bg-gray-50">
-      <div class="container mx-auto px-4">
-        <div class="text-center mb-12">
-          <h2 class="text-3xl font-bold mb-4">Promo Spesial</h2>
-          <p class="text-gray-600 max-w-2xl mx-auto">Dapatkan penawaran terbaik untuk produk keramik berkualitas.</p>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div 
-            v-for="promo in promotions" 
-            :key="promo.id" 
-            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
-          >
-            <div class="relative">
-              <img 
-                :src="promo.image" 
-                :alt="promo.title" 
-                class="w-full h-64 object-cover"
-              >
-              <div class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full font-bold">
-                {{ promo.discount }}
-              </div>
-            </div>
-            <div class="p-6">
-              <h3 class="text-xl font-bold mb-2">{{ promo.title }}</h3>
-              <p class="text-gray-600 mb-4">{{ promo.description }}</p>
-              <div class="flex justify-between items-center">
-                <div>
-                  <p class="text-gray-500">Berlaku hingga:</p>
-                  <p class="font-medium">{{ promo.validUntil }}</p>
-                </div>
-                <router-link 
-                  :to="promo.link" 
-                  class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark transition-colors"
-                >
-                  Lihat Detail
-                </router-link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <AppPromotionsSection :promotions="promotions" />
     
     <!-- Testimonials Section -->
     <div class="py-16">
@@ -147,6 +105,7 @@ const AppNavbar = defineAsyncComponent(()=> import('components/organisms/AppNavb
 const AppFooter = defineAsyncComponent(()=> import('components/organisms/AppFooter.vue'))
 // const AppButton = defineAsyncComponent(()=> import('components/atoms/AppButton.vue'))
 const ProductListTemplate = defineAsyncComponent(()=> import('components/templates/ProductListTemplate.vue'))
+const AppPromotionsSection = defineAsyncComponent(()=> import('components/organisms/AppPromotionsSection.vue'))
 
 const containerRef = ref(null)
 const productListRef = ref(null)
@@ -186,6 +145,24 @@ const promotions = [
     image: 'https://images.unsplash.com/photo-1584622781564-1d987f7333c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1350&q=80',
     validUntil: '15 November 2023',
     link: '/products?promo=bathroom'
+  },
+  {
+    id: 3,
+    title: 'Beli 10 Gratis 1',
+    description: 'Beli 10 dus keramik dapatkan 1 dus gratis untuk tipe yang sama',
+    discount: 'Beli 10 Gratis 1',
+    image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
+    validUntil: '30 November 2023',
+    link: '/products?promo=buy10get1'
+  },
+  {
+    id: 4,
+    title: 'Flash Sale Mingguan',
+    description: 'Diskon spesial setiap hari Jumat untuk produk pilihan',
+    discount: 'Hingga 40% OFF',
+    image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80',
+    validUntil: 'Setiap Jumat',
+    link: '/products?promo=flash-sale'
   }
 ];
 
