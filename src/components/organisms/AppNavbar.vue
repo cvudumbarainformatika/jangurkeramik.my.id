@@ -144,13 +144,13 @@
         <nav class="px-4 py-2 border-t border-gray-100/30 bg-gradient-to-b from-white/0 to-white/20 backdrop-blur-sm rounded-b-lg" v-if="showMainNav">
           <div class="flex justify-between items-center">
             <!-- Main Navigation (center) - Dihapus untuk mengubah konsep menjadi List Product -->
-            <div class="desktop-hidden">
+            <!-- <div class="desktop-hidden">
               <AppIconButton 
                 icon="filter"
                 size="lg"
                 @click="toggleFilterPanel"
               />
-            </div>
+            </div> -->
             <div class="desktop-only-flex">.</div>
             
 
@@ -355,10 +355,10 @@ const handleSortChange = (sortValue) => {
 };
 
 // Fungsi untuk toggle panel filter
-const toggleFilterPanel = () => {
-  console.log('Toggle filter panel');
-  emit('filter-toggle');
-};
+// const toggleFilterPanel = () => {
+//   console.log('Toggle filter panel');
+//   emit('filter-toggle');
+// };
 
 // Menambahkan efek scroll untuk navbar
 const handleScroll = () => {

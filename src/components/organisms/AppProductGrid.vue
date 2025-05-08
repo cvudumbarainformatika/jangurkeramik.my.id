@@ -40,7 +40,9 @@
     
     <!-- Products Grid -->
     <div :class="[
-      viewMode === 'grid' ? 'grid grid-flow-col max-sm:grid-rows-12 sm:grid-rows-6 lg:grid-rows-4 xl:grid-rows-4 gap-4' : 'space-y-4'
+      viewMode === 'grid' 
+        ? '!grid !grid-cols-2 sm:!grid-cols-2 md:!grid-cols-3 lg:!grid-cols-3 xl:!grid-cols-3 2xl:!grid-cols-4 gap-4' 
+        : 'space-y-4'
     ]">
     <!-- <div class="grid grid-flow-col grid-rows-4 gap-4"> -->
       <template v-if="products?.length > 0">
@@ -49,6 +51,7 @@
           :key="product.id" 
           :product="product"
           :view-mode="viewMode"
+          @view-product="emit('view-product', $event)"
         />
       </template>
       <div v-else class="col-span-full py-16 text-center">
@@ -104,10 +107,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, defineAsyncComponent } from 'vue';
 import AppIcon from '../atoms/AppIcon.vue';
-import AppProductCard from '../molecules/AppProductCard.vue';
+// import AppProductCard from '../molecules/AppProductCard.vue';
 import AppGridHeader from '../molecules/AppGridHeader.vue';
+
+const AppProductCard = defineAsyncComponent(() => import('../molecules/AppProductCard.vue'))
 
 const props = defineProps({
   title: {
@@ -146,13 +151,14 @@ const props = defineProps({
   }
 });
 
-// eslint-disable-next-line no-unused-vars
+ 
 const emit = defineEmits([
   'sort', 
   'view-mode-change', 
   'clear-filter', 
   'clear-all-filters', 
-  'page-change'
+  'page-change',
+  'view-product'
 ]);
 
 const sortOption = ref(props.sortOptions[0]?.value || 'newest');

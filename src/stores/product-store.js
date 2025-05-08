@@ -8,6 +8,8 @@ export const useProductStore = defineStore('product', {
     itemsPerPage:12,
     sortBy:'newest',
 
+    viewProduct:null,
+
     filters: {
       categories: [],
       materials: [],
@@ -220,6 +222,12 @@ export const useProductStore = defineStore('product', {
         this.filters[filterType] = [];
       }
       this.currentPage = 1;
+    },
+
+    handleViewProduct(item) {
+      console.log('handleViewProduct', item);
+      
+      this.viewProduct = item ?? null;
     },
 
     resetFilters() {

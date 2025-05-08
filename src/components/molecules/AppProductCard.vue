@@ -1,26 +1,26 @@
 <template>
   <div :class="[
     'group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300',
-    viewMode === 'grid' ? 'transform hover:-translate-y-1' : 'flex flex-col flex-row'
-  ]">
+    viewMode === 'grid' ? 'transform hover:-translate-y-1' : 'flex flex-row'
+  ]" @click="emit('view-product', product)">
     <!-- Product Image -->
     <div :class="[
-      'relative overflow-hidden',
-      viewMode === 'grid' ? '' : 'w-1/3'
+      'relative overflow-hidden cursor-pointer',
+      viewMode === 'grid' ? 'h-auto' : 'w-1/3'
     ]">
       <img 
-        :src="product.image" 
-        :alt="product.name" 
+        :src="product?.image" 
+        :alt="product?.name" 
         :class="[
           'w-full object-cover transition-transform duration-500 group-hover:scale-110',
-          viewMode === 'grid' ? 'h-56' : 'h-56'
+          viewMode === 'grid' ? ' aspect-[4/3]' : 'h-56'
         ]"
       >
       
       <!-- Badges -->
       <div class="absolute top-2 left-2 flex flex-col gap-1">
-        <span v-if="product.isNew" class="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">Baru</span>
-        <span v-if="product.discount" class="bg-orange-500 text-white text-xs px-2 py-1 rounded-full">-{{ product.discount }}%</span>
+        <!-- <span v-if="product.isNew" class="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">Baru</span> -->
+        <span v-if="product.discount" class="bg-primary text-white text-xs px-2 py-1 rounded-full">-{{ product?.discount }}%</span>
       </div>
       
       <!-- Quick Actions -->
@@ -40,17 +40,17 @@
     
     <!-- Product Info -->
     <div :class="[
-      'p-4 flex flex-col',
+      'p-2 md:p-4 flex flex-col',
       viewMode === 'grid' ? '' : 'w-2/3'
     ]">
       <div class="mb-1 flex items-center">
-        <span class="text-xs text-gray-500">{{ product?.category }}</span>
+        <span class="text-xs text-gray-500 truncate overflow-hidden whitespace-nowrap">{{ product?.category }}</span>
         <div class="ml-auto flex">
           <AppIcon 
             v-for="i in 5" 
             :key="i" 
-            :name="i <= Math.floor(product.rating) ? 'star-filled' : 'star'" 
-            size="sm" 
+            :name="i <= Math.floor(product?.rating) ? 'star-filled' : 'star'" 
+            size="md" 
             class="text-orange-400"
           />
         </div>
@@ -62,14 +62,14 @@
       ]">
         <div :class="[
           'font-semibold group-hover:text-orange-500 transition-colors',
-          viewMode === 'grid' ? 'text-2xl line-clamp-2' : 'text-2xl'
+          viewMode === 'grid' ? 'text-base xs:text-sm sm:text-sm md:text-md lg:text-lg xl:text-xl line-clamp-2' : 'text-xl'
         ]">
-          {{ product.name }}
+          {{ product?.name }}
         </div>
       </div>
       
       <p v-if="viewMode === 'list'" class="text-gray-600 mb-4 line-clamp-3">
-        {{ product.description || 'Keramik berkualitas tinggi dengan desain modern yang cocok untuk berbagai ruangan.' }}
+        {{ product?.description || 'Keramik berkualitas tinggi dengan desain modern yang cocok untuk berbagai ruangan.' }}
       </p>
       
       <!-- Spacer to push price and button to bottom -->
@@ -77,11 +77,11 @@
       
       <div class="flex items-center justify-between mt-2">
         <div class="flex flex-col">
-          <span v-if="product.discountPrice" class="text-gray-500 text-sm line-through">
+          <!-- <span v-if="product.discountPrice" class="text-gray-500 text-sm line-through">
             Rp {{ formatPrice(product.price) }}
-          </span>
-          <span class="text-orange-500 font-bold">
-            Rp {{ formatPrice(product.discountPrice || product.price) }}
+          </span> -->
+          <span class="text-orange-500 font-bold text-base">
+            Rp {{ formatPrice(product?.discountPrice || product?.price) }}
           </span>
         </div>
         
@@ -108,6 +108,8 @@ defineProps({
     default: 'grid'
   }
 });
+
+const emit = defineEmits(['view-product']);
 
 function formatPrice(price) {
   return new Intl.NumberFormat('id-ID').format(price);

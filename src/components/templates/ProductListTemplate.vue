@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto py-4 pb-12">
     <!-- Desktop Layout -->
-    <div class="desktop-only-flex flex-row gap-8">
+    <div class="desktop-only-flex flex-row gap-4">
       <!-- Sidebar Filter (Left) - Sticky -->
       <div class="w-1/4">
         <div class="sticky top-35 max-h-[calc(100vh-9rem)] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-gray-100">
@@ -16,6 +16,26 @@
             @clear-filter="clearFilter"
           />
         </div>
+      </div>
+
+       <!-- Product Grid (Right) -->
+       <div class="w-3/4">
+        <AppProductGrid 
+          :title="pageTitle"
+          :subtitle="pageSubtitle"
+          :products="paginatedProducts"
+          :view-mode="viewMode"
+          :active-filters="activeFiltersFormatted"
+          :current-page="currentPage"
+          :total-pages="totalPages"
+          :sort-options="sortOptions"
+          @sort="sortProducts"
+          @view-mode-change="changeViewMode"
+          @clear-filter="clearFilter"
+          @clear-all-filters="resetFilters"
+          @page-change="changePage"
+          @view-product="handleViewProduct"
+        />
       </div>
       
       <!-- Mobile Horizontal Scrollable Filter -->
@@ -101,24 +121,7 @@
         </div>
       </div>
       
-      <!-- Product Grid (Right) -->
-      <div class="w-3/4">
-        <AppProductGrid 
-          :title="pageTitle"
-          :subtitle="pageSubtitle"
-          :products="paginatedProducts"
-          :view-mode="viewMode"
-          :active-filters="activeFiltersFormatted"
-          :current-page="currentPage"
-          :total-pages="totalPages"
-          :sort-options="sortOptions"
-          @sort="sortProducts"
-          @view-mode-change="changeViewMode"
-          @clear-filter="clearFilter"
-          @clear-all-filters="resetFilters"
-          @page-change="changePage"
-        />
-      </div>
+     
     </div>
     
     <!-- Mobile Layout -->
@@ -137,6 +140,10 @@
         @clear-filter="clearFilter"
         @clear-all-filters="resetFilters"
         @page-change="changePage"
+        @view-product="(product) => {
+            console.log('view-product', product);
+            
+          }"
       />
       
       <!-- Mobile Filter Button -->
@@ -149,44 +156,31 @@
     </div>
     
     <!-- Mobile Filter Drawer -->
-    <div 
-      v-if="showMobileFilter" 
-      class="fixed inset-0 bg-black/50 z-50 flex items-end mobile-only"
-      @click.self="showMobileFilter = false"
-    >
-      <div class="bg-white rounded-t-2xl w-full max-h-[90vh] overflow-y-auto p-4 animate-slide-up">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold">Filter</h2>
-          <AppIconButton 
-            icon="x" 
-            @click="showMobileFilter = false"
-            customClass="rounded-full hover:bg-gray-100"
-          />
-        </div>
-        
-        <AppProductFilter 
-          v-model:filters="filters"
-          :categories="filterOptions.categories"
-          :materials="filterOptions.materials"
-          :sizes="filterOptions.sizes"
-          :colors="filterOptions.colors"
-          @apply="applyFiltersAndCloseDrawer"
-          @reset="resetFilters"
-          @clear-filter="clearFilter"
-        />
-      </div>
-    </div>
+    <DrawerMobileFilter
+      v-model="showMobileFilter"
+      :filters="filters"
+      @update:filters="filters = $event"
+      :categories="filterOptions.categories"
+      :materials="filterOptions.materials"
+      :sizes="filterOptions.sizes"
+      :colors="filterOptions.colors"
+      @apply="applyFiltersAndCloseDrawer"
+      @reset="resetFilters"
+      @clear-filter="clearFilter"
+    />
+
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted, defineAsyncComponent, watch } from 'vue';
 import AppIcon from '../atoms/AppIcon.vue';
-import AppIconButton from '../atoms/AppIconButton.vue';
+// import AppIconButton from '../atoms/AppIconButton.vue';
 import { useProductStore } from 'src/stores/product-store';
 import { storeToRefs } from 'pinia';
 const AppProductFilter = defineAsyncComponent(() => import('../organisms/AppProductFilter.vue'))
 const AppProductGrid = defineAsyncComponent(() => import('../organisms/AppProductGrid.vue'))
+const DrawerMobileFilter = defineAsyncComponent(() => import('../organisms/DrawerMobileFilter.vue'))
 
 // ============================================================================================================Props
 // eslint-disable-next-line no-unused-vars
@@ -202,12 +196,14 @@ const props = defineProps({
 });
 
 // ============================================================================================================State
-const showMobileFilter = ref(true);
+const showMobileFilter = ref(false);
 
 const productStore = useProductStore()
 
 const { viewMode, filters, filteredProducts, currentPage, itemsPerPage, sortOptions } = storeToRefs(productStore)
-const { changeViewMode, sortProducts, clearFilter, resetFilters } = productStore
+
+ 
+const { changeViewMode, sortProducts, clearFilter, resetFilters, handleViewProduct } = productStore
 
 
 // Sample data for filters
@@ -344,7 +340,7 @@ watch(()=> viewMode, (newVal)=>{
 
 <style scoped>
 .animate-slide-up {
-  animation: slide-up 0.3s ease-out forwards;
+  animation: slide-up 0.2s ease-out forwards;
 }
 
 @keyframes slide-up {

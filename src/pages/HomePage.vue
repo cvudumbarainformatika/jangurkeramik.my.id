@@ -15,7 +15,7 @@
     </AppNavbar>
 
     <!-- product list session -->
-    <section class="py-16  px-4 product-list-session" ref="productListRef">
+    <section class="md:py-14 xs:py-8  px-4 product-list-session" ref="productListRef">
       <div class="container mx-auto">
         <ProductListTemplate 
           pageTitle="Produk Unggulan"
