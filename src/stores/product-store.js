@@ -8,7 +8,7 @@ export const useProductStore = defineStore('product', {
     itemsPerPage:12,
     sortBy:'newest',
 
-    viewProduct:null,
+    product:null,
 
     filters: {
       categories: [],
@@ -224,10 +224,9 @@ export const useProductStore = defineStore('product', {
       this.currentPage = 1;
     },
 
-    handleViewProduct(item) {
-      console.log('handleViewProduct', item);
+    setProduct(item) {
       
-      this.viewProduct = item ?? null;
+      this.product = item ?? null;
     },
 
     resetFilters() {

@@ -140,10 +140,7 @@
         @clear-filter="clearFilter"
         @clear-all-filters="resetFilters"
         @page-change="changePage"
-        @view-product="(product) => {
-            console.log('view-product', product);
-            
-          }"
+        @view-product="handleViewProduct"
       />
       
       <!-- Mobile Filter Button -->
@@ -170,6 +167,13 @@
     />
 
   </div>
+  <!-- Product Detail Dialog for Desktop -->
+  <AppProductDetailDialog
+    v-model="showProductDialog"
+    :product="selectedProduct"
+    @add-to-cart="addToCart"
+    @add-to-wishlist="addToWishlist"
+  />
 </template>
 
 <script setup>
@@ -178,9 +182,15 @@ import AppIcon from '../atoms/AppIcon.vue';
 // import AppIconButton from '../atoms/AppIconButton.vue';
 import { useProductStore } from 'src/stores/product-store';
 import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
+import AppProductDetailDialog from '../organisms/AppProductDetailDialog.vue';
 const AppProductFilter = defineAsyncComponent(() => import('../organisms/AppProductFilter.vue'))
 const AppProductGrid = defineAsyncComponent(() => import('../organisms/AppProductGrid.vue'))
 const DrawerMobileFilter = defineAsyncComponent(() => import('../organisms/DrawerMobileFilter.vue'))
+
+const router = useRouter();
+const showProductDialog = ref(false);
+const selectedProduct = ref(null);
 
 // ============================================================================================================Props
 // eslint-disable-next-line no-unused-vars
@@ -197,13 +207,12 @@ const props = defineProps({
 
 // ============================================================================================================State
 const showMobileFilter = ref(false);
-
 const productStore = useProductStore()
 
 const { viewMode, filters, filteredProducts, currentPage, itemsPerPage, sortOptions } = storeToRefs(productStore)
 
  
-const { changeViewMode, sortProducts, clearFilter, resetFilters, handleViewProduct } = productStore
+const { changeViewMode, sortProducts, clearFilter, resetFilters, setProduct } = productStore
 
 
 // Sample data for filters
@@ -323,6 +332,32 @@ function applyFilters() {
 function applyFiltersAndCloseDrawer() {
   applyFilters();
   showMobileFilter.value = false;
+}
+
+function handleViewProduct(product) {
+  setProduct(product)
+  
+  if (window.innerWidth < 768) {
+    // Mobile: Navigate to product detail page with iOS-style transition
+    router.push(`/products/${product.id}`);
+  } else {
+    // Desktop: Show dialog
+    showProductDialog.value = true;
+  }
+}
+
+function addToCart(product) {
+  console.log('Adding to cart:', product);
+  // Implement your cart logic here
+  // For example, you could call a method from your cart store
+  // cartStore.addItem(product);
+}
+
+function addToWishlist(product) {
+  console.log('Adding to wishlist:', product);
+  // Implement your wishlist logic here
+  // For example, you could call a method from your wishlist store
+  // wishlistStore.addItem(product);
 }
 
 
