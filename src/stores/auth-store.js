@@ -13,7 +13,7 @@ export const useAuthStore = defineStore('auth', {
   },
   
   actions: {
-    async login(credentials) {
+    async login() {
       try {
         this.loading = true;
         this.error = null;
@@ -31,10 +31,6 @@ export const useAuthStore = defineStore('auth', {
         };
         this.token = 'sample-jwt-token';
         
-        // Simpan token di localStorage untuk persistensi
-        localStorage.setItem('auth_token', this.token);
-        localStorage.setItem('auth_user', JSON.stringify(this.user));
-        
         return true;
       } catch (error) {
         this.error = error.message || 'Login failed';
@@ -44,7 +40,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     
-    async register(userData) {
+    async register() {
       try {
         this.loading = true;
         this.error = null;
@@ -65,32 +61,21 @@ export const useAuthStore = defineStore('auth', {
     logout() {
       this.user = null;
       this.token = null;
-      
-      // Hapus data dari localStorage
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('auth_user');
     },
     
     setAuth(token, user) {
       this.token = token;
       this.user = user;
-      
-      // Simpan token dan user di localStorage
-      localStorage.setItem('auth_token', token);
-      localStorage.setItem('auth_user', JSON.stringify(user));
-      
       return true;
     },
     
-    // Cek status login saat aplikasi dimulai
-    initAuth() {
-      const token = localStorage.getItem('auth_token');
-      const user = localStorage.getItem('auth_user');
-      
-      if (token && user) {
-        this.token = token;
-        this.user = JSON.parse(user);
-      }
-    }
+    // Tidak perlu lagi initAuth karena state akan dimuat secara otomatis
+  },
+  
+  // Konfigurasi persistence
+  persist: {
+    key: 'auth',
+    storage: localStorage,
+    paths: ['user', 'token'], // Hanya simpan user dan token
   }
 });

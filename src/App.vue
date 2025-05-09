@@ -3,5 +3,5 @@
 </template>
 
 <script setup>
-//
+// Tidak perlu lagi memanggil initAuth karena state akan dimuat secara otomatis
 </script>

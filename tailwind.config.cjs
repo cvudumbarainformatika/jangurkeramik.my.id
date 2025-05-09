@@ -4,6 +4,7 @@ module.exports = {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
     "./index.html",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -18,7 +19,7 @@ module.exports = {
         warning: '#F2C037'
       }
     },
-    screen: {
+    screens: { // Perbaikan: 'screen' -> 'screens'
       'xs': '375px',
       'sm': '640px',
       'md': '768px',
