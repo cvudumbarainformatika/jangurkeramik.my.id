@@ -1,7 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/**/*.{vue,js,ts,jsx,tsx}",
+    // "./src/**/*.{vue,js,ts,jsx,tsx}",
+    "./src/**/*.{vue,js,ts,jsx,tsx,html}",
     "./index.html",
   ],
   darkMode: 'class',
@@ -29,5 +30,5 @@ module.exports = {
     }
   },
   plugins: [],
-  // important: true,
+  important: true
 }
