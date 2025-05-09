@@ -10,7 +10,11 @@ const routes = [
       { path: 'promotions', component: () => import('pages/PromotionsPage.vue') },
       { path: 'about', component: () => import('pages/AboutPage.vue') },
       { path: 'contact', component: () => import('pages/ContactPage.vue') },
-      { path: 'components', component: () => import('pages/ComponentsDemo.vue') }
+      { path: 'components', component: () => import('pages/ComponentsDemo.vue') },
+
+
+      // auth
+      { path: 'auth/social-callback', component: () => import('pages/AuthCallbackPage.vue') }
     ]
   },
   

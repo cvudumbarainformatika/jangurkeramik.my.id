@@ -132,9 +132,17 @@
               icon="user"
               size="lg"
               class="relative"
+              @click="toggleAuthDialog"
+              aria-label="User Account"
             >
-              <span class="absolute top-1 right-1 w-2 h-2 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full shadow-sm shadow-blue-500/30"></span>
+              <span v-if="isLoggedIn" class="absolute top-1 right-1 w-2 h-2 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full shadow-sm shadow-blue-500/30"></span>
             </AppIconButton>
+
+            <!-- Auth Dialog Component -->
+            <AppAuthDialog 
+              :isOpen="isAuthDialogOpen" 
+              @close="isAuthDialogOpen = false" 
+            />
             
          
           </div>
@@ -256,7 +264,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick, watch, defineAsyncComponent } from 'vue';
+import { ref, onMounted, onUnmounted, nextTick, watch, defineAsyncComponent, computed } from 'vue';
+import { useAuthStore } from 'src/stores/auth-store';
+
 const AppIcon = defineAsyncComponent(() =>
   import('../atoms/AppIcon.vue')
 )
@@ -272,6 +282,33 @@ const AppIconButton = defineAsyncComponent(() =>
 const AppGridHeader = defineAsyncComponent(() =>
   import('../molecules/AppGridHeader.vue')
 )
+
+// const AppButton = defineAsyncComponent(() =>
+//   import('../atoms/AppButton.vue')
+// )
+
+const AppAuthDialog = defineAsyncComponent(() =>
+  import('./AppAuthDialog.vue')
+)
+
+// Auth store
+const authStore = useAuthStore();
+const isLoggedIn = computed(() => authStore.isLoggedIn);
+
+// Auth dialog state
+const isAuthDialogOpen = ref(false);
+
+// Toggle auth dialog
+const toggleAuthDialog = () => {
+  isAuthDialogOpen.value = !isAuthDialogOpen.value;
+  
+  // Update body class berdasarkan status dialog
+  if (isAuthDialogOpen.value) {
+    document.body.classList.add('overflow-hidden');
+  } else {
+    document.body.classList.remove('overflow-hidden');
+  }
+};
 
 defineProps({
   title: {
@@ -354,12 +391,6 @@ const handleSortChange = (sortValue) => {
   emit('sort-change', sortValue);
 };
 
-// Fungsi untuk toggle panel filter
-// const toggleFilterPanel = () => {
-//   console.log('Toggle filter panel');
-//   emit('filter-toggle');
-// };
-
 // Menambahkan efek scroll untuk navbar
 const handleScroll = () => {
   isScrolled.value = window.scrollY > 50;
@@ -412,9 +443,15 @@ const handleClickOutside = (event) => {
 
 // Tambahkan event listener untuk ESC key
 const handleEscKey = (event) => {
-  if (event.key === 'Escape' && isSearchOpen.value) {
-    isSearchOpen.value = false;
-    document.body.classList.remove('overflow-hidden'); // Pastikan class dihapus
+  if (event.key === 'Escape') {
+    if (isSearchOpen.value) {
+      isSearchOpen.value = false;
+      document.body.classList.remove('overflow-hidden');
+    }
+    if (isAuthDialogOpen.value) {
+      isAuthDialogOpen.value = false;
+      document.body.classList.remove('overflow-hidden');
+    }
   }
 };
 
@@ -431,9 +468,9 @@ onUnmounted(() => {
   document.body.classList.remove('overflow-hidden');
 });
 
-// Watch isSearchOpen untuk memastikan class body selalu diperbarui
-watch(isSearchOpen, (newVal) => {
-  if (newVal) {
+// Watch isSearchOpen dan isAuthDialogOpen untuk memastikan class body selalu diperbarui
+watch([isSearchOpen, isAuthDialogOpen], ([newSearchOpen, newAuthOpen]) => {
+  if (newSearchOpen || newAuthOpen) {
     document.body.classList.add('overflow-hidden');
   } else {
     document.body.classList.remove('overflow-hidden');
