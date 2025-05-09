@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="">
     <!-- Auth Dialog Overlay with improved blur effect -->
     <div 
       v-if="isOpen" 
-      class="fixed inset-0 bg-black/20 backdrop-blur-md z-50 transition-all duration-300"
+      class="fixed inset-0 w-full h-[100vh] bg-black/20 backdrop-blur-md z-50 transition-all duration-300"
       @click="close"
     ></div>
     
@@ -14,10 +14,10 @@
     >
       <div 
         v-if="isOpen"
-        class="fixed inset-0 flex items-center justify-center z-50 p-0 h-[100vh] flex flex-rows justify-end"
+        class="fixed inset-0 flex items-center justify-center z-50 p-0 h-[100vh] flex flex-rows justify-end "
       >
         <div 
-          class="min-h-screen bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-md border border-gray-100 transition-all duration-500 ease-out max-h-[90vh] overflow-y-auto"
+          class="min-h-screen bg-white md:rounded-2xl shadow-2xl overflow-hidden w-full max-w-md border border-gray-100 transition-all duration-500 ease-out max-h-[90vh] overflow-y-auto"
         >
           <!-- Glass effect header -->
           <div class="relative overflow-hidden">

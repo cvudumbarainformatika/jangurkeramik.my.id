@@ -5,7 +5,7 @@
       title="Jangur Keramik"
       logo="/images/logo.png"
       :navItems="navItems"
-      customClass="sticky top-0 z-50 transition-all duration-300 width-full"
+      customClass="sticky top-0 z-50 transition-all duration-300 w-full"
       :show-main-nav="scrollOnTop"
       :view-mode="viewMode"
       @view-mode-change="changeViewMode"

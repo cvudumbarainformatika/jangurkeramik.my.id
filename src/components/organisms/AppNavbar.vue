@@ -139,10 +139,12 @@
             </AppIconButton>
 
             <!-- Auth Dialog Component -->
-            <AppAuthDialog 
+            <div class="">
+              <AppAuthDialog 
               :isOpen="isAuthDialogOpen" 
               @close="isAuthDialogOpen = false" 
             />
+            </div>
             
          
           </div>
@@ -357,7 +359,7 @@ defineProps({
   },
   customClass: {
     type: String,
-    default: ''
+    default: 'sticky top-0 z-50 transition-all duration-300'
   },
   mainNavClass: {
     type: String,
