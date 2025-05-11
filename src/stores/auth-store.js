@@ -58,9 +58,29 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     
-    logout() {
-      this.user = null;
-      this.token = null;
+    async logout() {
+      try {
+        // Jika pengguna sudah login, panggil API logout
+        if (this.token) {
+          // Import api dari boot/axios
+          const { api } = await import('src/boot/axios');
+          
+          // Panggil endpoint logout sesuai dengan dokumentasi backend
+          await api.post('api/v2/auth/email/logout');
+          
+          // Hapus data dari state lokal
+          this.user = null;
+          this.token = null;
+        }
+        return true;
+      } catch (error) {
+        console.error('Logout error:', error);
+        
+        // Tetap hapus data lokal meskipun API call gagal
+        this.user = null;
+        this.token = null;
+        return false;
+      }
     },
     
     setAuth(token, user) {
