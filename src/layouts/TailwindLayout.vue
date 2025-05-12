@@ -1,7 +1,10 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+  <div class="min-h-screen bg-gray-50 relative">
+    <!-- Background decorator component -->
+    <BackgroundDecorator />
+
     <!-- Main content -->
-    <main class="max-w-7xl mx-auto bg-gray-100 oerflow-visible">
+    <main class="max-w-7xl mx-auto relative z-[0] pt-0 px-0 md:px-4 lg:px-6">
       <router-view v-slot="{ Component }">
         <transition 
           :name="getTransitionName()" 
@@ -18,6 +21,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
+import BackgroundDecorator from 'src/components/ui/BackgroundDecorator.vue';
 
 // eslint-disable-next-line no-unused-vars
 const router = useRouter();
@@ -181,5 +185,53 @@ onUnmounted(() => {
 .fade-slide-leave-to {
   opacity: 0;
   transform: translateX(-30px);
+}
+
+/* Background fade transition */
+.bg-fade-enter-active,
+.bg-fade-leave-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.bg-fade-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.bg-fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* Wave slide transition */
+.wave-slide-enter-active,
+.wave-slide-leave-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.wave-slide-enter-from {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+.wave-slide-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* Circle scale transition */
+.circle-scale-enter-active,
+.circle-scale-leave-active {
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.circle-scale-enter-from {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+.circle-scale-leave-to {
+  opacity: 0;
+  transform: scale(1.5);
 }
 </style>

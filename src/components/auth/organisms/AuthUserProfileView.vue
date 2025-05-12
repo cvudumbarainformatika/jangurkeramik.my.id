@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6">
+  <div class="p-6 overflow-y-auto max-h-[calc(100vh-100px)] scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
     <div class="flex flex-col items-center mb-6">
       <!-- User avatar or initials -->
       <div class="mb-4">
@@ -21,7 +21,7 @@
       </div>
       
       <!-- User name and email -->
-      <div class="text-4xl font-bold text-gray-800">{{ user.nama || user.name }}</div>
+      <div class="text-4xl font-bold text-gray-800 text-center">{{ user.nama || user.name }}</div>
       <p class="text-gray-500">{{ user.email }}</p>
       
       <!-- User role badge -->
