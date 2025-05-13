@@ -4,7 +4,9 @@ import { useAuthStore } from 'src/stores/auth-store';
 
 const api = axios.create({ 
   baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true // Penting untuk mengirim cookies (termasuk CSRF token)
+  withCredentials: true, // Penting untuk mengirim cookies (termasuk CSRF token)
+  // Tambahkan timeout untuk mencegah permintaan menggantung terlalu lama
+  timeout: 30000 // 30 detik
 });
 
 // eslint-disable-next-line no-unused-vars
@@ -24,26 +26,56 @@ export default defineBoot(({ app, store }) => {
       config.headers['X-XSRF-TOKEN'] = csrfToken; // Laravel menggunakan X-XSRF-TOKEN
     }
     
+    // Tambahkan SameSite attribute untuk cookies jika diperlukan
+    // Ini membantu browser mengetahui kapan mengirim cookies
+    if (!config.headers.Cookie && document.cookie) {
+      config.headers.Cookie = document.cookie;
+    }
+    
     return config;
   });
 
-  // Tambahkan interceptor untuk menangani error CSRF
+  // Tambahkan interceptor untuk menangani error CSRF dan autentikasi
   api.interceptors.response.use(
     response => response,
     async error => {
       // Jika error 419 (CSRF token mismatch), coba refresh CSRF token
       if (error.response && error.response.status === 419) {
         try {
+          console.log('Mencoba refresh CSRF token...');
           // Panggil endpoint sanctum/csrf-cookie untuk mendapatkan token baru
           await axios.get(`${import.meta.env.VITE_API_URL}/sanctum/csrf-cookie`, {
             withCredentials: true
           });
           
+          console.log('CSRF token diperbarui, mencoba ulang permintaan...');
           // Coba ulang permintaan asli
           return api(error.config);
         } catch (refreshError) {
           console.error('Failed to refresh CSRF token:', refreshError);
           return Promise.reject(error);
+        }
+      }
+      
+      // Jika error 401 (Unauthorized), mungkin token kedaluwarsa
+      if (error.response && error.response.status === 401) {
+        const authStore = useAuthStore();
+        
+        // Jika pengguna seharusnya sudah login, coba refresh token
+        if (authStore.isLoggedIn) {
+          try {
+            console.log('Token mungkin kedaluwarsa, mencoba refresh...');
+            // Implementasikan logika refresh token di sini jika ada
+            // await authStore.refreshToken();
+            
+            // Coba ulang permintaan asli
+            return api(error.config);
+          } catch (refreshError) {
+            console.error('Failed to refresh auth token:', refreshError);
+            // Jika refresh gagal, logout pengguna
+            authStore.logout();
+            return Promise.reject(error);
+          }
         }
       }
       
@@ -71,13 +103,29 @@ function getCsrfToken() {
 // Fungsi untuk mendapatkan CSRF token baru
 export async function refreshCsrfToken() {
   try {
+    console.log('Meminta CSRF token baru...');
     await axios.get(`${import.meta.env.VITE_API_URL}/sanctum/csrf-cookie`, {
       withCredentials: true
     });
+    console.log('CSRF token baru diterima');
     return true;
   } catch (error) {
     console.error('Failed to refresh CSRF token:', error);
     return false;
+  }
+}
+
+// Fungsi untuk menangani permintaan dengan retry jika terjadi error CSRF
+export async function apiWithCsrfRetry(requestFn) {
+  try {
+    return await requestFn();
+  } catch (error) {
+    if (error.response && error.response.status === 419) {
+      // Refresh CSRF token dan coba lagi
+      await refreshCsrfToken();
+      return await requestFn();
+    }
+    throw error;
   }
 }
 

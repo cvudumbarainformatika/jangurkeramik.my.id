@@ -105,7 +105,7 @@
       </div>
     </AppFilterGroup>
     
-    <div class="mt-8">
+    <div class="mt-8 pb-24 md:pb-2">
       <button 
         @click="$emit('apply')" 
         class="w-full py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-orange-500/30 transition-all"

@@ -56,7 +56,7 @@
       </div>
     </div>
 
-    <div class="container mx-auto px-4 pb-20 relative z-1 ">
+    <div class="container mx-auto px-4 pb-20 relative z-1">
       <!-- Product Image - 3/4 of viewport height -->
       <div class="mb-6 h-[75vh] overflow-hidden rounded-2xl shadow-xl relative">
         <img 

@@ -28,7 +28,7 @@
       ]"
     >
       <div class="container mx-auto">
-        <div class="flex items-center justify-between py-2 px-4">
+        <div class="flex items-center justify-between py-2 px-2">
           <!-- Logo -->
           <router-link to="/" class="flex items-center group">
             <div class="relative w-12 h-12 mr-3 overflow-hidden">
@@ -62,7 +62,7 @@
           <div class="flex-grow"></div>
           
           <!-- Search and Actions -->
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-1">
             <!-- Search -->
             <div v-if="showSearch">
               <slot name="search">
@@ -126,6 +126,21 @@
                 </div>
               </slot>
             </div>
+            
+            <!-- Cart Icon (Only visible when logged in) -->
+            <!-- <div v-if="isLoggedIn">
+              <AppIconButton 
+                icon="shopping-cart"
+                size="lg"
+                class="relative"
+                @click="goToCart"
+                aria-label="Shopping Cart"
+              >
+                <span v-if="cartItemCount > 0" class="absolute -top-1 -right-1 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full border border-white">
+                  {{ cartItemCount > 99 ? '99+' : cartItemCount }}
+                </span>
+              </AppIconButton>
+            </div> -->
             
             <!-- User Icon Only -->
             <AppIconButton 
@@ -268,7 +283,9 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick, watch, defineAsyncComponent, computed } from 'vue';
 import { useAuthStore } from 'src/stores/auth-store';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const AppIcon = defineAsyncComponent(() =>
   import('../atoms/AppIcon.vue')
 )
@@ -285,10 +302,6 @@ const AppGridHeader = defineAsyncComponent(() =>
   import('../molecules/AppGridHeader.vue')
 )
 
-// const AppButton = defineAsyncComponent(() =>
-//   import('../atoms/AppButton.vue')
-// )
-
 const AppAuthDialog = defineAsyncComponent(() =>
   import('./AppAuthDialog.vue')
 )
@@ -296,6 +309,17 @@ const AppAuthDialog = defineAsyncComponent(() =>
 // Auth store
 const authStore = useAuthStore();
 const isLoggedIn = computed(() => authStore.isLoggedIn);
+
+// Cart item count (simulasi)
+// Dalam aplikasi nyata, ini akan berasal dari cart store
+// eslint-disable-next-line no-unused-vars
+const cartItemCount = ref(3);
+
+// Fungsi untuk navigasi ke halaman keranjang
+// eslint-disable-next-line no-unused-vars
+function goToCart() {
+  router.push('/cart');
+}
 
 // Auth dialog state
 const isAuthDialogOpen = ref(false);

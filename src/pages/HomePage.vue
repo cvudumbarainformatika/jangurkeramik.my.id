@@ -71,7 +71,7 @@
       </div>
     </div>
     
-    <AppFooter :socialLinks="socialLinks" :footerLinkSections="footerLinkSections" />
+    <!-- <AppFooter :socialLinks="socialLinks" :footerLinkSections="footerLinkSections" /> -->
   </div>
 </template>
 
@@ -82,7 +82,7 @@ import { useProductStore } from 'src/stores/product-store';
 import { storeToRefs } from 'pinia';
 
 const AppNavbar = defineAsyncComponent(()=> import('components/organisms/AppNavbar.vue'))
-const AppFooter = defineAsyncComponent(()=> import('components/organisms/AppFooter.vue'))
+// const AppFooter = defineAsyncComponent(()=> import('components/organisms/AppFooter.vue'))
 // const AppButton = defineAsyncComponent(()=> import('components/atoms/AppButton.vue'))
 const ProductListTemplate = defineAsyncComponent(()=> import('components/templates/ProductListTemplate.vue'))
 const AppPromotionsSection = defineAsyncComponent(()=> import('components/organisms/AppPromotionsSection.vue'))
@@ -178,6 +178,7 @@ const testimonials = [
 // Footer
 // const footerDescription = 'Solusi keramik berkualitas untuk rumah dan bangunan Anda.';
 
+// eslint-disable-next-line no-unused-vars
 const socialLinks = [
   { icon: 'facebook', href: 'https://facebook.com/jangurkeramik' },
   { icon: 'instagram', href: 'https://instagram.com/jangurkeramik' },
@@ -185,6 +186,7 @@ const socialLinks = [
   { icon: 'youtube', href: 'https://youtube.com/jangurkeramik' }
 ];
 
+// eslint-disable-next-line no-unused-vars
 const footerLinkSections = [
   {
     title: 'Produk',

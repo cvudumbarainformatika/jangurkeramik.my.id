@@ -3,12 +3,14 @@
     <div class="flex flex-col items-center mb-6">
       <!-- User avatar or initials -->
       <div class="mb-4">
-        <div v-if="user.avatar" class="relative">
+        <div v-if="user && user.avatar && !avatarError" class="relative">
           <img 
             :src="user.avatar" 
             :alt="user.nama || user.name" 
             class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
-            @error="$emit('avatar-error', $event)"
+            @error="handleAvatarError"
+            loading="eager"
+            crossorigin="anonymous"
           />
           <div class="absolute bottom-0 right-0 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
         </div>
@@ -80,16 +82,44 @@
 </template>
 
 <script setup>
-import { defineAsyncComponent } from 'vue';
+import { defineAsyncComponent, ref, onMounted } from 'vue';
 
 const AppIcon = defineAsyncComponent(() => 
   import('../../atoms/AppIcon.vue')
 );
 
-defineProps({
+const props = defineProps({
   user: Object,
   userInitials: String
 });
 
-defineEmits(['logout', 'avatar-error']);
+const emit = defineEmits(['logout', 'avatar-error']);
+
+// State untuk melacak error avatar
+const avatarError = ref(false);
+
+// Handler untuk error loading avatar
+const handleAvatarError = (event) => {
+  console.error('Error loading avatar image:', event);
+  avatarError.value = true;
+  // Emit event ke parent component
+  emit('avatar-error', event);
+};
+
+// Validasi URL avatar saat komponen dimount
+onMounted(() => {
+  // Jika user memiliki avatar, validasi URL
+  console.log('props.user', props.user);
+  
+  if (props.user && props.user.avatar) {
+    // Cek apakah URL valid
+    const img = new Image();
+    img.onerror = () => {
+      console.log('Avatar URL tidak valid atau tidak dapat diakses:', props.user.avatar);
+      avatarError.value = true;
+      emit('avatar-error', { target: img });
+    };
+    img.src = props.user.avatar;
+  }
+});
 </script>

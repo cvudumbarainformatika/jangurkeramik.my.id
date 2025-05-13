@@ -11,10 +11,14 @@ const routes = [
       { path: 'about', component: () => import('pages/AboutPage.vue') },
       { path: 'contact', component: () => import('pages/ContactPage.vue') },
       { path: 'components', component: () => import('pages/ComponentsDemo.vue') },
-
+      { path: 'cart', component: () => import('pages/CartPage.vue') },
+      { path: 'history', component: () => import('pages/HistoryPage.vue') },
+      { path: 'profile', component: () => import('pages/ProfilePage.vue') },
+      { path: 'favorites', component: () => import('pages/FavoritesPage.vue') },
 
       // auth
-      { path: 'auth/social-callback', component: () => import('pages/AuthCallbackPage.vue') }
+      { path: 'auth/social-callback', component: () => import('pages/AuthCallbackPage.vue') },
+      // { path: 'auth', component: () => import('pages/AuthPage.vue') }
     ]
   },
   

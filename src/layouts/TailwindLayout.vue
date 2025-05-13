@@ -4,7 +4,7 @@
     <BackgroundDecorator />
 
     <!-- Main content -->
-    <main class="max-w-7xl mx-auto relative z-[0] pt-0 px-0 md:px-4 lg:px-6">
+    <main class="max-w-7xl mx-auto relative z-[0] pt-0 px-0 md:px-4 lg:px-6 pb-16">
       <router-view v-slot="{ Component }">
         <transition 
           :name="getTransitionName()" 
@@ -15,6 +15,9 @@
         </transition>
       </router-view>
     </main>
+    
+    <!-- Bottom Navigation -->
+    <AppBottomNavigation v-if="isMobile" />
   </div>
 </template>
 
@@ -22,6 +25,8 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import BackgroundDecorator from 'src/components/ui/BackgroundDecorator.vue';
+ 
+import AppBottomNavigation from 'src/components/organisms/AppBottomNavigation.vue';
 
 // eslint-disable-next-line no-unused-vars
 const router = useRouter();

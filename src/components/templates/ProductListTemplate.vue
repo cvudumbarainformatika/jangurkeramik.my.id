@@ -146,7 +146,7 @@
       <!-- Mobile Filter Button -->
       <button 
         @click="showMobileFilter = true"
-        class="fixed bottom-4 left-4 z-10 bg-white rounded-full p-3 shadow-lg border border-gray-200"
+        class="fixed bottom-18 left-4 z-10 bg-white rounded-full p-3 shadow-lg border border-gray-200"
       >
         <AppIcon name="filter" class="text-orange-500" />
       </button>

@@ -25,6 +25,7 @@
           @reset="onReset"
           @clear-filter="onClearFilter"
         />
+
       </div>
     </div>
   </div>
