@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-100">
+  <div class="min-h-screen bg-gray-200">
     <!-- Header -->
     <div class="sticky top-0 z-10 px-4 pt-10 pb-4 bg-white shadow-sm">
       <div class="flex items-center">
@@ -36,7 +36,8 @@
       <div v-else>
         <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-4">
           <div class="p-4 border-b border-gray-100">
-            <div class="font-semibold">Produk dalam Keranjang ({{ cartItems.length }})</div>
+            <div class="font-semibold">Produk dalam Keranjang ({{ cartItems?.length }})</div>
+            <div class="font-semibold">Jumlah Item dalam Keranjang ({{ cartCount }})</div>
           </div>
           
           <div v-for="(item, index) in cartItems" :key="item.id" class="p-4 border-b border-gray-100 last:border-b-0">
@@ -44,16 +45,16 @@
               <!-- Product Image -->
               <div class="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                 <img 
-                  :src="item.image || 'https://via.placeholder.com/80x80/f97316/ffffff?text=Product'" 
-                  :alt="item.name" 
+                  :src="item?.image || '/images/No-Image.svg'" 
+                  :alt="item?.name" 
                   class="w-full h-full object-cover"
                 >
               </div>
               
               <!-- Product Details -->
               <div class="flex-1">
-                <div class="font-medium line-clamp-2">{{ item.name }}</div>
-                <div class="text-orange-500 font-bold mt-1">Rp {{ formatPrice(item.price) }}</div>
+                <div class="font-medium line-clamp-2">{{ item?.name }}</div>
+                <div class="text-orange-500 font-bold mt-1">Rp {{ formatPrice(item?.price) }}</div>
                 
                 <!-- Quantity Controls -->
                 <div class="flex items-center mt-2">
@@ -114,7 +115,7 @@
     <div class="pb-[300px]"></div>
     
     <!-- Fixed Bottom Checkout Button -->
-    <div v-if="cartItems.length > 0" class="fixed bottom-14 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
+    <div v-if="cartItems.length > 0" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg">
       <div class="flex justify-between items-center mb-3">
         <div>
           <div class="text-gray-600">Total</div>
@@ -136,37 +137,23 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import AppIcon from '../components/atoms/AppIcon.vue';
+import { useCartStore } from 'src/stores/cart-store';
+import { storeToRefs } from 'pinia';
 
 // eslint-disable-next-line no-unused-vars
 const router = useRouter();
+const cartStore = useCartStore()
 
-// Simulasi data keranjang
-// Dalam aplikasi nyata, ini akan berasal dari cart store
-const cartItems = ref([
-  {
-    id: 1,
-    name: 'Keramik Lantai Granit 60x60 Motif Marmer',
-    price: 185000,
-    quantity: 2,
-    image: 'https://via.placeholder.com/800x1200/f97316/ffffff?text=Product+Image'
-  },
-  {
-    id: 2,
-    name: 'Keramik Dinding 25x40 Motif Geometris',
-    price: 95000,
-    quantity: 3,
-    image: 'https://via.placeholder.com/800x1200/f97316/ffffff?text=Product+Image'
-  }
-]);
+const { items:cartItems, cartCount, cartTotal } = storeToRefs(cartStore)
+const { increaseQuantity, decreaseQuantity } = cartStore
+
 
 // Biaya pengiriman
 const shipping = ref(25000);
 
 // Computed properties
 const subtotal = computed(() => {
-  return cartItems.value.reduce((total, item) => {
-    return total + (item.price * item.quantity);
-  }, 0);
+  return cartTotal.value || 0
 });
 
 const total = computed(() => {
@@ -178,15 +165,15 @@ function formatPrice(price) {
   return new Intl.NumberFormat('id-ID').format(price || 0);
 }
 
-function increaseQuantity(index) {
-  cartItems.value[index].quantity++;
-}
+// function increaseQuantity(index) {
+//   cartItems.value[index].quantity++;
+// }
 
-function decreaseQuantity(index) {
-  if (cartItems.value[index].quantity > 1) {
-    cartItems.value[index].quantity--;
-  }
-}
+// function decreaseQuantity(index) {
+//   if (cartItems.value[index].quantity > 1) {
+//     cartItems.value[index].quantity--;
+//   }
+// }
 
 function removeItem(index) {
   cartItems.value.splice(index, 1);

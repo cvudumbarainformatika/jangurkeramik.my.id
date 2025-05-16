@@ -43,11 +43,11 @@ export const useProductStore = defineStore('product', {
      
     ],
     meta:null,
-    loading:false
+    loading:false,
+    cart: []
   }),
 
   getters: {
-    doubleCount: (state) => state.counter * 2,
     filteredProducts: (state) => {
       let result = [...state.products];
 
@@ -86,7 +86,9 @@ export const useProductStore = defineStore('product', {
       }
 
       return result;
-    }
+    },
+
+    
   
   },
 
@@ -177,10 +179,28 @@ export const useProductStore = defineStore('product', {
       } finally {
         this.loading = false
       }
-    }
+    },
+    async wishlist(id){
+      this.loading = true
+      try {
+        const resp = await api.get(`api/v2/product/like/${id}`);
+        console.log('resp', resp);
+        // const {data} = resp
+        
+      } catch (error) {
+        console.log('error', error);
+        
+      } finally {
+        this.loading = false
+      }
+    },
+
     
-  }
-})
+  },
+
+
+
+});
 
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useProductStore, import.meta.hot))

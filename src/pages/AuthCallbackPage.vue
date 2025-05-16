@@ -29,9 +29,11 @@ onMounted(async () => {
       
       // Simpan token dan user ke auth store
       await authStore.setAuth(token, user);
+      console.log('callback', token, userJson);
       
       // Redirect ke halaman utama
-      router.push('/');
+      // router.push('/');
+      
     } else {
       console.error('Token or user data missing from callback URL');
       router.push('/');

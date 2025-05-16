@@ -14,32 +14,29 @@ export const useAuthStore = defineStore('auth', {
   },
   
   actions: {
-    // async login() {
-    //   try {
-    //     this.loading = true;
-    //     this.error = null;
+
+    async loginWithGoogle (){
+      try {
+        // Dapatkan URL redirect dari backend
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v2/auth/google/url`);
+        const data = await response.json();
+
+        // console.log('loginWithGoogle', data);
         
-    //     // Simulasi login API call
-    //     // Dalam implementasi nyata, ganti dengan panggilan API sebenarnya
-    //     await new Promise(resolve => setTimeout(resolve, 1000));
         
-    //     // Simulasi data user
-    //     this.user = {
-    //       id: 1,
-    //       name: 'John Doe',
-    //       email: 'john.doe@example.com',
-    //       role: 'customer'
-    //     };
-    //     this.token = 'sample-jwt-token';
-        
-    //     return true;
-    //   } catch (error) {
-    //     this.error = error.message || 'Login failed';
-    //     return false;
-    //   } finally {
-    //     this.loading = false;
-    //   }
-    // },
+        if (data.status === 'success' && data.redirect_url) {
+          // Redirect ke URL Google OAuth
+
+          // this.checkAuth()
+
+          window.location.href = data.redirect_url;
+        } else {
+          console.error('Failed to get Google OAuth URL');
+        }
+      } catch (error) {
+        console.error('Error during Google login:', error);
+      }
+    },
     
     async register() {
       try {
@@ -151,6 +148,8 @@ export const useAuthStore = defineStore('auth', {
         if (response.data.success) {
 
           // console.log('Auth check response:', response.data);
+
+          
 
           if (response.data.user) {
             this.user = response.data.user;

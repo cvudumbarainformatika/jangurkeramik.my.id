@@ -85,6 +85,9 @@ const authStore = useAuthStore();
 const isLoggedIn = computed(() => authStore.isLoggedIn);
 const user = computed(() => authStore.user);
 
+
+const { loginWithGoogle } = authStore
+
 // View management
 const currentView = ref('options'); // 'options', 'email-login'
 
@@ -155,22 +158,22 @@ const register = () => {
   close();
 };
 
-const loginWithGoogle = async () => {
-  try {
-    // Dapatkan URL redirect dari backend
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v2/auth/google/url`);
-    const data = await response.json();
+// const loginWithGoogle = async () => {
+//   try {
+//     // Dapatkan URL redirect dari backend
+//     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v2/auth/google/url`);
+//     const data = await response.json();
     
-    if (data.status === 'success' && data.redirect_url) {
-      // Redirect ke URL Google OAuth
-      window.location.href = data.redirect_url;
-    } else {
-      console.error('Failed to get Google OAuth URL');
-    }
-  } catch (error) {
-    console.error('Error during Google login:', error);
-  }
-};
+//     if (data.status === 'success' && data.redirect_url) {
+//       // Redirect ke URL Google OAuth
+//       window.location.href = data.redirect_url;
+//     } else {
+//       console.error('Failed to get Google OAuth URL');
+//     }
+//   } catch (error) {
+//     console.error('Error during Google login:', error);
+//   }
+// };
 
 const loginWithEmail = async () => {
   try {

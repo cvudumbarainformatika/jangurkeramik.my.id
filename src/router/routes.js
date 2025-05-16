@@ -17,7 +17,7 @@ const routes = [
       { path: 'favorites', component: () => import('pages/FavoritesPage.vue') },
 
       // auth
-      { path: 'auth/social-callback', component: () => import('pages/AuthCallbackPage.vue') },
+      { path: 'auth/social-callback', component: () => import('pages/AuthSocialCallbackPage.vue') },
       // { path: 'auth', component: () => import('pages/AuthPage.vue') }
     ]
   },

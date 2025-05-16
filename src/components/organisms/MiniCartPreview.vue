@@ -1,16 +1,15 @@
 <template>
   <div>
     <!-- Toast Notification -->
-    <Transition name="toast-fade">
-      <div 
-        v-if="showToast" 
-        class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-full shadow-lg z-50 flex items-center"
-      >
-        <AppIcon name="check-circle" size="sm" class="mr-2" />
-        <span>Produk ditambahkan ke keranjang</span>
-      </div>
-    </Transition>
-
+    <Transition name="toast-fade" appear>
+    <div 
+      v-if="showToast"
+      class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-emerald-500 to-blue-500 text-white px-6 py-3 rounded-xl shadow-xl z-50 flex items-center space-x-3 animate-slide-in"
+    >
+      <AppIcon name="check-circle" size="sm" class="text-white drop-shadow" />
+      <span class="font-medium tracking-wide">Produk berhasil ditambahkan ke keranjang</span>
+    </div>
+  </Transition>
     <!-- Mini Cart Slide-in Panel -->
     <div 
       class="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300"
@@ -215,7 +214,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.toast-fade-enter-active,
+/* .toast-fade-enter-active,
 .toast-fade-leave-active {
   transition: opacity 0.3s, transform 0.3s;
 }
@@ -224,5 +223,36 @@ onMounted(() => {
 .toast-fade-leave-to {
   opacity: 0;
   transform: translate(-50%, -20px);
+} */
+
+
+ .toast-fade-enter-active,
+.toast-fade-leave-active {
+  transition: all 0.4s ease;
+}
+.toast-fade-enter-from,
+.toast-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.98);
+}
+.toast-fade-enter-to,
+.toast-fade-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Opsional animasi khusus saat masuk */
+@keyframes slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-slide-in {
+  animation: slide-in 0.4s ease-out;
 }
 </style>

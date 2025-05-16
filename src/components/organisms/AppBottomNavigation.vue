@@ -92,9 +92,15 @@
 import { computed } from 'vue';
 import { useAuthStore } from 'src/stores/auth-store';
 import AppIcon from '../atoms/AppIcon.vue';
+import { useCartStore } from 'src/stores/cart-store';
+import { storeToRefs } from 'pinia';
 
 const authStore = useAuthStore();
 const isLoggedIn = computed(() => authStore.isLoggedIn);
+
+const cartStore = useCartStore()
+
+const {items} = storeToRefs(cartStore)
 
 // Navigation items with dynamic badges
 const navItems = computed(() => [
@@ -112,13 +118,13 @@ const navItems = computed(() => [
     label: 'Keranjang', 
     icon: 'shopping-cart', 
     to: isLoggedIn.value ? '/cart' : '/auth',
-    badge: isLoggedIn.value ? 3 : 0 // Example: 3 items in cart
+    badge: isLoggedIn.value ? items.value?.length || 0 : 0 // Example: 3 items in cart
   },
   { 
     label: 'Favorit', 
     icon: 'heart', 
     to: isLoggedIn.value ? '/favorites' : '/auth',
-    badge: isLoggedIn.value ? 5 : 0 // Example: 5 items in favorites
+    badge: isLoggedIn.value ? 0 : 0 // Example: 5 items in favorites
   }
 ]);
 </script>

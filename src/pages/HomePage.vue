@@ -34,13 +34,13 @@
     <AppPromotionsSection :promotions="promotions" />
     
     <!-- Testimonials Section -->
-    <AppTestimonialsSection 
+    <!-- <AppTestimonialsSection 
       title="Testimoni Pelanggan"
       subtitle="Pengalaman nyata dari pelanggan yang telah menggunakan produk Jangur Keramik."
       :testimonials="testimonials"
       ctaText="Lihat Semua Testimoni"
       ctaLink="/testimonials"
-    />
+    /> -->
     
     <!-- CTA Section -->
     <div class="py-16 bg-gradient-to-r from-orange-500 to-blue-950 text-white">
@@ -86,7 +86,7 @@ const AppNavbar = defineAsyncComponent(()=> import('components/organisms/AppNavb
 // const AppButton = defineAsyncComponent(()=> import('components/atoms/AppButton.vue'))
 const ProductListTemplate = defineAsyncComponent(()=> import('components/templates/ProductListTemplate.vue'))
 const AppPromotionsSection = defineAsyncComponent(()=> import('components/organisms/AppPromotionsSection.vue'))
-const AppTestimonialsSection = defineAsyncComponent(()=> import('components/organisms/AppTestimonialsSection.vue'))
+// const AppTestimonialsSection = defineAsyncComponent(()=> import('components/organisms/AppTestimonialsSection.vue'))
 
 const containerRef = ref(null)
 const productListRef = ref(null)
@@ -148,32 +148,32 @@ const promotions = [
 ];
 
 // Testimonials
-const testimonials = [
-  {
-    id: 1,
-    name: 'Budi Santoso',
-    location: 'Jakarta',
-    rating: 5,
-    text: 'Saya sangat puas dengan kualitas keramik dari Jangur. Pemasangannya mudah dan hasilnya sangat bagus. Pelayanan dari tim juga sangat profesional.',
-    avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
-  },
-  {
-    id: 2,
-    name: 'Siti Rahayu',
-    location: 'Bandung',
-    rating: 4,
-    text: 'Keramik lantai yang saya beli memiliki kualitas yang sangat baik. Warnanya sesuai dengan yang ditampilkan di website dan tahan lama.',
-    avatar: 'https://randomuser.me/api/portraits/women/44.jpg'
-  },
-  {
-    id: 3,
-    name: 'Agus Wijaya',
-    location: 'Surabaya',
-    rating: 5,
-    text: 'Pengiriman cepat dan produk dalam kondisi baik. Harga juga sangat kompetitif dibandingkan toko lain. Pasti akan belanja lagi di sini.',
-    avatar: 'https://randomuser.me/api/portraits/men/67.jpg'
-  }
-];
+// const testimonials = [
+//   {
+//     id: 1,
+//     name: 'Budi Santoso',
+//     location: 'Jakarta',
+//     rating: 5,
+//     text: 'Saya sangat puas dengan kualitas keramik dari Jangur. Pemasangannya mudah dan hasilnya sangat bagus. Pelayanan dari tim juga sangat profesional.',
+//     avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
+//   },
+//   {
+//     id: 2,
+//     name: 'Siti Rahayu',
+//     location: 'Bandung',
+//     rating: 4,
+//     text: 'Keramik lantai yang saya beli memiliki kualitas yang sangat baik. Warnanya sesuai dengan yang ditampilkan di website dan tahan lama.',
+//     avatar: 'https://randomuser.me/api/portraits/women/44.jpg'
+//   },
+//   {
+//     id: 3,
+//     name: 'Agus Wijaya',
+//     location: 'Surabaya',
+//     rating: 5,
+//     text: 'Pengiriman cepat dan produk dalam kondisi baik. Harga juga sangat kompetitif dibandingkan toko lain. Pasti akan belanja lagi di sini.',
+//     avatar: 'https://randomuser.me/api/portraits/men/67.jpg'
+//   }
+// ];
 
 // Footer
 // const footerDescription = 'Solusi keramik berkualitas untuk rumah dan bangunan Anda.';
