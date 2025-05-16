@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto py-4 pb-12">
     <!-- Desktop Layout -->
-    <div class="desktop-only-flex flex-row gap-4">
+    <div class="desktop-only-flex flex-row gap-2 md:gap-4">
       <!-- Sidebar Filter (Left) - Sticky -->
       <div class="w-1/4">
         <div class="sticky top-35 max-h-[calc(100vh-9rem)] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-gray-100">
@@ -135,6 +135,7 @@
         :current-page="currentPage"
         :total-pages="totalPages"
         :sort-options="sortOptions"
+        :loading="loading"
         @sort="sortProducts"
         @view-mode-change="changeViewMode"
         @clear-filter="clearFilter"
@@ -209,7 +210,7 @@ const props = defineProps({
 const showMobileFilter = ref(false);
 const productStore = useProductStore()
 
-const { viewMode, filters, filteredProducts, currentPage, itemsPerPage, sortOptions } = storeToRefs(productStore)
+const { viewMode, filters, filteredProducts, currentPage, itemsPerPage, sortOptions, loading } = storeToRefs(productStore)
 
  
 const { changeViewMode, sortProducts, clearFilter, resetFilters, setProduct } = productStore

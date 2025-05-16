@@ -5,11 +5,11 @@
     
     <!-- Back Button -->
     <div class="sticky top-0 z-10 px-4 pt-10 pb-8 bg-primary">
-      <div class="flex items-start">
+      <div class="flex flex-rows items-start">
         <!-- Back Button (Icon Only) -->
         <button 
           @click="$router.back()" 
-          class="flex-shrink-0 px-2 py-1 text-white hover:bg-white/10 rounded-full transition-colors"
+          class="flex-none px-2 py-1 text-white hover:bg-white/10 rounded-full transition-colors"
         >
           <AppIcon 
             name="chevron-left" 
@@ -20,8 +20,8 @@
         </button>
         
         <!-- Product Details -->
-        <div class="ml-0 flex flex-col flex-grow">
-          <div class="text-lg font-medium text-white line-clamp-1 w-full">{{ product?.name }}</div>
+        <div class="flex flex-col flex-1">
+          <div class="text-base sm:text-md font-medium text-white line-clamp-2 w-full">{{ product?.name }}</div>
           <div class="flex items-center flex-wrap gap-2 mt-2">
             <!-- Views Counter - Futuristic Badge -->
             <div class="bg-orange-500/80 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center text-md text-white/80">
@@ -32,14 +32,15 @@
             <!-- Stock Indicator - Glowing Badge -->
             <div class="relative">
               <div class="bg-orange-500/80 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center text-md">
-                <span class="h-2 w-2 rounded-full mr-1" :class="[product?.stock > 10 ? 'bg-green-400' : (product?.stock > 0 ? 'bg-yellow-400' : 'bg-dark'), 'animate-pulse']"></span>
-                <span class="font-medium text-white/80">{{ product?.stock > 0 ? `${product?.stock} tersisa` : 'Habis' }}</span>
+                <!-- <span class="h-2 w-2 rounded-full mr-1" :class="[product?.stock > 10 ? 'bg-green-400' : (product?.stock > 0 ? 'bg-yellow-400' : 'bg-dark'), 'animate-pulse']"></span> -->
+                <AppIcon name="heart" size="md" class="mr-1 text-white/80" />
+                <span class="font-medium text-white/80">20</span>
               </div>
               <div class="absolute inset-0 rounded-full bg-white/10 blur-sm -z-10" :class="[product?.stock > 10 ? 'bg-green-400/20' : (product?.stock > 0 ? 'bg-yellow-400/20' : 'bg-red-400/20')]"></div>
             </div>
             
             <!-- Rating Stars - Modern Style -->
-            <div class="bg-orange-500/80 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center text-md text-white/80">
+            <!-- <div class="bg-orange-500/80 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center text-md text-white/80">
               <div class="flex">
                 <template v-for="i in 5" :key="i">
                   <AppIcon 
@@ -50,7 +51,7 @@
                 </template>
               </div>
               <span class="ml-1 font-medium">{{ product?.rating || 4.5 }}</span>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -60,7 +61,7 @@
       <!-- Product Image - 3/4 of viewport height -->
       <div class="mb-6 h-[75vh] overflow-hidden rounded-2xl shadow-xl relative">
         <img 
-          :src="product?.image || 'https://via.placeholder.com/800x1200/f97316/ffffff?text=Product+Image'" 
+          :src="product?.image || '/images/No-Image.svg'" 
           :alt="product?.name" 
           class="w-full h-full aspect-[4/3] object-cover"
         >
@@ -227,6 +228,7 @@ const route = useRoute();
 const router = useRouter();
 const productStore = useProductStore();
 const { product } = storeToRefs(productStore);
+const { getProductId } = productStore;
 
 // State for mini cart
 const showMiniCart = ref(false);
@@ -237,9 +239,11 @@ const isNavigating = ref(false);
 
 onMounted(async () => {
   const productId = route.params.id;
-  // Fetch product details
-  // product.value = await productStore.getProductById(productId);
   console.log('productId', productId);
+
+  Promise.all([
+    getProductId(productId)
+  ])
   
   // Simulasi mendapatkan jumlah item di keranjang
   // Dalam aplikasi nyata, ini akan berasal dari cart store

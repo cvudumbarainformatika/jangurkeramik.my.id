@@ -1,11 +1,12 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
+import { api } from 'src/boot/axios';
 
 export const useProductStore = defineStore('product', {
   state: () => ({
     viewMode: 'grid',
 
     currentPage:1,
-    itemsPerPage:12,
+    itemsPerPage:20,
     sortBy:'newest',
 
     product:null,
@@ -28,139 +29,21 @@ export const useProductStore = defineStore('product', {
 
     products:
     [
-      {
-        id: 1,
-        name: 'Keramik Lantai Marmer Putih',
-        category: 'Lantai',
-        price: 185000,
-        discountPrice: 165000,
-        discount: 10,
-        rating: 4.5,
-        isNew: true,
-        image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 2,
-        name: 'Keramik Dinding Motif Geometris',
-        category: 'Dinding',
-        price: 210000,
-        discountPrice: null,
-        discount: 0,
-        rating: 4.2,
-        isNew: false,
-        image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 3,
-        name: 'Keramik Kamar Mandi Anti Slip',
-        category: 'Kamar Mandi',
-        price: 175000,
-        discountPrice: 140000,
-        discount: 20,
-        rating: 4.8,
-        isNew: false,
-        image: 'https://images.unsplash.com/photo-1620626011761-996317b8d101?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 4,
-        name: 'Keramik Dapur Modern',
-        category: 'Dapur',
-        price: 195000,
-        discountPrice: null,
-        discount: 0,
-        rating: 4.0,
-        isNew: true,
-        image: 'https://images.unsplash.com/photo-1615529328331-f8917597711f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 5,
-        name: 'Keramik Outdoor Tahan Cuaca',
-        category: 'Outdoor',
-        price: 230000,
-        discountPrice: 207000,
-        discount: 10,
-        rating: 4.6,
-        isNew: false,
-        image: 'https://images.unsplash.com/photo-1618221118493-9cfa1a1c00da?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 6,
-        name: 'Keramik Dekorasi Dinding 3D',
-        category: 'Dekorasi',
-        price: 250000,
-        discountPrice: null,
-        discount: 0,
-        rating: 4.9,
-        isNew: true,
-        image: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 7,
-        name: 'Keramik Lantai Kayu',
-        category: 'Lantai',
-        price: 220000,
-        discountPrice: 198000,
-        discount: 10,
-        rating: 4.3,
-        isNew: false,
-        image: 'https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 8,
-        name: 'Keramik Dinding Tekstur Batu',
-        category: 'Dinding',
-        price: 190000,
-        discountPrice: 152000,
-        discount: 20,
-        rating: 4.1,
-        isNew: false,
-        image: 'https://images.unsplash.com/photo-1560448204-603b3fc33ddb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 9,
-        name: 'Keramik Mozaik Premium',
-        category: 'Dekorasi',
-        price: 280000,
-        discountPrice: 224000,
-        discount: 20,
-        rating: 4.7,
-        isNew: true,
-        image: 'https://images.unsplash.com/photo-1532323544230-7191fd51bc1b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 10,
-        name: 'Keramik Lantai Granit Hitam',
-        category: 'Lantai',
-        price: 320000,
-        discountPrice: null,
-        discount: 0,
-        rating: 4.4,
-        isNew: false,
-        image: 'https://images.unsplash.com/photo-1600566752355-35792bedcfea?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 11,
-        name: 'Keramik Dinding Minimalis',
-        category: 'Dinding',
-        price: 175000,
-        discountPrice: 148750,
-        discount: 15,
-        rating: 4.2,
-        isNew: false,
-        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-      },
-      {
-        id: 12,
-        name: 'Keramik Kamar Mandi Pola Geometris',
-        category: 'Kamar Mandi',
-        price: 195000,
-        discountPrice: null,
-        discount: 0,
-        rating: 4.5,
-        isNew: true,
-        image: 'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
-      }
-    ]
+      // {
+      //   id: 1,
+      //   name: 'Keramik Lantai Marmer Putih',
+      //   category: 'Lantai',
+      //   price: 185000,
+      //   discountPrice: 165000,
+      //   discount: 10,
+      //   rating: 4.5,
+      //   isNew: true,
+      //   image: 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&q=80'
+      // },
+     
+    ],
+    meta:null,
+    loading:false
   }),
 
   getters: {
@@ -239,6 +122,62 @@ export const useProductStore = defineStore('product', {
       };
       this.currentPage = 1;
     },
+
+   
+    async getProducts() {
+      this.loading = true
+      try {
+
+        const params = {
+          params:{
+            currentPage: this.currentPage,
+            itemsPerPage: this.itemsPer,
+            sortBy:this.sortBy,
+            filters:this.filters,
+            sortOptions:this.sortOptions
+          }
+        }
+
+
+        const response = await api.get(`api/v2/product/get-products`, params);
+
+        console.log(response.data);
+        this.meta = response.data?.meta || null;
+
+        console.log('meta',this.meta);
+
+        const products = response.data?.data?.data || [];
+
+
+        console.log('products',products);
+
+
+        this.products = products;
+
+        this.loading=false
+
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        this.product = null; // Set to null if there's an error
+        this.loading = false
+      }
+    },
+
+    async getProductId(id){
+      this.loading = true
+      try {
+        const resp = await api.get(`api/v2/product/by/${id}`);
+        console.log('resp', resp);
+        const {data} = resp
+        this.product = data
+        
+      } catch (error) {
+        console.log('error', error);
+        
+      } finally {
+        this.loading = false
+      }
+    }
     
   }
 })

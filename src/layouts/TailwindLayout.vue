@@ -17,7 +17,7 @@
     </main>
     
     <!-- Bottom Navigation -->
-    <AppBottomNavigation v-if="isMobile" />
+    <AppBottomNavigation v-if="isMobile && isBottomActive" />
   </div>
 </template>
 
@@ -27,6 +27,19 @@ import { useRouter, useRoute } from 'vue-router';
 import BackgroundDecorator from 'src/components/ui/BackgroundDecorator.vue';
  
 import AppBottomNavigation from 'src/components/organisms/AppBottomNavigation.vue';
+import { useAuthStore } from 'src/stores/auth-store';
+
+const auth = useAuthStore();
+
+
+
+const checkAuth = async () => {
+  try {
+    await auth.checkAuth();
+  } catch (error) {
+    console.error('Auth check error:', error);
+  }
+};
 
 // eslint-disable-next-line no-unused-vars
 const router = useRouter();
@@ -34,6 +47,8 @@ const route = useRoute();
 
 // Deteksi mobile
 const isMobile = ref(false);
+const isBottomActive = ref(true);
+const arrActive = ref(['/', '/categories'])
 // Untuk menyimpan riwayat navigasi
 const routeHistory = ref([]);
 // Arah navigasi (forward atau backward)
@@ -55,6 +70,16 @@ function getTransitionName() {
 
 // Watch perubahan route untuk mendeteksi arah navigasi
 watch(() => route.fullPath, (newPath) => {
+
+  console.log('route wtch', newPath);
+
+  if (!arrActive.value.includes(newPath)) {
+    isBottomActive.value = false;
+  } else {
+    isBottomActive.value = true;
+  }
+  
+
   // Jika riwayat kosong, ini adalah navigasi pertama
   if (routeHistory.value.length === 0) {
     routeHistory.value.push(newPath);
@@ -76,9 +101,17 @@ watch(() => route.fullPath, (newPath) => {
   }
 }, { immediate: true });
 
+
+
+
 onMounted(() => {
+
+
+
   checkMobile();
   window.addEventListener('resize', checkMobile);
+
+  checkAuth();
 });
 
 onUnmounted(() => {

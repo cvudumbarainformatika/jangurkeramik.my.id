@@ -40,31 +40,44 @@
     
     <!-- Products Grid -->
     <div :class="[
-      viewMode === 'grid' 
-        ? '!grid !grid-cols-2 sm:!grid-cols-2 md:!grid-cols-3 lg:!grid-cols-3 xl:!grid-cols-3 2xl:!grid-cols-4 gap-4' 
+      viewMode === 'grid'
+        ? '!grid !grid-cols-2 sm:!grid-cols-2 md:!grid-cols-3 lg:!grid-cols-3 xl:!grid-cols-3 2xl:!grid-cols-4 gap-2 md:gap-4'
         : 'space-y-4'
     ]">
-    <!-- <div class="grid grid-flow-col grid-rows-4 gap-4"> -->
-      <template v-if="products?.length > 0">
-        <AppProductCard 
-          v-for="product in products" 
-          :key="product.id" 
-          :product="product"
-          :view-mode="viewMode"
-          @view-product="emit('view-product', $event)"
-        />
+      <!-- <div class="grid grid-flow-col grid-rows-4 gap-4"> -->
+      <template v-if="loading">
+        <div v-for="i in 6" :key="i" class="animate-pulse">
+          <div class="bg-gray-200 rounded-xl shadow-md overflow-hidden">
+            <div class="aspect-[4/3] bg-gray-300"></div>
+            <div class="p-4">
+              <div class="h-4 bg-gray-300 rounded w-3/4 mb-2"></div>
+              <div class="h-3 bg-gray-300 rounded w-1/2"></div>
+            </div>
+          </div>
+        </div>
       </template>
-      <div v-else class="col-span-full py-16 text-center">
-        <AppIcon name="search-x" size="xl" class="mx-auto mb-4 text-gray-400" />
-        <h3 class="text-xl font-semibold text-gray-700 mb-2">Tidak ada produk ditemukan</h3>
-        <p class="text-gray-500 mb-6">Coba ubah filter atau kata kunci pencarian Anda</p>
-        <button 
-          @click="$emit('clear-all-filters')" 
-          class="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
-        >
-          Reset Filter
-        </button>
-      </div>
+      <template v-else>
+        <template v-if="products?.length > 0">
+          <AppProductCard
+            v-for="product in products"
+            :key="product.id"
+            :product="product"
+            :view-mode="viewMode"
+            @view-product="emit('view-product', $event)"
+          />
+        </template>
+        <div v-else class="col-span-full py-16 text-center">
+          <AppIcon name="search-x" size="xl" class="mx-auto mb-4 text-gray-400" />
+          <h3 class="text-xl font-semibold text-gray-700 mb-2">Tidak ada produk ditemukan</h3>
+          <p class="text-gray-500 mb-6">Coba ubah filter atau kata kunci pencarian Anda</p>
+          <button
+            @click="$emit('clear-all-filters')"
+            class="px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+          >
+            Reset Filter
+          </button>
+        </div>
+      </template>
     </div>
     
     <!-- Pagination -->
@@ -148,6 +161,10 @@ const props = defineProps({
   totalPages: {
     type: Number,
     default: 1
+  },
+  loading:{
+    type:Boolean,
+    default:false
   }
 });
 

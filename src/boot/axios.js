@@ -26,11 +26,10 @@ export default defineBoot(({ app, store }) => {
       config.headers['X-XSRF-TOKEN'] = csrfToken; // Laravel menggunakan X-XSRF-TOKEN
     }
     
-    // Tambahkan SameSite attribute untuk cookies jika diperlukan
-    // Ini membantu browser mengetahui kapan mengirim cookies
-    if (!config.headers.Cookie && document.cookie) {
-      config.headers.Cookie = document.cookie;
-    }
+    // HAPUS: Jangan mencoba mengatur header Cookie secara manual
+    // if (!config.headers.Cookie && document.cookie) {
+    //   config.headers.Cookie = document.cookie;
+    // }
     
     return config;
   });

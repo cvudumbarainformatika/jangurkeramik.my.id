@@ -5,12 +5,12 @@
       <div class="mb-4">
         <div v-if="user && user.avatar && !avatarError" class="relative">
           <img 
-            :src="user.avatar" 
+            :src="optimizedAvatarUrl" 
             :alt="user.nama || user.name" 
             class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
             @error="handleAvatarError"
             loading="eager"
-            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
           />
           <div class="absolute bottom-0 right-0 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
         </div>
@@ -82,7 +82,7 @@
 </template>
 
 <script setup>
-import { defineAsyncComponent, ref, onMounted } from 'vue';
+import { defineAsyncComponent, ref, onMounted, computed } from 'vue';
 
 const AppIcon = defineAsyncComponent(() => 
   import('../../atoms/AppIcon.vue')
@@ -98,6 +98,26 @@ const emit = defineEmits(['logout', 'avatar-error']);
 // State untuk melacak error avatar
 const avatarError = ref(false);
 
+// Computed property untuk menentukan apakah avatar dari Google
+const isGoogleAvatar = computed(() => {
+  return props.user?.avatar?.includes('googleusercontent.com');
+});
+
+// Computed property untuk URL avatar yang dioptimalkan
+const optimizedAvatarUrl = computed(() => {
+  if (!props.user?.avatar) return null;
+  
+  let url = props.user.avatar;
+
+  if (isGoogleAvatar.value) {
+    url = url.replace('=s96-c', '=s64-c');
+    // Tambah timestamp hanya jika sudah ada tanda `?`, untuk valid URL
+    url += (url.includes('?') ? '&' : '?') + `t=${Date.now() % 1000000}`;
+  }
+
+  return url;
+});
+
 // Handler untuk error loading avatar
 const handleAvatarError = (event) => {
   console.error('Error loading avatar image:', event);
@@ -109,8 +129,6 @@ const handleAvatarError = (event) => {
 // Validasi URL avatar saat komponen dimount
 onMounted(() => {
   // Jika user memiliki avatar, validasi URL
-  console.log('props.user', props.user);
-  
   if (props.user && props.user.avatar) {
     // Cek apakah URL valid
     const img = new Image();
@@ -119,7 +137,8 @@ onMounted(() => {
       avatarError.value = true;
       emit('avatar-error', { target: img });
     };
-    img.src = props.user.avatar;
+    // Gunakan URL yang dioptimalkan
+    img.src = optimizedAvatarUrl.value;
   }
 });
 </script>

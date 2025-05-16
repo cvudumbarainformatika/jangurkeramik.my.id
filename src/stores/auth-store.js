@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { api, refreshCsrfToken } from 'src/boot/axios';
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -13,32 +14,32 @@ export const useAuthStore = defineStore('auth', {
   },
   
   actions: {
-    async login() {
-      try {
-        this.loading = true;
-        this.error = null;
+    // async login() {
+    //   try {
+    //     this.loading = true;
+    //     this.error = null;
         
-        // Simulasi login API call
-        // Dalam implementasi nyata, ganti dengan panggilan API sebenarnya
-        await new Promise(resolve => setTimeout(resolve, 1000));
+    //     // Simulasi login API call
+    //     // Dalam implementasi nyata, ganti dengan panggilan API sebenarnya
+    //     await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Simulasi data user
-        this.user = {
-          id: 1,
-          name: 'John Doe',
-          email: 'john.doe@example.com',
-          role: 'customer'
-        };
-        this.token = 'sample-jwt-token';
+    //     // Simulasi data user
+    //     this.user = {
+    //       id: 1,
+    //       name: 'John Doe',
+    //       email: 'john.doe@example.com',
+    //       role: 'customer'
+    //     };
+    //     this.token = 'sample-jwt-token';
         
-        return true;
-      } catch (error) {
-        this.error = error.message || 'Login failed';
-        return false;
-      } finally {
-        this.loading = false;
-      }
-    },
+    //     return true;
+    //   } catch (error) {
+    //     this.error = error.message || 'Login failed';
+    //     return false;
+    //   } finally {
+    //     this.loading = false;
+    //   }
+    // },
     
     async register() {
       try {
@@ -60,18 +61,31 @@ export const useAuthStore = defineStore('auth', {
     
     async logout() {
       try {
+        this.loading = true;
+        
         // Jika pengguna sudah login, panggil API logout
         if (this.token) {
-          // Import api dari boot/axios
-          const { api } = await import('src/boot/axios');
-          
-          // Panggil endpoint logout sesuai dengan dokumentasi backend
-          await api.post('api/v2/auth/email/logout');
-          
-          // Hapus data dari state lokal
-          this.user = null;
-          this.token = null;
+          try {
+            // Refresh CSRF token sebelum logout
+            await refreshCsrfToken();
+            
+            // Panggil endpoint logout sesuai dengan dokumentasi backend
+            await api.post('api/v2/auth/email/logout');
+            console.log('Logout API call berhasil');
+          } catch (apiError) {
+            // Tangani error API tapi tetap lanjutkan proses logout lokal
+            console.error('Logout API error:', apiError.message || apiError);
+            // Jika error bukan 401, log error lengkap
+            if (!apiError.response || apiError.response.status !== 401) {
+              console.error('Detail error:', apiError);
+            }
+          }
         }
+        
+        // Hapus data dari state lokal
+        this.user = null;
+        this.token = null;
+        
         return true;
       } catch (error) {
         console.error('Logout error:', error);
@@ -80,6 +94,8 @@ export const useAuthStore = defineStore('auth', {
         this.user = null;
         this.token = null;
         return false;
+      } finally {
+        this.loading = false;
       }
     },
     
@@ -89,7 +105,71 @@ export const useAuthStore = defineStore('auth', {
       return true;
     },
     
-    // Tidak perlu lagi initAuth karena state akan dimuat secara otomatis
+    // Tambahkan fungsi refreshToken
+    async refreshToken() {
+      try {
+        this.loading = true;
+        
+        // Refresh CSRF token terlebih dahulu
+        await refreshCsrfToken();
+        
+        // Panggil endpoint refresh token
+        const response = await api.post('api/v2/auth/refresh');
+        
+        if (response.data.success) {
+          // Update token dan user jika perlu
+          this.token = response.data.token;
+          if (response.data.user) {
+            this.user = response.data.user;
+          }
+          return true;
+        } else {
+          throw new Error(response.data.message || 'Failed to refresh token');
+        }
+      } catch (error) {
+        console.error('Token refresh error:', error);
+        // Jika refresh gagal, hapus data lokal
+        this.user = null;
+        this.token = null;
+        return false;
+      } finally {
+        this.loading = false;
+      }
+    },
+    
+    // Fungsi untuk memeriksa status autentikasi
+    async checkAuth() {
+      try {
+        // Jika tidak ada token, user tidak terautentikasi
+        if (!this.token) return false;
+        
+        // Panggil endpoint untuk memeriksa token
+        const response = await api.get('api/v2/auth/me');
+        console.log('Auth check response:', response);
+        
+        // Jika token valid, perbarui data user jika ada
+        if (response.data.success) {
+
+          // console.log('Auth check response:', response.data);
+
+          if (response.data.user) {
+            this.user = response.data.user;
+          }
+          return true;
+        } else {
+          // Jika token tidak valid, hapus data lokal
+          this.user = null;
+          this.token = null;
+          return false;
+        }
+      } catch (error) {
+        console.error('Auth check error:', error);
+        // Jika terjadi error, hapus data lokal
+        this.user = null;
+        this.token = null;
+        return false;
+      }
+    }
   },
   
   // Konfigurasi persistence

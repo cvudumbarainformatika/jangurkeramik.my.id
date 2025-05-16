@@ -8,14 +8,15 @@
       'relative overflow-hidden cursor-pointer',
       viewMode === 'grid' ? 'h-auto' : 'w-1/3'
     ]">
-      <img 
-        :src="product?.image" 
-        :alt="product?.name" 
+      <img
+        :src="product?.image || '/images/No-Image.svg'"
+        :alt="product?.name"
         :class="[
           'w-full object-cover transition-transform duration-500 group-hover:scale-110',
-          viewMode === 'grid' ? ' aspect-[4/3]' : 'h-56'
+          viewMode === 'grid' ? product.image? ' aspect-[4/3]': 'aspect-[1/1]' : 'h-56'
         ]"
-      >
+      />
+
       
       <!-- Badges -->
       <div class="absolute top-2 left-2 flex flex-col gap-1">
@@ -46,13 +47,13 @@
       <div class="mb-1 flex items-center">
         <span class="text-xs text-gray-500 truncate overflow-hidden whitespace-nowrap">{{ product?.category }}</span>
         <div class="ml-auto flex">
-          <AppIcon 
+          <!-- <AppIcon 
             v-for="i in 5" 
             :key="i" 
             :name="i <= Math.floor(product?.rating) ? 'star-filled' : 'star'" 
             size="md" 
             class="text-orange-400"
-          />
+          /> -->
         </div>
       </div>
       
@@ -62,14 +63,14 @@
       ]">
         <div :class="[
           'font-semibold group-hover:text-orange-500 transition-colors',
-          viewMode === 'grid' ? 'text-base xs:text-sm sm:text-sm md:text-md lg:text-lg xl:text-xl line-clamp-2' : 'text-xl'
+          viewMode === 'grid' ? 'text-md xs:text-sm sm:text-sm md:text-md lg:text-lg xl:text-xl line-clamp-2' : 'text-lg'
         ]">
           {{ product?.name }}
         </div>
       </div>
       
       <p v-if="viewMode === 'list'" class="text-gray-600 mb-4 line-clamp-3">
-        {{ product?.description || 'Keramik berkualitas tinggi dengan desain modern yang cocok untuk berbagai ruangan.' }}
+        {{ product?.namagabung || 'Product berkualitas tinggi dengan desain modern yang cocok untuk berbagai ruangan.' }}
       </p>
       
       <!-- Spacer to push price and button to bottom -->
@@ -95,7 +96,7 @@
 
 <script setup>
 import { defineProps } from 'vue';
-import AppIcon from '../atoms/AppIcon.vue';
+// import AppIcon from '../atoms/AppIcon.vue';
 import AppIconButton from '../atoms/AppIconButton.vue';
 
 defineProps({

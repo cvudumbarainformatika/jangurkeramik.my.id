@@ -15,7 +15,7 @@
     </AppNavbar>
 
     <!-- product list session -->
-    <section class="md:py-14 xs:py-8  px-4 product-list-session" ref="productListRef">
+    <section class="md:py-14 xs:py-8 px-2 md:px-4 product-list-session" ref="productListRef">
       <div class="container mx-auto">
         <ProductListTemplate 
           pageTitle="Produk Unggulan"
@@ -261,6 +261,12 @@ function throttle(fn, delay) {
 }
 
 onMounted(() => {
+
+  Promise.all([
+    productStore.getProducts(),
+  ])
+
+
   scrollHandler = throttle(() => {
     checkPosition()
   }, 50) // << throttle interval di sini (ms)

@@ -23,7 +23,7 @@
         <div class="md:w-1/2 relative group">
           <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <img 
-            :src="product?.image" 
+            :src="product?.image || '/images/No-Image.svg'" 
             :alt="product?.name" 
             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           >
