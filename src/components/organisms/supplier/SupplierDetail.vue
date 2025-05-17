@@ -1,72 +1,53 @@
 <template>
   <div class="flex flex-col">
     <!-- Header with back button -->
-    <div class="flex items-center mb-4">
-      <button 
+    <div class="flex items-center p-2">
+      <!-- <button 
         @click="$emit('back')"
         class="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 text-primary"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
-      </button>
-      <h2 class="text-xl font-medium ml-2">Detail Supplier</h2>
+      </button> -->
+      <div class="text-xl font-medium ml-2">Detail Supplier</div>
     </div>
 
     <!-- Supplier Header -->
     <div class="border border-gray-200 rounded-lg p-4 mb-4">
-      <div class="flex flex-col md:flex-row items-start">
-        <div class="relative mb-4 md:mb-0">
+      <div class="flex flex-row items-start gap-4">
+        <div class="relative mb-4">
           <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-            <img :src="supplier.logo" :alt="supplier.name" class="object-cover w-full h-full" />
+            <img :src="supplier?.logo" :alt="supplier.name" class="object-cover w-full h-full" />
           </div>
-          <div 
-            v-if="supplier.isOfficial" 
-            class="absolute -bottom-2 -right-2 bg-primary text-white rounded-full p-1.5"
-          >
+          
+          <div class="absolute -bottom-0 -right-0 bg-primary text-white rounded-full p-1.5">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
             </svg>
           </div>
+
+          
         </div>
-        <div class="md:ml-6 flex-1">
+        <div class="flex-1 relative">
           <div class="flex items-center">
-            <h3 class="text-2xl font-medium text-gray-900">{{ supplier.name }}</h3>
-            <span 
-              v-if="supplier.isOfficial" 
-              class="ml-2 bg-primary text-white text-xs px-2 py-0.5 rounded-full"
-            >
-              Supplier Resmi
-            </span>
+            <div class="text-xl font-medium text-gray-900">Nama Supplier</div>
+            
           </div>
-          <div class="flex items-center mt-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-            <span class="ml-1 text-lg font-medium">{{ supplier.rating }}</span>
-            <span class="ml-1 text-gray-500">({{ supplier.reviewCount }} ulasan)</span>
-          </div>
+          
           <div class="mt-2 text-gray-700">
+           
             <div class="flex items-center mt-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-              </svg>
-              <span>{{ supplier.fullAddress || supplier.location }}</span>
+              <AppIcon name="phone" size="sm" class="text-gray-500" />
+              <span class="ml-2">{{ supplier?.phone || '(021) 1234-5678' }}</span>
             </div>
-            <div class="flex items-center mt-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-              </svg>
-              <span>{{ supplier.phone || '(021) 1234-5678' }}</span>
-            </div>
-            <div class="flex items-center mt-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-              </svg>
-              <span>{{ supplier.email || 'contact@supplier.co.id' }}</span>
-            </div>
+            
+            
           </div>
+          <div class="absolute -bottom-10 bg-primary text-white text-xs px-2 py-0.5 rounded-full" >
+              Supplier Resmi
+            </div>
+          
         </div>
       </div>
     </div>
@@ -85,7 +66,7 @@
         >
           Informasi
         </button>
-        <button 
+        <!-- <button 
           @click="activeTab = 'products'"
           :class="[
             'py-2 px-4 text-center border-b-2 font-medium text-sm',
@@ -95,7 +76,7 @@
           ]"
         >
           Produk
-        </button>
+        </button> -->
         <button 
           @click="activeTab = 'reviews'"
           :class="[
@@ -107,7 +88,7 @@
         >
           Ulasan
         </button>
-        <button 
+        <!-- <button 
           @click="activeTab = 'shipping'"
           :class="[
             'py-2 px-4 text-center border-b-2 font-medium text-sm',
@@ -117,7 +98,7 @@
           ]"
         >
           Pengiriman
-        </button>
+        </button> -->
       </nav>
     </div>
 
@@ -152,7 +133,7 @@
       </div>
 
       <!-- Products Tab -->
-      <div v-if="activeTab === 'products'">
+      <!-- <div v-if="activeTab === 'products'">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div 
             v-for="product in supplier.products || []" 
@@ -179,7 +160,7 @@
           </svg>
           <p class="text-gray-500 mt-4 text-center">Daftar produk belum tersedia.</p>
         </div>
-      </div>
+      </div> -->
 
       <!-- Reviews Tab -->
       <div v-if="activeTab === 'reviews'">
@@ -232,7 +213,7 @@
       </div>
 
       <!-- Shipping Tab -->
-      <div v-if="activeTab === 'shipping'">
+      <!-- <div v-if="activeTab === 'shipping'">
         <div class="border border-gray-200 rounded-lg p-4">
           <h4 class="text-lg font-medium mb-2">Informasi Pengiriman</h4>
           <div class="text-gray-700 mb-4">
@@ -270,12 +251,18 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
+
+
+
+
+    
   </div>
 </template>
 
 <script setup>
+import AppIcon from 'src/components/atoms/AppIcon.vue';
 import { ref } from 'vue';
 
 // eslint-disable-next-line no-unused-vars
@@ -291,20 +278,20 @@ defineEmits(['back']);
 const activeTab = ref('info');
 
 // Default values
-const defaultShippingOptions = [
-  { name: 'Reguler', estimatedTime: '2-3 hari', cost: 150000 },
-  { name: 'Express', estimatedTime: '1 hari', cost: 250000 },
-  { name: 'Ekonomi', estimatedTime: '3-5 hari', cost: 100000 }
-];
+// const defaultShippingOptions = [
+//   { name: 'Reguler', estimatedTime: '2-3 hari', cost: 150000 },
+//   { name: 'Express', estimatedTime: '1 hari', cost: 250000 },
+//   { name: 'Ekonomi', estimatedTime: '3-5 hari', cost: 100000 }
+// ];
 
-const defaultCoverageAreas = ['Jakarta', 'Bandung', 'Surabaya', 'Semarang', 'Yogyakarta', 'Medan'];
+// const defaultCoverageAreas = ['Jakarta', 'Bandung', 'Surabaya', 'Semarang', 'Yogyakarta', 'Medan'];
 
 // Format price to IDR
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('id-ID', {
-    style: 'currency',
-    currency: 'IDR',
-    minimumFractionDigits: 0
-  }).format(price);
-};
+// const formatPrice = (price) => {
+//   return new Intl.NumberFormat('id-ID', {
+//     style: 'currency',
+//     currency: 'IDR',
+//     minimumFractionDigits: 0
+//   }).format(price);
+// };
 </script>

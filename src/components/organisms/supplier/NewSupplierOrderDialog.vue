@@ -6,7 +6,7 @@
     height="60vh"
   >
     <template #body>
-      <div class="flex flex-col p-4 bg-gray-200 h-full">
+      <div class="flex flex-col p-4 bg-gray-200">
         <div class="bg-white shadow-sm rounded-lg">
           <div class="flex flex-row items-start bg-blue-50 p-4 rounded-lg shadow-sm">
             <div class="flex-shrink-0">
@@ -26,32 +26,54 @@
           <AutocompleteInput
             v-model="searchQuery"
             :options="supplierOptions"
+            option-label="label"
+            option-value="id"
+            :return-value-only="false"
             placeholder="Cari supplier berdasarkan nama"
             @update:model-value="(value) => {
-              console.log('Selected supplier:', value);
-              
+              // console.log('Selected supplier:', value);
+              selectedSupplier = value;
             }"
           />
 
 
-           <!-- Supplier List or Detail -->
+           
+        </div>
+
+          <div class="mt-2">
+            <!-- Supplier List or Detail -->
             <SupplierDetail
               v-if="selectedSupplier"
               :supplier="selectedSupplier"
               @back="selectedSupplier = null"
             />
+          </div>
+
+          
         </div>
 
-
-
-
-        </div>
+      <div class="mb-[300px]"></div>
       </div>
+      
+      
+      <div
+      v-if="selectedSupplier"
+      class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg"
+    >
+      <div class="flex justify-between items-center ">
+
+        <button
+          class="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full hover:shadow-lg hover:from-orange-600 hover:to-orange-700 active:scale-95 transition-all"
+        >
+          Checkout Order
+        </button>
+      </div>
+    </div>
+    
+    
     </template>
 
-    <template #footer>
-      <button @click="close" class="btn btn-primary">Tutup</button>
-    </template>
+    
   </AppDialog>
 </template>
 

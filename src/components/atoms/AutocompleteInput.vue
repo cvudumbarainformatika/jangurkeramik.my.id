@@ -24,25 +24,23 @@
         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.53-10.47a.75.75 0 00-1.06-1.06L10 8.94 7.53 6.47a.75.75 0 10-1.06 1.06L8.94 10l-2.47 2.47a.75.75 0 101.06 1.06L10 11.06l2.47 2.47a.75.75 0 101.06-1.06L11.06 10l2.47-2.47z" clip-rule="evenodd"/>
       </svg>
     </button>
-    <!-- Dropdown Slot -->
     <slot name="dropdown" 
       v-if="showDropdown && $slots.dropdown" 
       :options="filteredOptions" 
       :select="selectOption" 
       :noResult="filteredOptions.length === 0"
     />
-    <!-- Default Dropdown -->
     <ul
       v-else-if="showDropdown"
       class="absolute left-0 right-0 bg-white border border-gray-200 rounded-lg mt-1 z-10 max-h-48 overflow-auto shadow"
     >
       <li
         v-for="option in filteredOptions"
-        :key="option.id || option.label || option"
+        :key="option[optionValue] ?? option"
         @mousedown.prevent="selectOption(option)"
         class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
       >
-        {{ option.label || option }}
+        {{ option[optionLabel] ?? option }}
       </li>
       <li v-if="filteredOptions.length === 0" class="px-4 py-2 text-gray-400 cursor-default">
         No Result
@@ -56,7 +54,7 @@ import { ref, computed, watch } from 'vue'
 import AppIcon from 'components/atoms/AppIcon.vue'
 
 const props = defineProps({
-  modelValue: [String, Object],
+  modelValue: [String, Number, Object],
   options: {
     type: Array,
     default: () => []
@@ -69,44 +67,54 @@ const props = defineProps({
     type: Number,
     default: 1
   },
-  returnObject: {
+  optionLabel: {
+    type: String,
+    default: 'label'
+  },
+  optionValue: {
+    type: String,
+    default: 'id'
+  },
+  returnValueOnly: {
     type: Boolean,
-    default: false // jika true, emit object, jika false emit label
+    default: false // jika true, emit hanya value (id), jika false emit object
   }
 })
 
 const emit = defineEmits(['update:modelValue'])
 
-const inputValue = ref(typeof props.modelValue === 'object' && props.modelValue !== null
-  ? props.modelValue.label || ''
-  : props.modelValue || ''
-)
+const inputValue = ref('')
 const showDropdown = ref(false)
 
+// Sinkronisasi inputValue dengan modelValue
 watch(() => props.modelValue, (val) => {
   if (typeof val === 'object' && val !== null) {
-    inputValue.value = val.label || ''
+    inputValue.value = val[props.optionLabel] || ''
+  } else if (val !== null && val !== undefined) {
+    // Jika value saja (id), cari object-nya
+    const found = props.options.find(opt => opt[props.optionValue] === val)
+    inputValue.value = found ? found[props.optionLabel] : ''
   } else {
-    inputValue.value = val || ''
+    inputValue.value = ''
   }
-})
+}, { immediate: true })
 
 const filteredOptions = computed(() => {
   if (inputValue.value.length < props.minChars) return []
   return props.options.filter(opt =>
-    (opt.label || opt).toLowerCase().includes(inputValue.value.toLowerCase())
+    (opt[props.optionLabel] || '').toLowerCase().includes(inputValue.value.toLowerCase())
   )
 })
 
 function selectOption(option) {
-  inputValue.value = option.label || option
-  emit('update:modelValue', props.returnObject ? option : (option.label || option))
+  inputValue.value = option[props.optionLabel] || ''
+  emit('update:modelValue', props.returnValueOnly ? option[props.optionValue] : option)
   showDropdown.value = false
 }
 
 function clear() {
   inputValue.value = ''
-  emit('update:modelValue', props.returnObject ? null : '')
+  emit('update:modelValue', props.returnValueOnly ? null : null)
   showDropdown.value = false
 }
 
