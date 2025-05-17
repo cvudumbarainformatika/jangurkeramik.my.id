@@ -25,8 +25,8 @@
         <div class="bg-white shadow-sm rounded-lg p-4">
           <AutocompleteInput
             v-model="searchQuery"
-            :options="supplierOptions"
-            option-label="label"
+            :options="sales"
+            option-label="nama"
             option-value="id"
             :return-value-only="false"
             placeholder="Cari supplier berdasarkan nama"
@@ -81,6 +81,8 @@
 import { computed, defineAsyncComponent, ref } from 'vue';
 import AppIcon from 'components/atoms/AppIcon.vue';
 import AutocompleteInput from 'components/atoms/AutocompleteInput.vue';
+import { useMasterStore } from 'src/stores/master-store';
+import { storeToRefs } from 'pinia';
 const AppDialog = defineAsyncComponent(()=> import('components/atoms/AppDialog.vue'));
 const SupplierDetail = defineAsyncComponent(()=> import('components/organisms/supplier/SupplierDetail.vue'));
 
@@ -92,6 +94,11 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue','close'])
+
+
+const masterStore = useMasterStore()
+
+const { sales } = storeToRefs(masterStore)
 
 const searchQuery = ref('')
 const selectedSupplier = ref(null)
@@ -106,11 +113,5 @@ const close = ()=> {
   isOpen.value=false
   emit('close')
 }
-
-const supplierOptions = [
-  { id: 1, label: 'Supplier A' },
-  { id: 2, label: 'Supplier B' },
-  { id: 3, label: 'Supplier C' }
-]
 
 </script>

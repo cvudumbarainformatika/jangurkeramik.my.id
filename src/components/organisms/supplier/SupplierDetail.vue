@@ -17,8 +17,11 @@
     <div class="border border-gray-200 rounded-lg p-4 mb-4">
       <div class="flex flex-row items-start gap-4">
         <div class="relative mb-4">
-          <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-            <img :src="supplier?.logo" :alt="supplier.name" class="object-cover w-full h-full" />
+          <div class="w-24 h-24 rounded-full flex items-center justify-center overflow-hidden">
+            <!-- <img :src="supplier?.logo" :alt="supplier.name" class="object-cover w-full h-full" /> -->
+             <AppAvatar
+              :user="supplier"
+            />
           </div>
           
           <div class="absolute -bottom-0 -right-0 bg-primary text-white rounded-full p-1.5">
@@ -31,7 +34,7 @@
         </div>
         <div class="flex-1 relative">
           <div class="flex items-center">
-            <div class="text-xl font-medium text-gray-900">Nama Supplier</div>
+            <div class="text-xl font-medium text-gray-900">{{ supplier?.nama }}</div>
             
           </div>
           
@@ -39,7 +42,7 @@
            
             <div class="flex items-center mt-1">
               <AppIcon name="phone" size="sm" class="text-gray-500" />
-              <span class="ml-2">{{ supplier?.phone || '(021) 1234-5678' }}</span>
+              <span class="ml-2">{{ supplier?.nohp || '(021) 1234-5678' }}</span>
             </div>
             
             
@@ -263,7 +266,11 @@
 
 <script setup>
 import AppIcon from 'src/components/atoms/AppIcon.vue';
-import { ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
+
+const AppAvatar = defineAsyncComponent(() => 
+  import('src/components/atoms/AppAvatar.vue')
+);
 
 // eslint-disable-next-line no-unused-vars
 const props = defineProps({

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { api, refreshCsrfToken } from 'src/boot/axios'
 import { useCartStore } from './cart-store'
+import { useMasterStore } from './master-store'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -152,7 +153,11 @@ export const useAuthStore = defineStore('auth', {
 
             // Menambahkan cart user
             const cartStore = useCartStore()
-            cartStore.restoreCartFromServer()
+            const masterStore = useMasterStore()
+            Promise.all([
+              cartStore.restoreCartFromServer(),
+              masterStore.fetchSales(),
+            ])
           }
           return true
         } else {

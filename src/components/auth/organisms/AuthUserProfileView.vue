@@ -90,7 +90,6 @@ const AppIcon = defineAsyncComponent(() =>
 
 const props = defineProps({
   user: Object,
-  userInitials: String
 });
 
 const emit = defineEmits(['logout', 'avatar-error']);
