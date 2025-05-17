@@ -143,20 +143,20 @@ const navItems = computed(() => [
   {
     label: 'Keranjang',
     icon: 'shopping-bag',
-    to: isLoggedIn.value ? '/cart' : '/auth',
+    to: isLoggedIn.value ? '/cart' : '/no-auth',
     badge: isLoggedIn.value ? items.value?.length || 0 : 0,
   },
   {
     label: 'Favorit',
     icon: 'heart',
-    to: isLoggedIn.value ? '/favorites' : '/auth',
+    to: isLoggedIn.value ? '/favorites' : '/no-auth',
     badge: isLoggedIn.value ? 0 : 0,
   },
-  // {
-  //   label: 'Akun',
-  //   icon: 'user',
-  //   to: isLoggedIn.value ? '/profile' : '/auth',
-  // },
+  {
+    label: 'Akun',
+    icon: 'user',
+    to: isLoggedIn.value ? '/profile' : '/no-auth',
+  },
 ])
 </script>
 

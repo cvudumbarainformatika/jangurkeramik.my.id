@@ -18,25 +18,25 @@ const routes = [
 
       // auth
       { path: 'auth/social-callback', component: () => import('pages/AuthSocialCallbackPage.vue') },
-      // { path: 'auth', component: () => import('pages/AuthPage.vue') }
-    ]
+      { path: 'no-auth', component: () => import('pages/NoAuthPage.vue') },
+    ],
   },
-  
+
   {
     path: '/classic',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
-      { path: 'components', component: () => import('pages/ComponentsDemo.vue') }
-    ]
+      { path: 'components', component: () => import('pages/ComponentsDemo.vue') },
+    ],
   },
 
   // Always leave this as last one,
   // but you can also remove it
   {
     path: '/:catchAll(.*)*',
-    component: () => import('pages/ErrorNotFound.vue')
-  }
+    component: () => import('pages/ErrorNotFound.vue'),
+  },
 ]
 
 export default routes
