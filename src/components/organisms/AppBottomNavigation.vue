@@ -1,86 +1,112 @@
 <template>
-  <div class="fixed bottom-0 left-0 right-0 z-50">
-    <!-- Backdrop with glass morphism effect -->
-    <div class="absolute inset-0 bg-white/80 backdrop-blur-xl shadow-[0_-8px_30px_-12px_rgba(0,0,0,0.2)] border-t border-gray-100"></div>
-    
-    <!-- Animated background elements -->
+  <div class="fixed bottom-0 left-0 right-0">
+    <!-- Futuristic glass backdrop with advanced blur effect -->
+    <div
+      class="absolute inset-0 bg-black/40 backdrop-blur-2xl shadow-[0_-8px_40px_-15px_rgba(0,0,0,0.3)] border-t border-white/10"
+    ></div>
+
+    <!-- Advanced background effects -->
     <div class="absolute inset-0 overflow-hidden">
-      <!-- Dynamic gradient background -->
-      <div class="absolute inset-0 bg-gradient-to-r from-blue-50/30 to-indigo-50/30"></div>
-      
-      <!-- Animated gradient circles -->
-      <div class="absolute -bottom-6 left-1/4 w-16 h-16 rounded-full bg-gradient-to-r from-blue-400/10 to-indigo-400/10 blur-xl animate-pulse"></div>
-      <div class="absolute -bottom-4 right-1/4 w-14 h-14 rounded-full bg-gradient-to-r from-orange-400/10 to-pink-400/10 blur-xl animate-pulse-slow"></div>
-      <div class="absolute bottom-10 left-1/2 w-10 h-10 rounded-full bg-gradient-to-r from-green-400/10 to-teal-400/10 blur-xl animate-float"></div>
+      <!-- Modern gradient mesh background -->
+      <div
+        class="absolute inset-0 bg-gradient-to-tr from-slate-900/50 via-slate-800/30 to-slate-900/50"
+      ></div>
+
+      <!-- Futuristic animated elements -->
+      <div class="absolute inset-0">
+        <!-- Animated lines -->
+        <div
+          class="absolute left-0 right-0 h-[1px] bottom-[3.5rem] bg-gradient-to-r from-transparent via-orange-500/30 to-transparent opacity-70 animate-pulse-slow"
+        ></div>
+
+        <!-- Animated particles -->
+        <div
+          class="absolute -bottom-2 left-1/5 w-12 h-12 rounded-full bg-gradient-to-r from-orange-400/5 to-red-400/5 blur-xl animate-float-slow"
+        ></div>
+        <div
+          class="absolute -bottom-3 right-1/5 w-10 h-10 rounded-full bg-gradient-to-r from-indigo-400/5 to-blue-400/5 blur-xl animate-float"
+        ></div>
+
+        <!-- Futuristic glow -->
+        <div
+          class="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-orange-500/0 via-orange-500/30 to-orange-500/0 blur-sm animate-pulse-slow"
+        ></div>
+      </div>
     </div>
-    
-    <!-- Navigation items -->
-    <nav class="relative flex items-center justify-around h-14 px-2">
-      <router-link 
-        v-for="(item, index) in navItems" 
+
+    <!-- Navigation items - Redesigned with futuristic approach -->
+    <nav class="relative flex items-center justify-around h-16 px-2">
+      <router-link
+        v-for="(item, index) in navItems"
         :key="index"
         :to="item.to"
         custom
         v-slot="{ navigate, href, isExactActive }"
       >
-        <a 
+        <a
           :href="href"
           @click="navigate"
-          class="group flex items-center justify-center w-14 h-14 relative"
+          class="group flex flex-col items-center justify-center w-16 h-16 relative"
           :aria-label="item.label"
         >
-          <!-- Active indicator with animated gradient border -->
-          <div 
-            v-if="isExactActive" 
-            class="absolute inset-0 bg-gradient-to-b from-gray-50 to-white rounded-full shadow-sm overflow-hidden"
-          >
-            <div class="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-500 animate-gradient-x"></div>
+          <!-- Futuristic active indicator -->
+          <div v-if="isExactActive" class="absolute inset-0 flex items-center justify-center">
+            <!-- Advanced active state effect -->
+            <div
+              class="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-orange-400 via-orange-500 to-orange-400 rounded-b-lg animate-gradient-x"
+            ></div>
+            <div
+              class="w-full h-full rounded-2xl bg-gradient-to-b from-white/10 to-transparent dark:from-white/5 opacity-70"
+            ></div>
           </div>
-          
-          <!-- Icon container with animations -->
-          <div 
+
+          <!-- Icon container with neo-futuristic design -->
+          <div
             :class="[
-              'relative z-10 flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 group-hover:scale-110',
-              isExactActive ? 'text-blue-600' : 'text-gray-500 group-hover:text-gray-700'
+              'relative z-10 flex items-center justify-center transition-all duration-300 p-2',
+              isExactActive ? 'text-orange-500' : 'text-white group-hover:text-white/80',
             ]"
           >
-            <!-- Animated background for active state -->
-            <div 
-              v-if="isExactActive" 
-              class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-indigo-500/10 rounded-full"
+            <!-- Advanced glow effect for active state -->
+            <div
+              v-if="isExactActive"
+              class="absolute -inset-3 bg-orange-500/10 rounded-xl blur-lg opacity-70 animate-pulse-slow"
             ></div>
-            
-            <!-- Animated glow effect for active state -->
-            <div 
-              v-if="isExactActive" 
-              class="absolute inset-0 bg-blue-400/20 rounded-full blur-md opacity-70 animate-pulse"
-            ></div>
-            
-            <!-- Icon with spring animation on active -->
-            <AppIcon 
-              :name="item.icon" 
-              :size="isExactActive ? 'lg' : 'md'" 
-              :class="[
-                'transition-all duration-300',
-                isExactActive ? 'scale-110 animate-spring' : 'group-hover:scale-110'
-              ]"
+
+            <!-- Icon with advanced animation -->
+            <AppIcon
+              :name="item.icon"
+              :size="isExactActive ? 'lg' : 'md'"
+              :color="isExactActive ? 'orange' : 'white'"
+              :customClass="
+                isExactActive
+                  ? 'scale-105 animate-float-micro transition-all duration-300'
+                  : 'group-hover:scale-105 transition-all duration-300'
+              "
             />
-            
-            <!-- Notification badge with bounce animation -->
-            <div 
-              v-if="item.badge && item.badge > 0" 
-              class="absolute -top-1 -right-1 flex items-center justify-center min-w-5 h-5 px-1 bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-medium rounded-full border border-white shadow-sm animate-bounce-short"
+
+            <!-- Modern notification badge -->
+            <div
+              v-if="item.badge && item.badge > 0"
+              class="absolute -top-2 -right-2 flex items-center justify-center min-w-5 h-5 px-1.5 bg-gradient-to-br from-orange-500 to-red-500 text-white text-xs font-bold rounded-full shadow-lg shadow-orange-500/20 border border-white/20 animate-pulse-subtle"
             >
               {{ item.badge > 99 ? '99+' : item.badge }}
             </div>
           </div>
-          
-          <!-- Animated dot indicator for active state -->
-          <div 
-            v-if="isExactActive" 
-            class="absolute bottom-1 w-1.5 h-1.5 bg-blue-600 rounded-full"
+
+          <!-- Menu label with futuristic style -->
+          <span
+            :class="[
+              'text-[10px] font-medium mt-0 transition-all duration-300',
+              isExactActive ? 'text-orange-500' : 'text-white group-hover:text-white/80',
+            ]"
           >
-            <div class="absolute inset-0 bg-blue-400 rounded-full animate-ping opacity-75"></div>
+            {{ item.label }}
+          </span>
+
+          <!-- High-tech active indicator -->
+          <div v-if="isExactActive" class="absolute bottom-0 w-1 h-1 bg-orange-500 rounded-full">
+            <div class="absolute inset-0 bg-orange-400 rounded-full animate-ping opacity-75"></div>
           </div>
         </a>
       </router-link>
@@ -89,61 +115,80 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useAuthStore } from 'src/stores/auth-store';
-import AppIcon from '../atoms/AppIcon.vue';
-import { useCartStore } from 'src/stores/cart-store';
-import { storeToRefs } from 'pinia';
+import { computed } from 'vue'
+import { useAuthStore } from 'src/stores/auth-store'
+import AppIcon from '../atoms/AppIcon.vue'
+import { useCartStore } from 'src/stores/cart-store'
+import { storeToRefs } from 'pinia'
 
-const authStore = useAuthStore();
-const isLoggedIn = computed(() => authStore.isLoggedIn);
+const authStore = useAuthStore()
+const isLoggedIn = computed(() => authStore.isLoggedIn)
 
 const cartStore = useCartStore()
 
-const {items} = storeToRefs(cartStore)
+const { items } = storeToRefs(cartStore)
 
 // Navigation items with dynamic badges
 const navItems = computed(() => [
-  { 
-    label: 'Beranda', 
-    icon: 'home', 
-    to: '/' 
+  {
+    label: 'Beranda',
+    icon: 'home',
+    to: '/',
   },
-  { 
-    label: 'Kategori', 
-    icon: 'grid', 
-    to: '/categories'
+  {
+    label: 'Eksplor',
+    icon: 'compass',
+    to: '/categories',
   },
-  { 
-    label: 'Keranjang', 
-    icon: 'shopping-cart', 
+  {
+    label: 'Keranjang',
+    icon: 'shopping-bag',
     to: isLoggedIn.value ? '/cart' : '/auth',
-    badge: isLoggedIn.value ? items.value?.length || 0 : 0 // Example: 3 items in cart
+    badge: isLoggedIn.value ? items.value?.length || 0 : 0,
   },
-  { 
-    label: 'Favorit', 
-    icon: 'heart', 
+  {
+    label: 'Favorit',
+    icon: 'heart',
     to: isLoggedIn.value ? '/favorites' : '/auth',
-    badge: isLoggedIn.value ? 0 : 0 // Example: 5 items in favorites
-  }
-]);
+    badge: isLoggedIn.value ? 0 : 0,
+  },
+  // {
+  //   label: 'Akun',
+  //   icon: 'user',
+  //   to: isLoggedIn.value ? '/profile' : '/auth',
+  // },
+])
 </script>
 
 <style scoped>
-/* Custom animations */
+/* Advanced futuristic animations */
 @keyframes pulse-slow {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.5;
     transform: scale(1);
   }
   50% {
     opacity: 0.8;
-    transform: scale(1.2);
+    transform: scale(1.1);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.05);
   }
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
     opacity: 0.6;
   }
@@ -153,14 +198,25 @@ const navItems = computed(() => [
   }
 }
 
-@keyframes bounce-short {
-  0%, 100% {
-    transform: translateY(0);
-    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0) translateX(-5px);
+    opacity: 0.5;
   }
   50% {
-    transform: translateY(-3px);
-    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    transform: translateY(-15px) translateX(5px);
+    opacity: 0.7;
+  }
+}
+
+@keyframes float-micro {
+  0%,
+  100% {
+    transform: translateY(0) scale(1.1);
+  }
+  50% {
+    transform: translateY(-2px) scale(1.1);
   }
 }
 
@@ -176,28 +232,34 @@ const navItems = computed(() => [
   }
 }
 
-@keyframes spring {
+@keyframes shimmer {
   0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.15);
+    transform: translateX(-100%);
   }
   100% {
-    transform: scale(1.1);
+    transform: translateX(100%);
   }
 }
 
+/* Apply animations */
 .animate-pulse-slow {
-  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s ease-in-out infinite;
 }
 
 .animate-float {
-  animation: float 6s ease-in-out infinite;
+  animation: float 8s ease-in-out infinite;
 }
 
-.animate-bounce-short {
-  animation: bounce-short 1s infinite;
+.animate-float-slow {
+  animation: float-slow 10s ease-in-out infinite;
+}
+
+.animate-float-micro {
+  animation: float-micro 2s ease-in-out infinite;
 }
 
 .animate-gradient-x {
@@ -205,11 +267,11 @@ const navItems = computed(() => [
   background-size: 200% 200%;
 }
 
-.animate-spring {
-  animation: spring 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+.animate-shimmer {
+  animation: shimmer 2s infinite;
 }
 
-/* Ensure minimum width for badge */
+/* Utility classes */
 .min-w-5 {
   min-width: 1.25rem;
 }

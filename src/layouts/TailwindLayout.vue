@@ -6,8 +6,8 @@
     <!-- Main content -->
     <main class="max-w-7xl mx-auto relative z-[0] pt-0 px-0 md:px-4 lg:px-6 pb-16">
       <router-view v-slot="{ Component }">
-        <transition 
-          :name="getTransitionName()" 
+        <transition
+          :name="getTransitionName()"
           mode="out-in"
           :duration="{ enter: 300, leave: 250 }"
         >
@@ -15,108 +15,105 @@
         </transition>
       </router-view>
     </main>
-    
+
     <!-- Bottom Navigation -->
     <AppBottomNavigation v-if="isMobile && isBottomActive" />
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import BackgroundDecorator from 'src/components/ui/BackgroundDecorator.vue';
- 
-import AppBottomNavigation from 'src/components/organisms/AppBottomNavigation.vue';
-import { useAuthStore } from 'src/stores/auth-store';
+import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import BackgroundDecorator from 'src/components/ui/BackgroundDecorator.vue'
 
-const auth = useAuthStore();
+import AppBottomNavigation from 'src/components/organisms/AppBottomNavigation.vue'
+import { useAuthStore } from 'src/stores/auth-store'
 
-
+const auth = useAuthStore()
 
 const checkAuth = async () => {
   try {
-    await auth.checkAuth();
+    await auth.checkAuth()
   } catch (error) {
-    console.error('Auth check error:', error);
+    console.error('Auth check error:', error)
   }
-};
+}
 
 // eslint-disable-next-line no-unused-vars
-const router = useRouter();
-const route = useRoute();
+const router = useRouter()
+const route = useRoute()
 
 // Deteksi mobile
-const isMobile = ref(false);
-const isBottomActive = ref(true);
+const isMobile = ref(false)
+const isBottomActive = ref(true)
 const arrActive = ref(['/', '/categories'])
 // Untuk menyimpan riwayat navigasi
-const routeHistory = ref([]);
+const routeHistory = ref([])
 // Arah navigasi (forward atau backward)
-const navigationDirection = ref('forward');
+const navigationDirection = ref('forward')
 
 function checkMobile() {
-  isMobile.value = window.innerWidth < 768;
+  isMobile.value = window.innerWidth < 768
 }
 
 // Fungsi untuk mendapatkan nama transisi berdasarkan arah navigasi dan device
 function getTransitionName() {
   if (!isMobile.value) {
-    return 'fade'; // Desktop selalu menggunakan fade
+    return 'fade' // Desktop selalu menggunakan fade
   }
-  
+
   // Mobile menggunakan transisi berbeda berdasarkan arah navigasi
-  return navigationDirection.value === 'forward' ? 'ios-page-forward' : 'ios-page-backward';
+  return navigationDirection.value === 'forward' ? 'ios-page-forward' : 'ios-page-backward'
 }
 
 // Watch perubahan route untuk mendeteksi arah navigasi
-watch(() => route.fullPath, (newPath) => {
+watch(
+  () => route.fullPath,
+  (newPath) => {
+    console.log('route wtch', newPath)
 
-  console.log('route wtch', newPath);
+    if (!arrActive.value.includes(newPath)) {
+      isBottomActive.value = false
+    } else {
+      isBottomActive.value = true
+    }
 
-  if (!arrActive.value.includes(newPath)) {
-    isBottomActive.value = false;
-  } else {
-    isBottomActive.value = true;
-  }
-  
+    // Jika riwayat kosong, ini adalah navigasi pertama
+    if (routeHistory.value.length === 0) {
+      routeHistory.value.push(newPath)
+      navigationDirection.value = 'forward'
+      return
+    }
 
-  // Jika riwayat kosong, ini adalah navigasi pertama
-  if (routeHistory.value.length === 0) {
-    routeHistory.value.push(newPath);
-    navigationDirection.value = 'forward';
-    return;
-  }
-  
-  // eslint-disable-next-line no-unused-vars
-  const previousPath = routeHistory.value[routeHistory.value.length - 1];
-  
-  // Cek apakah ini navigasi mundur (kembali)
-  if (routeHistory.value.length > 1 && routeHistory.value[routeHistory.value.length - 2] === newPath) {
-    navigationDirection.value = 'backward';
-    routeHistory.value.pop(); // Hapus path terakhir dari riwayat
-  } else {
-    // Ini adalah navigasi maju
-    navigationDirection.value = 'forward';
-    routeHistory.value.push(newPath);
-  }
-}, { immediate: true });
+    // eslint-disable-next-line no-unused-vars
+    const previousPath = routeHistory.value[routeHistory.value.length - 1]
 
-
-
+    // Cek apakah ini navigasi mundur (kembali)
+    if (
+      routeHistory.value.length > 1 &&
+      routeHistory.value[routeHistory.value.length - 2] === newPath
+    ) {
+      navigationDirection.value = 'backward'
+      routeHistory.value.pop() // Hapus path terakhir dari riwayat
+    } else {
+      // Ini adalah navigasi maju
+      navigationDirection.value = 'forward'
+      routeHistory.value.push(newPath)
+    }
+  },
+  { immediate: true },
+)
 
 onMounted(() => {
+  checkMobile()
+  window.addEventListener('resize', checkMobile)
 
-
-
-  checkMobile();
-  window.addEventListener('resize', checkMobile);
-
-  checkAuth();
-});
+  checkAuth()
+})
 
 onUnmounted(() => {
-  window.removeEventListener('resize', checkMobile);
-});
+  window.removeEventListener('resize', checkMobile)
+})
 </script>
 
 <style>
@@ -228,7 +225,9 @@ onUnmounted(() => {
 /* Background fade transition */
 .bg-fade-enter-active,
 .bg-fade-leave-active {
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
 }
 
 .bg-fade-enter-from {
@@ -244,7 +243,9 @@ onUnmounted(() => {
 /* Wave slide transition */
 .wave-slide-enter-active,
 .wave-slide-leave-active {
-  transition: opacity 0.5s ease, transform 0.5s ease;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
 }
 
 .wave-slide-enter-from {
@@ -260,7 +261,9 @@ onUnmounted(() => {
 /* Circle scale transition */
 .circle-scale-enter-active,
 .circle-scale-leave-active {
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
 }
 
 .circle-scale-enter-from {
