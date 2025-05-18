@@ -104,10 +104,10 @@ function formatRupiah(val) {
   from { opacity: 0; transform: translateY(20px);}
   to { opacity: 1; transform: translateY(0);}
 }
-.text-primary {
+/* .text-primary {
   @apply text-orange-600;
 }
 .bg-primary {
   @apply bg-orange-500;
-}
+} */
 </style>

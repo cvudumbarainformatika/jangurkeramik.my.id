@@ -168,7 +168,7 @@ onMounted(async () => {
   height: 0 !important;
   background: transparent !important;
 }
-.bg-primary {
+/* .bg-primary {
   @apply bg-orange-500;
 }
 .text-primary {
@@ -179,5 +179,5 @@ onMounted(async () => {
 }
 .ring-primary {
   @apply ring-orange-300;
-}
+} */
 </style>

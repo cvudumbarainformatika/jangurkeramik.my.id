@@ -18,6 +18,8 @@
 
     <!-- Bottom Navigation -->
     <AppBottomNavigation v-if="isMobile && isBottomActive" />
+    <!-- Optional: Install Prompt -->
+    <InstallPrompt />
   </div>
 </template>
 
@@ -27,6 +29,7 @@ import { useRouter, useRoute } from 'vue-router'
 import BackgroundDecorator from 'src/components/ui/BackgroundDecorator.vue'
 
 import AppBottomNavigation from 'src/components/organisms/AppBottomNavigation.vue'
+import InstallPrompt from 'src/components/atoms/InstallPrompt.vue'
 import { useAuthStore } from 'src/stores/auth-store'
 
 const auth = useAuthStore()
@@ -104,7 +107,11 @@ watch(
   { immediate: true },
 )
 
+
 onMounted(() => {
+
+
+
   checkMobile()
   window.addEventListener('resize', checkMobile)
 
