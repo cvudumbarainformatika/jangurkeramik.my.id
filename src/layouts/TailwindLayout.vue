@@ -46,7 +46,7 @@ const route = useRoute()
 // Deteksi mobile
 const isMobile = ref(false)
 const isBottomActive = ref(true)
-const arrActive = ref(['/', '/categories'])
+const arrActive = ref(['/', '/categories','/orders'])
 // Untuk menyimpan riwayat navigasi
 const routeHistory = ref([])
 // Arah navigasi (forward atau backward)

@@ -39,7 +39,7 @@ export const useOrderStore = defineStore('order', {
         status_pembayaran: this.status_pembayaran,
         rincians: items.map(item => ({
           barang_id: item.barang_id,
-          qty: item.quantity,
+          jumlah: item.quantity,
           harga: parseFloat(item.price),
           subtotal: parseFloat(item.price) * item.quantity
         }))

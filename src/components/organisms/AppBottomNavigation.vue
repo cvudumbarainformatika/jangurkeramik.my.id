@@ -136,9 +136,9 @@ const navItems = computed(() => [
     to: '/',
   },
   {
-    label: 'Eksplor',
-    icon: 'compass',
-    to: '/categories',
+    label: 'Pesanan',
+    icon: 'clipboard-list', // atau 'package', 'truck', dsb
+    to: isLoggedIn.value ? '/orders' : '/no-auth',
   },
   {
     label: 'Keranjang',
