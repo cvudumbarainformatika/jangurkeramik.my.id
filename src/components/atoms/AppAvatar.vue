@@ -3,7 +3,7 @@
           <img 
             :src="optimizedAvatarUrl" 
             :alt="user?.nama || user?.name" 
-            class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+            class="w-18 h-18 rounded-full object-cover border-4 border-white shadow-lg"
             @error="handleAvatarError"
             loading="eager"
             referrerpolicy="no-referrer"
@@ -12,7 +12,7 @@
         </div>
         <div 
           v-else 
-          class="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg"
+          class="w-18 h-18 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg"
         >
           {{ userInitials }}
         </div>
@@ -33,15 +33,17 @@ const avatarError = ref(false);
 
 // Computed properties
 const userInitials = computed(() => {
-  const nama = (props?.user?.nama || props?.user?.name) ?? '';
+  const nama = (props?.user?.nama || props?.user?.name || '').trim();
   if (!nama) return 'A';
-  
-  return nama
-    .split(' ')
-    .map(name => name[0])
-    .join('')
-    .toUpperCase()
-    .substring(0, 2);
+
+  const parts = nama.split(' ').filter(Boolean);
+  if (parts.length > 1) {
+    return parts.map(name => name[0]).join('').toUpperCase().substring(0, 2);
+  } else if (parts.length === 1 && parts[0].length > 0) {
+    return parts[0].substring(0, 2).toUpperCase();
+  } else {
+    return 'A';
+  }
 });
 
 // Computed property untuk menentukan apakah avatar dari Google

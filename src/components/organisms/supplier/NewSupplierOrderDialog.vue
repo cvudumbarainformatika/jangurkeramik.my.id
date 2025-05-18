@@ -45,8 +45,36 @@
             <SupplierDetail
               v-if="selectedSupplier"
               :supplier="selectedSupplier"
-              @back="selectedSupplier = null"
+              @close="selectedSupplier = null"
             />
+            <div v-if="!selectedSupplier" class="mt-2 grid gap-3">
+              <div
+                v-for="supplier in sales"
+                :key="supplier.id"
+                @click="selectSupplier(supplier)"
+                class="flex items-center bg-white rounded-lg shadow border border-gray-100 hover:border-orange-400 cursor-pointer transition-all p-4 gap-4"
+              >
+                <div class="flex-shrink-0">
+                  <img
+                    :src="supplier.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(supplier.nama)"
+                    alt="Logo"
+                    class="w-12 h-12 rounded-full object-cover border"
+                  />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="font-semibold text-gray-800 truncate">{{ supplier?.nama }}</div>
+                  <div class="text-xs text-gray-500 truncate">{{ supplier?.alamat }}</div>
+                  <div class="text-xs text-gray-400 mt-1">Kontak: {{ supplier?.nohp }}</div>
+                </div>
+                <div>
+                  <button
+                    class="px-4 py-2 bg-orange-500 text-white rounded-full text-sm hover:bg-orange-600 transition"
+                  >
+                    Pilih
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           
@@ -113,5 +141,9 @@ const close = ()=> {
   isOpen.value=false
   emit('close')
 }
+
+const selectSupplier = (supplier) => {
+  selectedSupplier.value = supplier;
+};
 
 </script>

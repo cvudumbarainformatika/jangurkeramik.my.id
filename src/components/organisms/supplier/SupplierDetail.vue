@@ -2,15 +2,13 @@
   <div class="flex flex-col">
     <!-- Header with back button -->
     <div class="flex items-center p-2">
-      <!-- <button 
-        @click="$emit('back')"
-        class="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 text-primary"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button> -->
       <div class="text-xl font-medium ml-2">Detail Supplier</div>
+      <button 
+        @click="$emit('close')" 
+        class="ml-auto p-2 rounded-full hover:bg-gray-200 transition"
+      >
+        <AppIcon name="x" size="lg" class="text-gray-600" />
+      </button>
     </div>
 
     <!-- Supplier Header -->
@@ -280,7 +278,7 @@ const props = defineProps({
   }
 });
 
-defineEmits(['back']);
+defineEmits(['close']);
 
 const activeTab = ref('info');
 
