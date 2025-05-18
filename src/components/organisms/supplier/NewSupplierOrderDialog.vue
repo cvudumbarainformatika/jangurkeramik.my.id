@@ -91,6 +91,7 @@
       <div class="flex justify-between items-center ">
 
         <button
+          @click="checkoutOrder"
           class="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full hover:shadow-lg hover:from-orange-600 hover:to-orange-700 active:scale-95 transition-all"
         >
           Checkout Order
@@ -110,6 +111,7 @@ import { computed, defineAsyncComponent, ref } from 'vue';
 import AppIcon from 'components/atoms/AppIcon.vue';
 import AutocompleteInput from 'components/atoms/AutocompleteInput.vue';
 import { useMasterStore } from 'src/stores/master-store';
+import { useOrderStore } from 'src/stores/order-store';
 import { storeToRefs } from 'pinia';
 const AppDialog = defineAsyncComponent(()=> import('components/atoms/AppDialog.vue'));
 const SupplierDetail = defineAsyncComponent(()=> import('components/organisms/supplier/SupplierDetail.vue'));
@@ -121,15 +123,16 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['update:modelValue','close'])
+const emit = defineEmits(['update:modelValue','close', 'checkout'])
 
 
 const masterStore = useMasterStore()
+const orderStore = useOrderStore()
 
 const { sales } = storeToRefs(masterStore)
+const { selectedSupplier } = storeToRefs(orderStore)
 
 const searchQuery = ref('')
-const selectedSupplier = ref(null)
 
 
 const isOpen = computed({
@@ -144,6 +147,15 @@ const close = ()=> {
 
 const selectSupplier = (supplier) => {
   selectedSupplier.value = supplier;
+};
+const checkoutOrder = () => {
+  if (selectedSupplier.value) {
+    // Emit the selected supplier to the parent component
+    emit('checkout', selectedSupplier.value);
+  } else {
+    // Handle case when no supplier is selected
+    console.error('No supplier selected');
+  }
 };
 
 </script>

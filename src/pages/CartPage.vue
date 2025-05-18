@@ -22,7 +22,7 @@
         <div class="text-xl font-semibold text-gray-700 mb-2">Keranjang Anda Kosong</div>
         <p class="text-gray-500 mb-6">Tambahkan produk ke keranjang untuk mulai berbelanja</p>
         <button
-          @click="$router.push('/products')"
+          @click="$router.push('/')"
           class="px-6 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full hover:shadow-md transition-all"
         >
           Mulai Belanja
@@ -80,7 +80,7 @@
 
                   <!-- Remove Button -->
                   <button
-                    @click="removeItem(index)"
+                    @click="removeFromCart(item)"
                     class="ml-auto text-gray-400 hover:text-red-500"
                   >
                     <AppIcon name="trash" size="sm" />
@@ -102,10 +102,10 @@
               <span class="text-gray-600">Subtotal</span>
               <span>Rp {{ formatPrice(subtotal) }}</span>
             </div>
-            <div class="flex justify-between mb-2">
+            <!-- <div class="flex justify-between mb-2">
               <span class="text-gray-600">Pengiriman</span>
               <span>Rp {{ formatPrice(shipping) }}</span>
-            </div>
+            </div> -->
             <div class="flex justify-between font-bold mt-3 pt-3 border-t border-gray-100">
               <span>Total</span>
               <span class="text-orange-500">Rp {{ formatPrice(total) }}</span>
@@ -144,7 +144,7 @@
       @checkout="handleCheckout"
     /> -->
 
-    <NewSupplierOrderDialog v-model="showDialog" @close="showDialog=false" />
+    <NewSupplierOrderDialog v-model="showDialog" @close="showDialog=false" @checkout="handleCheckout" />
   </div>
 </template>
 
@@ -154,6 +154,8 @@ import { useRouter } from 'vue-router'
 import AppIcon from 'components/atoms/AppIcon.vue'
 import { useCartStore } from 'src/stores/cart-store'
 import { storeToRefs } from 'pinia'
+import { useOrderStore } from 'src/stores/order-store'
+import { useAuthStore } from 'src/stores/auth-store'
 
 // const SupplierOrderDialog = defineAsyncComponent(
 //   () => import('components/organisms/supplier/SupplierOrderDialog.vue'),
@@ -164,14 +166,16 @@ const NewSupplierOrderDialog = defineAsyncComponent(()=> import('components/orga
 // eslint-disable-next-line no-unused-vars
 const router = useRouter()
 const cartStore = useCartStore()
+const orderStore = useOrderStore()
+const authStore = useAuthStore()
 
 const showDialog = ref(false)
 
 const { items: cartItems, cartCount, cartTotal } = storeToRefs(cartStore)
-const { increaseQuantity, decreaseQuantity } = cartStore
+const { increaseQuantity, decreaseQuantity, removeFromCart } = cartStore
 
 // Biaya pengiriman
-const shipping = ref(25000)
+// const shipping = ref(25000)
 
 // Computed properties
 const subtotal = computed(() => {
@@ -179,7 +183,7 @@ const subtotal = computed(() => {
 })
 
 const total = computed(() => {
-  return subtotal.value + shipping.value
+  return subtotal.value 
 })
 
 // Methods
@@ -197,9 +201,9 @@ function formatPrice(price) {
 //   }
 // }
 
-function removeItem(index) {
-  cartItems.value.splice(index, 1)
-}
+// function removeItem(index) {
+//   cartItems.value.splice(index, 1)
+// }
 
 function checkout() {
   // Implementasi checkout
@@ -207,10 +211,15 @@ function checkout() {
   showDialog.value = true
 }
 
-// eslint-disable-next-line no-unused-vars
+ 
 const handleCheckout = () => {
-  // Implementasi checkout
-  console.log('Proceeding to checkout with items:', cartItems.value)
+
+  const pelanggan = authStore.user?.id
+
+  orderStore.postOrder(pelanggan)
+  showDialog.value = false
+
+
   // showDialog.value = true
 }
 </script>

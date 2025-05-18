@@ -50,12 +50,37 @@ export const useCartStore = defineStore('cart', {
       }
     },
 
-    removeFromCart(itemId) {
-      this.items = this.items.filter((item) => item.id !== itemId)
+    async removeFromCart(item) {
+      const itemId = item?.barang_id || null
+      this.items = this.items.filter((barang) => barang?.barang_id !== itemId)
+
+      // console.log('remove item', item);
+      
+
+      // Hapus item dari server
+      try {
+        await api.delete(`/api/v2/cart/${itemId}`)
+        console.log('Item berhasil dihapus dari server:', itemId);
+        
+      } catch (error) {
+        console.error('Gagal hapus item dari server:', error)
+        // opsional: beri notifikasi
+        // this.$toast?.error('Gagal hapus item dari server.')
+      }
     },
 
-    clearCart() {
+    async clearCart() {
       this.items = []
+      // Hapus semua item dari server
+      try {
+        await api.delete('/api/v2/cart/destroy-all')
+        console.log('Semua item berhasil dihapus dari server');
+        
+      } catch (error) {
+        console.error('Gagal hapus semua item dari server:', error)
+        // opsional: beri notifikasi
+        // this.$toast?.error('Gagal hapus semua item dari server.')
+      }
     },
 
     increaseQuantity(index) {
