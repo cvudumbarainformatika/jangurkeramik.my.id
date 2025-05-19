@@ -5,6 +5,7 @@ import { useCartStore } from 'src/stores/cart-store'
 export const useOrderStore = defineStore('order', {
   state: () => ({
     selectedSupplier: null,
+    selectedPelanggan: null,
     total_harga: 0,
     status_order: '1',
     status_pembayaran: '1',
@@ -20,20 +21,40 @@ export const useOrderStore = defineStore('order', {
     },
 
     // Action untuk POST order ke backend
-    async postOrder(pelanggan) {
+    async postOrder(user, jenis) {
       const cartStore = useCartStore()
       const items = cartStore.items
 
       // Pastikan selectedSupplier dan items sudah terisi
-      if (!this.selectedSupplier || !pelanggan || items.length === 0) {
-        throw new Error('Data order belum lengkap')
+      if (jenis === 'pelanggan') {
+        if (!this.selectedSupplier || !user || items.length === 0) {
+          throw new Error('Data order belum lengkap')
+        }
+
+        if (!this.selectedSupplier || !user || items.length === 0) {
+          throw new Error('Data order belum lengkap')
+        }
+      } else {
+        if (!this.selectedPelanggan || !user || items.length === 0) {
+          throw new Error('Data order belum lengkap')
+        }
+        if (!this.selectedPelanggan || !user || items.length === 0) {
+          throw new Error('Data order belum lengkap')
+        }
       }
+      
       // Hitung total harga
       const total_harga = items.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0)
       // Bentuk payload sesuai backend
+
+      const pelanggan_id = jenis === 'pelanggan' ? user : this.selectedPelanggan.id
+      const sales_id = jenis === 'pelanggan' ? this.selectedSupplier.id : user
+
       const payload = {
-        pelanggan_id: pelanggan,
-        sales_id: this.selectedSupplier.id,
+        // pelanggan_id: user,
+        // sales_id: this.selectedSupplier.id,
+        pelanggan_id,
+        sales_id,
         total_harga,
         status_order: this.status_order,
         status_pembayaran: this.status_pembayaran,
@@ -49,7 +70,7 @@ export const useOrderStore = defineStore('order', {
       // Kosongkan cart setelah order sukses
       cartStore.clearCart()
       return data
-    }
+    },
   },
   getters: {
     totalItems: (state) => state.items.length,

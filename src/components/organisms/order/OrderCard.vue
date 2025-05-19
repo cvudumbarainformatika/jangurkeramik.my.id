@@ -8,7 +8,7 @@
     />
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-2">
-        <span class="font-semibold text-gray-800 truncate">#{{ order.kode }}</span>
+        <span class="font-semibold text-gray-800 truncate">#{{ order.noorder }}</span>
         <OrderStatusBadge :status="order.status_order" />
       </div>
       <div class="text-xs text-gray-500 mt-1">
@@ -17,15 +17,21 @@
       <div class="text-xs text-gray-400 mt-1">
         {{ order.tglorder ? new Date(order.tglorder).toLocaleDateString() : '' }}
       </div>
+      <div class="text-sm text-gray-600">
+        {{ auth?.kodejabatan === 3 ? order?.pelanggan?.nama : order?.sales?.nama }}
+      </div>
     </div>
-    <q-icon name="chevron_right" size="md" class="text-gray-400" />
+    <div>
+       <AppIcon name="chevron-right" size="md" class="text-gray-400" />
+    </div>
   </div>
 </template>
 
 <script setup>
 import OrderStatusBadge from './OrderStatusBadge.vue'
-// eslint-disable-next-line no-unused-vars
-const props = defineProps({ order: Object })
+import AppIcon from 'src/components/atoms/AppIcon.vue'
+ 
+defineProps({ order: Object, auth: Object })
 
 function formatRupiah(val) {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0)

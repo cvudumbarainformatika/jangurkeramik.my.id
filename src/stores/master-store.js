@@ -4,6 +4,7 @@ import { api } from 'src/boot/axios'
 export const useMasterStore = defineStore('master', {
   state: () => ({
     sales: [], 
+    pelanggans: [],
   }),
   persist: {
     key: 'master',
@@ -24,6 +25,20 @@ export const useMasterStore = defineStore('master', {
         this.sales = response?.data || []
       } catch (error) {
         console.error('Error fetching sales:', error)
+      }
+    },
+
+    async fetchPelanggan(query) {
+      try {
+        const response = await api.get('api/v2/master/pelanggan', {
+          params: {
+            q: query,
+          },
+        })
+        console.log('pelanggan', response);
+        this.pelanggans = response?.data || []
+      } catch (error) {
+        console.error('Error adding sales:', error)
       }
     },
 

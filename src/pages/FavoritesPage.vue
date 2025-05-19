@@ -9,7 +9,7 @@
         <div class="text-xl font-semibold text-gray-700 mb-2">Belum Ada Favorit</div>
         <p class="text-gray-500 mb-6">Anda belum menyimpan produk favorit</p>
         <button 
-          @click="$router.push('/products')" 
+          @click="$router.push('/')" 
           class="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full hover:shadow-md transition-all"
         >
           Jelajahi Produk
@@ -25,7 +25,7 @@
         >
           <div class="relative">
             <img 
-              :src="product.image" 
+              :src="product?.image || '/images/No-Image.svg'" 
               :alt="product.name" 
               class="w-full h-48 object-cover"
             />

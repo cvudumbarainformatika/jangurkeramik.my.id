@@ -3,17 +3,19 @@
           <img 
             :src="optimizedAvatarUrl" 
             :alt="user?.nama || user?.name" 
-            class="w-18 h-18 rounded-full object-cover border-4 border-white shadow-lg"
+            class="rounded-full object-cover border-4 border-white shadow-lg"
+            :class="`w-${size} h-${size}`"
             @error="handleAvatarError"
             loading="eager"
             referrerpolicy="no-referrer"
           />
-          <div class="absolute bottom-0 right-0 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
+          <div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
         </div>
         <div 
           v-else 
-          class="w-18 h-18 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg"
-        >
+          class="rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-lg object-cover border"
+          :class="`w-${size} h-${size}`"
+          >
           {{ userInitials }}
         </div>
 
@@ -25,6 +27,10 @@ import { computed, ref, onMounted } from 'vue';
 
 const props = defineProps({
   user: Object,
+  size: {
+    type: String,
+    default: '18'
+  }
 });
 
 

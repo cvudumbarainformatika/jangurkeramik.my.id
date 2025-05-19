@@ -2,39 +2,47 @@
   <AppDialog
     v-model="isOpen"
     @close="close"
-    title="Pilih Supplier"
+    title="Pilih Pelanggan"
     height="60vh"
   >
     <template #body>
       <div class="flex flex-col p-4 bg-gray-200">
         <div class="bg-white shadow-sm rounded-lg">
-          <div class="flex flex-row items-start bg-blue-50 p-4 rounded-lg shadow-sm">
-            <div class="flex-shrink-0">
-              <AppIcon name="info" size="lg" color="primary" />
-            </div>
-            <div class="flex-1 ml-4">
-              <div class="text-primary font-medium text-lg">Informasi Pembelian</div>
-              <p class="text-blue-700 text-sm mt-1">
-                Saat ini Jangur Keramik belum menerima pembelian langsung. Anda perlu melakukan
-                pemesanan melalui supplier resmi kami. Silahkan pilih supplier yang tersedia
-                untuk melanjutkan pesanan Anda.
-              </p>
-            </div>
-          </div>
-
+         
         <div class="bg-white shadow-sm rounded-lg p-4">
-          <AutocompleteInput
+          <!-- <AutocompleteInput
             v-model="searchQuery"
-            :options="sales"
+            :options="pelanggans"
             option-label="nama"
             option-value="id"
             :return-value-only="false"
-            placeholder="Cari supplier berdasarkan nama"
+            placeholder="Cari Pelanggan berdasarkan nama"
             @update:model-value="(value) => {
-              // console.log('Selected supplier:', value);
-              selectedSupplier = value;
+              selectedPelanggan = value;
             }"
-          />
+          /> -->
+
+          <AppInput
+            v-model="searchQuery"
+            placeholder="Cari Pelanggan Berdasarkan nama"
+            @debounce="(value) => {
+              if (value.length >= 2) {
+                // console.log('text-input:', value);
+                fetchPelanggan(value)
+              }
+              
+            }"
+          >
+            <template #prepend>
+              <AppIcon name="search" size="sm" />
+            </template>
+            <template #append>
+              <AppIcon v-if="searchQuery" name="x" size="sm" @click="()=> {
+                searchQuery = ''
+                fetchPelanggan('')
+              }" />
+            </template>
+          </AppInput>
 
 
            
@@ -42,32 +50,25 @@
 
           <div class="mt-2">
             <!-- Supplier List or Detail -->
-            <SupplierDetail
-              v-if="selectedSupplier"
-              :supplier="selectedSupplier"
-              @close="selectedSupplier = null"
+            <PelangganDetail
+              v-if="selectedPelanggan"
+              :user="selectedPelanggan"
+              @close="selectedPelanggan = null"
             />
-            <div v-if="!selectedSupplier" class="mt-2 grid gap-3">
+            <div v-if="!selectedPelanggan" class="mt-2 grid gap-3">
               <div
-                v-for="supplier in sales"
-                :key="supplier.id"
-                @click="selectSupplier(supplier)"
+                v-for="pelanggan in pelanggans"
+                :key="pelanggan.id"
+                @click="selectSupplier(pelanggan)"
                 class="flex items-center bg-white rounded-lg shadow border border-gray-100 hover:border-orange-400 cursor-pointer transition-all p-4 gap-4"
               >
                 <div class="flex-shrink-0">
-                  <!-- <img
-                    :src="supplier?.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(supplier.nama)"
-                    alt="Logo"
-                    class="w-12 h-12 rounded-full object-cover border"
-                  /> -->
-                  <!-- <div class="w-12 h-12 rounded-full object-cover border"> -->
-                     <AppAvatar :user="supplier" size="12" />
-                  <!-- </div> -->
+                  <AppAvatar :user="pelanggan" size="12" />
                 </div>
                 <div class="flex-1 min-w-0">
-                  <div class="font-semibold text-gray-800 truncate">{{ supplier?.nama }}</div>
-                  <div class="text-xs text-gray-500 truncate">{{ supplier?.alamat }}</div>
-                  <div class="text-xs text-gray-400 mt-1">Kontak: {{ supplier?.nohp }}</div>
+                  <div class="font-semibold text-gray-800 truncate">{{ pelanggan?.nama }}</div>
+                  <div class="text-xs text-gray-500 truncate">{{ pelanggan?.alamat }}</div>
+                  <div class="text-xs text-gray-400 mt-1">Kontak: {{ pelanggan?.nohp }}</div>
                 </div>
                 <div>
                   <button
@@ -88,7 +89,7 @@
       
       
       <div
-      v-if="selectedSupplier"
+      v-if="selectedPelanggan"
       class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg"
     >
       <div class="flex justify-between items-center ">
@@ -110,14 +111,16 @@
 </template>
 
 <script setup>
-import { computed, defineAsyncComponent, ref } from 'vue';
+import { computed, defineAsyncComponent, ref, onMounted } from 'vue';
 import AppIcon from 'components/atoms/AppIcon.vue';
-import AutocompleteInput from 'components/atoms/AutocompleteInput.vue';
+// import AutocompleteInput from 'components/atoms/AutocompleteInput.vue';
+import AppInput from 'components/atoms/AppInput.vue';
 import { useMasterStore } from 'src/stores/master-store';
 import { useOrderStore } from 'src/stores/order-store';
 import { storeToRefs } from 'pinia';
 const AppDialog = defineAsyncComponent(()=> import('components/atoms/AppDialog.vue'));
-const SupplierDetail = defineAsyncComponent(()=> import('components/organisms/supplier/SupplierDetail.vue'));
+// const SupplierDetail = defineAsyncComponent(()=> import('components/organisms/supplier/SupplierDetail.vue'));
+const PelangganDetail = defineAsyncComponent(()=> import('components/organisms/pelanggan/PelangganDetail.vue'));
 const AppAvatar = defineAsyncComponent(()=> import('components/atoms/AppAvatar.vue'));
 
 const props = defineProps({
@@ -133,8 +136,9 @@ const emit = defineEmits(['update:modelValue','close', 'checkout'])
 const masterStore = useMasterStore()
 const orderStore = useOrderStore()
 
-const { sales } = storeToRefs(masterStore)
-const { selectedSupplier } = storeToRefs(orderStore)
+const { pelanggans } = storeToRefs(masterStore)
+const { fetchPelanggan } = masterStore
+const { selectedPelanggan } = storeToRefs(orderStore)
 
 const searchQuery = ref('')
 
@@ -149,17 +153,24 @@ const close = ()=> {
   emit('close')
 }
 
-const selectSupplier = (supplier) => {
-  selectedSupplier.value = supplier;
+const selectSupplier = (user) => {
+  selectedPelanggan.value = user;
 };
 const checkoutOrder = () => {
-  if (selectedSupplier.value) {
+  if (selectedPelanggan.value) {
     // Emit the selected supplier to the parent component
-    emit('checkout', selectedSupplier.value);
+    emit('checkout', selectedPelanggan.value);
   } else {
     // Handle case when no supplier is selected
-    console.error('No supplier selected');
+    console.error('No pelanggan selected');
   }
 };
+
+onMounted(() => {
+  // Fetch the sales data when the component is mounted
+ Promise.all([
+   fetchPelanggan(searchQuery.value)
+  ])
+});
 
 </script>

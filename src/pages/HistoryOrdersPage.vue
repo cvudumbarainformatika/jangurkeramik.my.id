@@ -61,7 +61,7 @@
           <div>Belum ada pesanan.</div>
         </div>
         <div v-else class="pt-2">
-          <div
+          <!-- <div
             v-for="order in filteredOrders"
             :key="order.id"
             class="bg-white rounded-xl shadow flex items-center gap-3 p-3 cursor-pointer hover:ring-2 ring-primary transition mb-3"
@@ -85,7 +85,14 @@
               </div>
             </div>
             <AppIcon name="chevron-right" size="md" class="text-gray-400" />
-          </div>
+          </div> -->
+          <template v-for="item in filteredOrders" :key="item.id">
+            <OrderCard
+              :order="item"
+              :auth="auth.user"
+              @click="openDetail(item)"
+            />
+          </template>
         </div>
         <OrderDetailDialog v-model="showDetail" :order="selectedOrder" />
       </div>
@@ -94,11 +101,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, defineAsyncComponent } from 'vue'
+import { useAuthStore } from 'src/stores/auth-store'
 import { api } from 'src/boot/axios'
-import OrderStatusBadge from 'components/organisms/order/OrderStatusBadge.vue'
+// import OrderStatusBadge from 'components/organisms/order/OrderStatusBadge.vue'
+
 import OrderDetailDialog from 'components/organisms/order/OrderDetailDialog.vue'
 import AppIcon from 'src/components/atoms/AppIcon.vue';
+
+
+const OrderCard = defineAsyncComponent(() => import('components/organisms/order/OrderCard.vue'))
+
+const auth = useAuthStore()
 
 const orders = ref([])
 const loading = ref(true)
@@ -126,11 +140,13 @@ const filteredOrders = computed(() => {
   return list
 })
 
+ 
 function openDetail(order) {
   selectedOrder.value = order
   showDetail.value = true
 }
 
+// eslint-disable-next-line no-unused-vars
 function formatRupiah(val) {
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0)
 }

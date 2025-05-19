@@ -2,113 +2,84 @@
   <div :class="wrapperClass">
     <label v-if="label" :for="id" class="block text-sm font-medium text-gray-700 mb-1">
       {{ label }}
-      <span v-if="required" class="text-negative">*</span>
+      <span v-if="required" class="text-red-500">*</span>
     </label>
-    
-    <q-input
-      :id="id"
-      v-model="localValue"
-      :type="type"
-      :placeholder="placeholder"
-      :hint="hint"
-      :error="!!errorMessage"
-      :error-message="errorMessage"
-      :disable="disabled"
-      :readonly="readonly"
-      :dense="dense"
-      :outlined="outlined"
-      :filled="filled"
-      :borderless="borderless"
-      :class="inputClass"
-      @update:model-value="$emit('update:modelValue', $event)"
-    >
-      <template v-if="$slots.prepend" v-slot:prepend>
-        <slot name="prepend"></slot>
-      </template>
-      
-      <template v-if="$slots.append" v-slot:append>
-        <slot name="append"></slot>
-      </template>
-    </q-input>
+    <div class="relative">
+      <!-- Prepend slot absolute kiri -->
+      <div v-if="prepend" class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <slot name="prepend" />
+      </div>
+      <input
+        :id="id"
+        v-model="inputValue"
+        :type="type"
+        :placeholder="placeholder"
+        :readonly="readonly"
+        :disabled="disabled"
+        :class="[
+          'block w-full rounded-lg border',
+          errorMessage
+            ? 'border-red-500 focus:border-red-500 focus:ring-red-200'
+            : 'border-gray-300 focus:border-blue-500 focus:ring-blue-200',
+          'bg-white px-3 py-2 text-gray-900 text-sm shadow-sm focus:outline-none focus:ring-2 transition',
+          prepend ? 'pl-10' : '',
+          append ? 'pr-10' : '',
+          inputClass
+        ]"
+        @input="onInput"
+        autocomplete="off"
+      />
+      <!-- Append slot absolute kanan -->
+      <div v-if="append" class="absolute inset-y-0 right-0 flex items-center pr-3">
+        <slot name="append" />
+      </div>
+    </div>
+    <div v-if="hint && !errorMessage" class="text-xs text-gray-400 mt-1">{{ hint }}</div>
+    <div v-if="errorMessage" class="text-xs text-red-500 mt-1">{{ errorMessage }}</div>
   </div>
 </template>
 
 <script setup>
-import {  computed } from 'vue';
+import { ref, watch, computed, useSlots } from 'vue'
 
 const props = defineProps({
-  modelValue: {
-    type: [String, Number],
-    default: ''
-  },
-  id: {
-    type: String,
-    default: () => `input-${Math.random().toString(36).substring(2, 9)}`
-  },
-  label: {
-    type: String,
-    default: ''
-  },
-  type: {
-    type: String,
-    default: 'text'
-  },
-  placeholder: {
-    type: String,
-    default: ''
-  },
-  hint: {
-    type: String,
-    default: ''
-  },
-  errorMessage: {
-    type: String,
-    default: ''
-  },
-  required: {
-    type: Boolean,
-    default: false
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  readonly: {
-    type: Boolean,
-    default: false
-  },
-  dense: {
-    type: Boolean,
-    default: false
-  },
-  outlined: {
-    type: Boolean,
-    default: true
-  },
-  filled: {
-    type: Boolean,
-    default: false
-  },
-  borderless: {
-    type: Boolean,
-    default: false
-  },
-  wrapperClass: {
-    type: String,
-    default: 'mb-4'
-  },
-  inputClass: {
-    type: String,
-    default: ''
-  }
-});
+  modelValue: [String, Number],
+  id: { type: String, default: () => `input-${Math.random().toString(36).slice(2, 9)}` },
+  label: String,
+  type: { type: String, default: 'text' },
+  placeholder: String,
+  hint: String,
+  errorMessage: String,
+  required: Boolean,
+  disabled: Boolean,
+  readonly: Boolean,
+  wrapperClass: { type: String, default: 'mb-4' },
+  inputClass: { type: String, default: '' },
+  debounce: { type: Number, default: 300 }
+})
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'debounce'])
+const slots = useSlots()
+const prepend = computed(() => !!slots.prepend)
+const append = computed(() => !!slots.append)
 
-const localValue = computed({
-  get: () => props.modelValue,
-  set: (value) => emit('update:modelValue', value)
-});
+const inputValue = ref(props.modelValue)
+let debounceTimeout = null
+
+// Sync prop <-> local
+watch(() => props.modelValue, v => {
+  if (v !== inputValue.value) inputValue.value = v
+})
+
+// Debounce emit
+function onInput(e) {
+  inputValue.value = e.target.value
+  emit('update:modelValue', inputValue.value)
+  if (debounceTimeout) clearTimeout(debounceTimeout)
+  debounceTimeout = setTimeout(() => {
+    emit('debounce', inputValue.value)
+  }, props.debounce)
+}
 </script>
 
 <script>

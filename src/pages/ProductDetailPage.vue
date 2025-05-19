@@ -280,6 +280,7 @@ function goToCart() {
 
 function continueShopping() {
   showQuickBuyOptions.value = false;
+  router.push('/'); // Navigate to home or previous page
 }
 
 function addToWishlist() {

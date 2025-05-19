@@ -144,7 +144,16 @@
       @checkout="handleCheckout"
     /> -->
 
-    <NewSupplierOrderDialog v-model="showDialog" @close="showDialog=false" @checkout="handleCheckout" />
+    <NewSupplierOrderDialog 
+      v-if="authStore?.user?.kodejabatan !== '3' && authStore?.user?.kodejabatan !== 3" 
+      v-model="showDialog" 
+      @close="showDialog=false" 
+      @checkout="handleCheckout('pelanggan')" />
+    <PelangganOrderDialog
+      v-else
+      v-model="showDialog" 
+      @close="showDialog=false" 
+      @checkout="handleCheckout('supplier')" />
   </div>
 </template>
 
@@ -162,6 +171,7 @@ import { useAuthStore } from 'src/stores/auth-store'
 // )
 
 const NewSupplierOrderDialog = defineAsyncComponent(()=> import('components/organisms/supplier/NewSupplierOrderDialog.vue'))
+const PelangganOrderDialog = defineAsyncComponent(()=> import('components/organisms/pelanggan/PelangganOrderDialog.vue'))
 
 // eslint-disable-next-line no-unused-vars
 const router = useRouter()
@@ -212,11 +222,11 @@ function checkout() {
 }
 
  
-const handleCheckout = () => {
+const handleCheckout = (jenis) => {
+  
+  const userId = authStore.user?.id
 
-  const pelanggan = authStore.user?.id
-
-  orderStore.postOrder(pelanggan)
+  orderStore.postOrder(userId, jenis)
   showDialog.value = false
 
 
