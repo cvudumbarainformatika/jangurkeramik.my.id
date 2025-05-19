@@ -17,8 +17,12 @@
       <div class="text-xs text-gray-400 mt-1">
         {{ order.tglorder ? new Date(order.tglorder).toLocaleDateString() : '' }}
       </div>
-      <div class="text-sm text-gray-600">
-        {{ auth?.kodejabatan === 3 ? order?.pelanggan?.nama : order?.sales?.nama }}
+      <div class="flex ">
+        <div class="text-xs text-gray-200 bg-orange-500 py-0.5 px-2 rounded-full">
+          {{ auth?.kodejabatan === 3 ? 'Pelanggan' : 'Sales' }}:
+
+          {{ auth?.kodejabatan === 3 ? order?.pelanggan?.nama : order?.sales?.nama }}
+        </div>
       </div>
     </div>
     <div>

@@ -91,6 +91,7 @@
               :order="item"
               :auth="auth.user"
               @click="openDetail(item)"
+              class="mb-1"
             />
           </template>
         </div>

@@ -1,10 +1,25 @@
 <template>
-  <div class="favorites-page">
+  <div class="min-h-screen bg-gray-200">
+
+     <!-- Header -->
+    <div class="sticky top-0 z-10 px-4 pt-10 pb-4 bg-white shadow-sm">
+      <div class="flex items-center">
+        <!-- Back Button -->
+        <button
+          @click="$router.back()"
+          class="flex-shrink-0 px-2 py-1 text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+        >
+          <AppIcon name="chevron-left" size="lg" />
+        </button>
+
+        <div class="text-xl font-bold ml-2">Produk Favorit Anda</div>
+      </div>
+    </div>
+
     <div class="container mx-auto px-4 py-6">
-      <div class="text-2xl font-bold mb-6">Produk Favorit Anda</div>
       
       <!-- Empty State -->
-      <div v-if="favorites.length === 0" class="text-center py-16 bg-white rounded-xl shadow-sm">
+      <div v-if="store.items.length === 0" class="text-center py-16 bg-white rounded-xl shadow-sm">
         <AppIcon name="heart" size="xl" class="mx-auto mb-4 text-gray-300" />
         <div class="text-xl font-semibold text-gray-700 mb-2">Belum Ada Favorit</div>
         <p class="text-gray-500 mb-6">Anda belum menyimpan produk favorit</p>
@@ -19,106 +34,140 @@
       <!-- Favorites List -->
       <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div 
-          v-for="product in favorites" 
-          :key="product.id" 
+          v-for="item in store.items" 
+          :key="item.id" 
           class="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-all"
         >
           <div class="relative">
             <img 
-              :src="product?.image || '/images/No-Image.svg'" 
-              :alt="product.name" 
-              class="w-full h-48 object-cover"
+              :src="item?.barang?.image || '/images/No-Image.svg'" 
+              :alt="item?.barang?.name" 
+              class="w-full h-48 object-cover object-ratio[1/1]"
             />
             <button 
-              @click="removeFromFavorites(product.id)" 
+              @click="removeFromFavorites(item?.barang_id)" 
               class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full text-red-500 hover:bg-white hover:text-red-600 transition-all"
               aria-label="Hapus dari favorit"
             >
-              <AppIcon name="x" size="sm" />
+              <AppIcon name="heart" size="lg" color="orange" />
             </button>
             
-            <div v-if="product.discount" class="absolute top-2 left-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full">
-              -{{ product.discount }}%
-            </div>
+            <!-- <div v-if="item?.discount" class="absolute top-2 left-2 bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full">
+              -{{ item.discount }}%
+            </div> -->
           </div>
           
           <div class="p-4">
-            <div class="font-semibold text-gray-800 mb-1 line-clamp-1">{{ product.name }}</div>
-            <div class="text-gray-500 text-sm mb-2 line-clamp-1">{{ product.category }}</div>
+            <div class="font-semibold text-gray-800 mb-1 line-clamp-1">{{ item?.barang?.name }}</div>
+            <div class="text-gray-500 text-sm mb-2 line-clamp-1">{{ item?.barang?.category }}</div>
             
             <div class="flex items-center justify-between">
               <div>
                 <div class="flex items-center gap-1">
-                  <span class="font-bold text-gray-900">Rp {{ formatPrice(product.price) }}</span>
-                  <span v-if="product.originalPrice" class="text-gray-400 text-sm line-through">
-                    Rp {{ formatPrice(product.originalPrice) }}
-                  </span>
+                  <span class="font-bold text-gray-900">Rp {{ formatPrice(item?.barang?.price) }}</span>
+                  <!-- <span v-if="item.originalPrice" class="text-gray-400 text-sm line-through">
+                    Rp {{ formatPrice(item.originalPrice) }}
+                  </span> -->
                 </div>
-                <div class="flex items-center text-amber-400 text-sm mt-1">
-                  <AppIcon name="star-fill" size="sm" />
-                  <span class="ml-1 text-gray-700">{{ product.rating }}</span>
-                  <span class="text-gray-400 ml-1">({{ product.reviewCount }})</span>
-                </div>
+                
               </div>
               
               <button 
-                @click="addToCart(product)" 
-                class="w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all"
+                @click="addedToCart(item?.barang)" 
+                class="w-12 h-12 flex items-center justify-center bg-orange-500 text-white rounded-full hover:bg-blue-600 transition-all"
                 aria-label="Tambahkan ke keranjang"
               >
-                <AppIcon name="shopping-cart" size="sm" />
+                <AppIcon name="shopping-cart" size="md" color="white" />
               </button>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+
+
+
+
+    <!-- dialog -->
+
+     <!-- Quick Buy Options - Appears when product is added to cart -->
+    <Transition name="slide-up">
+      <div
+        v-if="showQuickBuyOptions"
+        class="fixed bottom-16 left-0 right-0 bg-white border-t border-gray-200 shadow-sm z-30"
+      >
+        <div class="flex justify-between items-center mb-3 border-b border-gray-300 px-4 py-2">
+          <div class="font-medium text-gray-800">Produk Berahasil ditambahkan ke keranjang</div>
+          <button @click="showQuickBuyOptions = false" class="p-1">
+            <AppIcon name="x" size="sm" class="text-gray-500" />
+          </button>
+        </div>
+
+        <div class="flex gap-3 pb-4 mb-3 px-4">
+          <div class="w-18 h-18 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+            <img
+              :src="product?.image || '/images/No-Image.svg'"
+              :alt="product?.name"
+              class="w-full h-full object-cover"
+            >
+          </div>
+          <div class="flex-1">
+            <div class="font-medium line-clamp-1">{{ product?.name }}</div>
+            <div class="text-orange-500 font-bold">Rp {{ formatPrice(product?.price || 0) }}</div>
+          </div>
+        </div>
+
+        <div class="flex gap-3 p-4">
+          <button
+            @click="continueShopping"
+            class="flex-1 border border-gray-300 text-gray-700 py-2 rounded-full flex items-center justify-center hover:bg-gray-50 transition-colors"
+          >
+            <AppIcon name="arrow-left" size="sm" class="mr-1" />
+            Lanjut Belanja
+          </button>
+          <button
+            @click="goToCart"
+            class="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2 rounded-full flex items-center justify-center hover:shadow-lg hover:from-orange-600 hover:to-orange-700 active:scale-95 transition-all disabled:opacity-80"
+            :disabled="isNavigating"
+          >
+            <template v-if="isNavigating">
+              <span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+              Menuju Keranjang...
+            </template>
+            <template v-else>
+              <AppIcon name="shopping-cart" size="sm" class="mr-1" />
+              Lihat Keranjang
+            </template>
+          </button>
+        </div>
+      </div>
+    </Transition>
+
+
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import AppIcon from '../components/atoms/AppIcon.vue';
 
-// eslint-disable-next-line no-unused-vars
-const router = useRouter();
+import { useFavoriteStore } from 'src/stores/favorite-store'; // Import your store here
+import { useCartStore } from 'src/stores/cart-store'; // Import your cart store here
 
-// Simulasi data favorit
-// Dalam aplikasi nyata, ini akan berasal dari store
-const favorites = ref([
-  {
-    id: 1,
-    name: 'Keramik Lantai Granit 60x60 Motif Marmer',
-    category: 'Keramik Lantai',
-    price: 185000,
-    originalPrice: 220000,
-    discount: 15,
-    rating: 4.8,
-    reviewCount: 24,
-    image: 'https://via.placeholder.com/800x1200/f97316/ffffff?text=Product+Image'
-  },
-  {
-    id: 2,
-    name: 'Keramik Dinding 25x40 Motif Geometris',
-    category: 'Keramik Dinding',
-    price: 95000,
-    originalPrice: 115000,
-    discount: 17,
-    rating: 4.5,
-    reviewCount: 18,
-    image: 'https://via.placeholder.com/800x1200/3b82f6/ffffff?text=Product+Image'
-  },
-  {
-    id: 3,
-    name: 'Keramik Kamar Mandi Anti Slip 30x30',
-    category: 'Keramik Kamar Mandi',
-    price: 75000,
-    rating: 4.7,
-    reviewCount: 32,
-    image: 'https://via.placeholder.com/800x1200/10b981/ffffff?text=Product+Image'
-  }
-]);
+ 
+const router = useRouter();
+const store = useFavoriteStore(); // Import your store here
+const product = ref(null);
+const showQuickBuyOptions = ref(false);
+const isNavigating = ref(false);
+
+
+const cartStore = useCartStore(); // Import your cart store here
+const {addToCart} = cartStore
+
+
 
 // Methods
 const formatPrice = (price) => {
@@ -126,22 +175,63 @@ const formatPrice = (price) => {
 };
 
 const removeFromFavorites = (productId) => {
-  favorites.value = favorites.value.filter(item => item.id !== productId);
+  console.log('Removing from favorites:', productId);
+  // favorites.value = favorites.value.filter(item => item.id !== productId);
 };
 
-const addToCart = (product) => {
-  console.log('Adding to cart:', product);
-  // Implement your cart logic here
-  // For example, you could call a method from your cart store
-  // cartStore.addItem(product);
+const addedToCart = (item) => {
+  console.log('Adding to cart:', item);
+  product.value = item;
+  showQuickBuyOptions.value = true;
+  addToCart(item);
 };
+
+function goToCart() {
+  isNavigating.value = true;
+
+  // Simulasi delay navigasi untuk menunjukkan loading state
+  setTimeout(() => {
+    router.push('/cart');
+    isNavigating.value = false;
+  }, 300);
+}
+
+
+onMounted(() => {
+  // Fetch favorites from API or store
+  // For example:
+  // favorites.value = await fetchFavorites();
+  Promise.all([
+    store.getData()
+  ])
+});
 </script>
 
 <style scoped>
-.line-clamp-1 {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.slide-up-enter-active {
+  animation: slide-up 0.3s ease-out forwards;
+}
+
+.slide-up-leave-active {
+  animation: slide-up 0.3s ease-in reverse;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>
