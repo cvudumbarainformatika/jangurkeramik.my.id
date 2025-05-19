@@ -31,7 +31,7 @@
         <div class="flex items-center justify-between py-2 px-2">
           <!-- Logo -->
           <router-link to="/" class="flex items-center group">
-            <div class="relative w-12 h-12 mr-3 overflow-hidden">
+            <div class="relative w-10 h-10 mr-3 overflow-hidden">
               <!-- Efek latar belakang futuristik -->
               <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-indigo-500 to-purple-600 rounded-xl shadow-lg shadow-blue-500/30 transition-all duration-300 group-hover:shadow-blue-500/50"></div>
               
@@ -44,7 +44,8 @@
               
               <!-- Logo text atau icon -->
               <div class="absolute inset-0 flex items-center justify-center">
-                <span class="text-white font-bold text-xl">JK</span>
+                <!-- <span class="text-white font-bold text-xl">JK</span> -->
+                <img src="icons/icon-128x128.png" alt="Logo"  />
               </div>
               
               <!-- Efek glow -->
@@ -53,7 +54,7 @@
             
             <!-- Brand name -->
             <div class="flex flex-col">
-              <span class="text-xl font-bold bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent transition-all duration-300 group-hover:from-blue-500 group-hover:to-purple-500">Jangur Keramik</span>
+              <span class="text-xl font-bold bg-gradient-to-r from-orange-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent transition-all duration-300 group-hover:from-blue-500 group-hover:to-purple-500">Jangur Keramik</span>
               <span class="text-xs text-gray-500 tracking-wider">PREMIUM QUALITY</span>
             </div>
           </router-link>
