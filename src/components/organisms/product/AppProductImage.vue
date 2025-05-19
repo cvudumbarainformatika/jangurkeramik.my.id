@@ -53,6 +53,7 @@ const isLoading = ref(true)
 
 
 function onError(e) {
+  console.log('Image load error:', e)
   if (!errorState.value) {
     e.target.src = props.fallback
     errorState.value = true

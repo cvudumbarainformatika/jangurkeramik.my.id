@@ -128,7 +128,7 @@
       
 
       <!-- Fixed Bottom Action Buttons -->
-      <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg flex items-center gap-3">
+      <div v-if="auth.isLoggedIn" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg flex items-center gap-3">
         <!-- Cart Icon with Badge -->
         <div
           class="relative w-12 h-12 flex-shrink-0 bg-orange-100 rounded-full flex items-center justify-center cursor-pointer"
@@ -224,11 +224,13 @@ import MiniCartPreview from '../components/organisms/MiniCartPreview.vue';
 import { useProductStore } from '../stores/product-store';
 import { storeToRefs } from 'pinia';
 import { useCartStore } from 'src/stores/cart-store';
+import { useAuthStore } from 'src/stores/auth-store';
 
 const route = useRoute();
 const router = useRouter();
 const productStore = useProductStore();
 const cartStore = useCartStore()
+const auth = useAuthStore()
 const { product } = storeToRefs(productStore);
 const { getProductId, wishlist } = productStore;
 
