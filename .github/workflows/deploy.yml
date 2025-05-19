@@ -1,0 +1,56 @@
+name: Deploy Frontend PWA
+
+on:
+  push:
+    branches:
+      - deploy
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # penting untuk akses semua tag
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install & Build
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_PATH_IMAGE: ${{ vars.VITE_PATH_IMAGE }}
+        run: |
+          npm install
+          npx quasar build -m pwa
+          zip -r pwa-build.zip dist/pwa
+
+      - name: Buat atau perbarui tag 'latest'
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git fetch --tags
+          git tag -f latest
+          git push --force origin latest
+
+      - name: Upload ZIP ke GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: latest
+          files: pwa-build.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trigger webhook di server
+        run: |
+          echo Starting Trigger
+          curl -sS -G "${{ vars.DEPLOY_WEBHOOK_URL }}" \
+          --data-urlencode "param=repo=${{ github.event.repository.name }}&branch=${{ github.ref_name }}&user=${{ github.actor }}&msg=${{ github.event.head_commit.message }}"
+          echo Trigger Success

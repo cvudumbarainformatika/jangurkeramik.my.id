@@ -8,15 +8,14 @@
       'relative overflow-hidden cursor-pointer',
       viewMode === 'grid' ? 'h-auto' : 'w-1/3'
     ]">
-      <img
-        :src="product?.image || '/images/No-Image.svg'"
+      <AppProductImage
+        :src="product?.images?.length 
+          ? product?.images.find(x=>x?.flag_thumbnail === '1')?.gambar 
+          : null"
         :alt="product?.name"
-        :class="[
-          'w-full object-cover transition-transform duration-500 group-hover:scale-110',
-          viewMode === 'grid' ? product.image? ' aspect-[4/3]': 'aspect-[1/1]' : 'h-56'
-        ]"
+        :aspect="viewMode === 'grid' ? (product.images.length ? '1/1' : '1/1') : ''"
+        :hoverZoom="true"
       />
-
 
       <!-- Badges -->
       <div class="absolute top-2 left-2 flex flex-col gap-1">
@@ -95,9 +94,12 @@
 </template>
 
 <script setup>
-// import { defineProps } from 'vue';
+import { defineAsyncComponent } from 'vue';
 // import AppIcon from '../atoms/AppIcon.vue';
 import AppIconButton from '../atoms/AppIconButton.vue';
+// import AppProductImage from 'src/components/organisms/product/AppProductImage.vue';
+
+const AppProductImage = defineAsyncComponent(() => import('src/components/organisms/product/AppProductImage.vue'));
 
 defineProps({
   product: {
