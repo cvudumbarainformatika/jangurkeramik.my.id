@@ -373,7 +373,7 @@ import { ref, computed } from 'vue';
 import AppNavbar from '../organisms/AppNavbar.vue';
 import AppFooter from '../organisms/AppFooter.vue';
 import AppIcon from '../atoms/AppIcon.vue';
-import AppProductFilter from '../molecules/AppProductFilter.vue';
+import AppProductFilter from '../organisms/AppProductFilter.vue';
 
 // Props
 defineProps({
