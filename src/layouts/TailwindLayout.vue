@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 relative">
+  <div class="min-h-screen bg-gray-200 relative">
     <!-- Background decorator component -->
     <BackgroundDecorator />
 

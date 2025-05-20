@@ -1,26 +1,23 @@
 <template>
   <div class="min-h-screen relative">
-    <!-- Orange background at the top - 25vh height (fixed) -->
-    <!-- <div class="fixed top-0 left-0 right-0 h-[25vh] bg-primary z-0"></div> -->
-
-    <!-- Back Button -->
+    <!-- Image Section with Skeleton -->
     <div class="sticky top-0 z-10">
       <div class="relative">
-        <!-- <img
-          :src="product?.image || '/images/No-Image.svg'"
-          :alt="product?.name"
-          class="w-full h-full aspect-[1] object-cover"
-        > -->
+        <template v-if="isLoading">
+          <div class="w-full aspect-[1/1] bg-gray-200 animate-pulse"></div>
+        </template>
+        <template v-else>
+          <AppProductImage
+            :src="product?.images?.find(x=>x?.flag_thumbnail === '1')?.gambar || null"
+            aspect="1/1"
+            hoverZoom
+            :allImages="product?.images || []"
+            :alt="product?.name"
+            :slider="true"
+          />
+        </template>
 
-        <AppProductImage
-          :src="product?.images?.find(x=>x?.flag_thumbnail === '1')?.gambar || null"
-          aspect="1/1"
-          hoverZoom
-          :allImages="product?.images || []"
-          :alt="product?.name"
-          :slider="true"
-        />
-
+        <!-- Controls overlay - always visible -->
         <div class="absolute top-8 px-4 py-1 w-full">
           <div class="flex items-center justify-start">
             <button
@@ -59,76 +56,94 @@
             </div>
           </div>
         </div>
-
       </div>
-
     </div>
 
-
-
     <div class="container mx-auto px-4 pb-20 relative z-1">
-
-
-      <!-- Product Info -->
+      <!-- Product Info with Skeleton -->
       <div class="mb-6 pt-10">
-
         <div class="flex items-start">
-
-          <!-- Product Details -->
           <div class="flex flex-col flex-1">
-            <div class="text-2xl font-medium line-clamp-2 w-full">{{ product?.name }}</div>
-            <div class="flex items-center flex-wrap gap-2 mt-2">
-              <!-- Views Counter - Futuristic Badge -->
-              <div class="bg-orange-500/80 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center text-md text-white/80">
-                <AppIcon name="eye" size="md" class="mr-1 text-white/80" />
-                <span class="font-medium">{{ product?.views?.views || 0 }}</span>
-              </div>
+            <template v-if="isLoading">
+              <!-- Title Skeleton -->
+              <div class="h-8 bg-gray-200 rounded-md w-3/4 mb-3 animate-pulse"></div>
+              <div class="h-6 bg-gray-200 rounded-md w-1/2 animate-pulse"></div>
+            </template>
+            <template v-else>
+              <div class="text-2xl font-medium line-clamp-2 w-full">{{ product?.name }}</div>
+              <div class="flex items-center flex-wrap gap-2 mt-2">
+                <div class="bg-orange-500/80 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center text-md text-white/80">
+                  <AppIcon name="eye" size="md" class="mr-1 text-white/80" />
+                  <span class="font-medium">{{ product?.views?.views || 0 }}</span>
+                </div>
 
-              <!-- Stock Indicator - Glowing Badge -->
-              <div v-if="product?.likes" class="relative">
-                <div class="bg-orange-500/80 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center text-md">
-                  <!-- <span class="h-2 w-2 rounded-full mr-1" :class="[product?.stock > 10 ? 'bg-green-400' : (product?.stock > 0 ? 'bg-yellow-400' : 'bg-dark'), 'animate-pulse']"></span> -->
-                  <AppIcon name="heart" size="md" class="mr-1 text-white/80" />
-                  <span class="font-medium text-white/80">{{ product?.likes?.likes || 0 }}</span>
+                <!-- Stock Indicator - Glowing Badge -->
+                <div v-if="product?.likes" class="relative">
+                  <div class="bg-orange-500/80 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center text-md">
+                    <AppIcon name="heart" size="md" class="mr-1 text-white/80" />
+                    <span class="font-medium text-white/80">{{ product?.likes?.likes || 0 }}</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </template>
           </div>
         </div>
+
+        <!-- Price Skeleton -->
         <div class="flex items-center my-2">
-          <span class="text-3xl font-bold text-orange-500">Rp {{ formatPrice(product?.price || 0) }}</span>
-          <span v-if="product?.discount" class="ml-2 line-through text-gray-400">Rp {{ formatPrice(product?.hargajual2 || 0) }}</span>
+          <template v-if="isLoading">
+            <div class="h-8 bg-gray-200 rounded-md w-32 animate-pulse"></div>
+          </template>
+          <template v-else>
+            <span class="text-3xl font-bold text-orange-500">
+              Rp {{ formatPrice(product?.price || 0) }}
+            </span>
+            <span v-if="product?.discount" class="ml-2 line-through text-gray-400">
+              Rp {{ formatPrice(product?.hargajual2 || 0) }}
+            </span>
+          </template>
         </div>
       </div>
 
-      <!-- Description -->
-      <div v-if="product?.category === 'Keramik' || product?.category === 'keramik'" class="mb-6">
+      <!-- Description Skeleton -->
+      <div v-if="product?.category === 'Keramik' || product?.category === 'keramik' || isLoading" class="mb-6">
         <h2 class="text-lg font-semibold mb-2">Deskripsi</h2>
-        <p class="text-gray-700">{{ product?.description || 'Keramik premium dengan desain modern dan kualitas terbaik. Cocok untuk berbagai ruangan di rumah Anda, memberikan kesan elegan dan mewah.' }}</p>
+        <template v-if="isLoading">
+          <div class="space-y-2">
+            <div class="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
+            <div class="h-4 bg-gray-200 rounded w-5/6 animate-pulse"></div>
+            <div class="h-4 bg-gray-200 rounded w-4/6 animate-pulse"></div>
+          </div>
+        </template>
+        <template v-else>
+          <p class="text-gray-700">{{ product?.description }}</p>
+        </template>
       </div>
 
-      <!-- Specifications -->
+      <!-- Specifications Skeleton -->
       <div class="mb-6">
         <h2 class="text-lg font-semibold mb-2">Spesifikasi</h2>
         <div class="bg-gray-50 rounded-lg p-4">
           <div class="grid grid-cols-2 gap-y-3">
-            <div class="text-gray-600">Brand</div>
-            <div>{{ product?.brand || '-' }}</div>
-            <div class="text-gray-600">Kualitas </div>
-            <div>{{ product?.kualitas || '-' }}</div>
-            <div class="text-gray-600">Ukuran</div>
-            <div>{{ product?.ukuran || '60x60 cm' }}</div>
-            <!-- <div class="text-gray-600">Material</div>
-            <div>{{ product?.material || 'Porcelain' }}</div> -->
-            <div class="text-gray-600">Warna</div>
-            <div>{{ product?.color || '-' }}</div>
+            <template v-if="isLoading">
+              <template v-for="(_, index) in 4" :key="index">
+                <div class="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
+                <div class="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
+              </template>
+            </template>
+            <template v-else>
+              <div class="text-gray-600">Brand</div>
+              <div>{{ product?.brand || '-' }}</div>
+              <div class="text-gray-600">Kualitas </div>
+              <div>{{ product?.kualitas || '-' }}</div>
+              <div class="text-gray-600">Ukuran</div>
+              <div>{{ product?.ukuran || '60x60 cm' }}</div>
+              <div class="text-gray-600">Warna</div>
+              <div>{{ product?.color || '-' }}</div>
+            </template>
           </div>
         </div>
       </div>
-
-      
-
-      
 
       <!-- Fixed Bottom Action Buttons -->
       <div v-if="auth.isLoggedIn" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg flex items-center gap-3">
@@ -246,15 +261,33 @@ const showMiniCart = ref(false);
 const addedProduct = ref(null);
 const showQuickBuyOptions = ref(false);
 const isNavigating = ref(false);
+const isLoading = ref(true);
 
 onMounted(async () => {
   const productId = route.params.id;
-  console.log('productId', productId);
-  console.log('product mounted', product?.value);
+  isLoading.value = true;
+  
+  try {
+    await getProductId(productId);
+  } catch (error) {
+    console.error('Error loading product:', error);
+  } finally {
+    isLoading.value = false;
+  }
+});
 
-  Promise.all([
-    getProductId(productId)
-  ])
+// Add loading state when route changes
+watch(() => route.params.id, async (newId) => {
+  if (newId) {
+    isLoading.value = true;
+    try {
+      await getProductId(newId);
+    } catch (error) {
+      console.error('Error loading product:', error);
+    } finally {
+      isLoading.value = false;
+    }
+  }
 });
 
 function formatPrice(price) {
