@@ -3,7 +3,8 @@
     <div class="relative w-full h-full">
       <div v-if="slider" class="relative h-full overflow-hidden">
         <!-- Slider Container -->
-        <div 
+        <div
+          v-if="allImages?.length > 0"
           class="flex h-full transition-transform duration-300 ease-out w-full"
           :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
           @touchstart="onTouchStart"
@@ -41,6 +42,22 @@
               @error="onImageError(index)"
             />
           </div>
+        </div>
+
+        <div v-else>
+          <img
+            :src="pathImg"
+            :alt="alt"
+            :class="[
+              'w-full h-full object-cover transition-all duration-300',
+              !isLoading ? 'opacity-100' : 'opacity-0',
+              hoverZoom ? 'group-hover:scale-110' : '',
+              aspectClass,
+              customClass
+            ]"
+            @load="isLoading = false"
+            @error="onError"
+          />
         </div>
 
         <!-- Navigation Arrows jika ada lebih dari 1 gambar -->

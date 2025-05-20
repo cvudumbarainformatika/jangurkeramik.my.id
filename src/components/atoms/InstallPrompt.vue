@@ -2,7 +2,7 @@
   <transition name="fade">
     <div
       v-if="show"
-      class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-white shadow-xl rounded-xl flex items-center gap-3 px-4 py-3 border border-gray-200"
+      class="fixed bottom-4 left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 z-50 bg-white shadow-xl rounded-xl flex items-center gap-3 px-4 py-3 border border-gray-200 max-w-md mx-auto"
     >
       <AppIcon name="download" class="text-primary w-7 h-7" />
       <div class="flex-1 min-w-0">

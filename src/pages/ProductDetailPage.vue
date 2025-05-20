@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen relative">
+  <div class="min-h-screen relative" :class="{ 'bg-white': isLoading }">
     <!-- Image Section with Skeleton -->
     <div class="sticky top-0 z-10">
       <div class="relative">

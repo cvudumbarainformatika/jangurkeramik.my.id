@@ -1,10 +1,15 @@
 <template>
   <div class="max-w-xl mx-auto py-8 px-4">
     <!-- Profile Card -->
-    <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center relative mb-8">
-      <img
+    <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center relative mb-8">
+      <!-- <img
         :src="user.avatar || '/images/default-avatar.png'"
         class="w-28 h-28 rounded-full border-4 border-primary object-cover shadow"
+        alt="Avatar"
+      /> -->
+      <AppAvatar
+        :user="user"
+        size="28"
         alt="Avatar"
       />
       <button
@@ -21,7 +26,7 @@
         <div class="text-sm text-gray-500 mb-1">{{ user.email }}</div>
         <div class="flex flex-center gap-2">
           <div class="bg-gray-100 px-2 py-0.5 rounded">Username: {{ user.username }}</div>
-          <div class="bg-blue-100 px-2 py-0.5 rounded">{{ user.jabatan }}</div>
+          <div class="bg-blue-100 px-2 py-0.5 rounded">{{ user.jabatan || 'Pelanggan' }}</div>
         </div>
         <div class="mt-2 flex items-center justify-center gap-2">
           <span class="inline-flex items-center px-2 py-0.5 rounded bg-green-100 text-green-700 text-sm font-medium">
@@ -51,7 +56,7 @@
           <div class="mb-2 text-gray-700 font-semibold">Akun</div>
           <div class="flex flex-col gap-1 text-sm text-gray-600">
             <div><span class="font-medium">Username:</span> {{ user.username }}</div>
-            <div><span class="font-medium">Akun :</span> {{ user.jabatan }}</div>
+            <div><span class="font-medium">Akun :</span> {{ user?.jabatan || 'Pelanggan' }}</div>
             <!-- <div><span class="font-medium">Kode Jabatan:</span> {{ user.kodejabatan }}</div> -->
             <div><span class="font-medium">Dibuat:</span> {{ formatDate(user.created_at) }}</div>
             <div><span class="font-medium">Update Terakhir:</span> {{ formatDate(user.updated_at) }}</div>
@@ -63,8 +68,10 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 import { useAuthStore } from 'src/stores/auth-store'
+
+const AppAvatar = defineAsyncComponent(() => import('src/components/atoms/AppAvatar.vue'))
 
 const authStore = useAuthStore()
 const user = computed(() => authStore.user || {})
