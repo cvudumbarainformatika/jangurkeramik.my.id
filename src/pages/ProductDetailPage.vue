@@ -6,11 +6,20 @@
     <!-- Back Button -->
     <div class="sticky top-0 z-10">
       <div class="relative">
-        <img
+        <!-- <img
           :src="product?.image || '/images/No-Image.svg'"
           :alt="product?.name"
           class="w-full h-full aspect-[1] object-cover"
-        >
+        > -->
+
+        <AppProductImage
+          :src="product?.images?.find(x=>x?.flag_thumbnail === '1')?.gambar || null"
+          aspect="1/1"
+          hoverZoom
+          :allImages="product?.images || []"
+          :alt="product?.name"
+          :slider="true"
+        />
 
         <div class="absolute top-8 px-4 py-1 w-full">
           <div class="flex items-center justify-start">
@@ -90,12 +99,6 @@
           <span class="text-3xl font-bold text-orange-500">Rp {{ formatPrice(product?.price || 0) }}</span>
           <span v-if="product?.discount" class="ml-2 line-through text-gray-400">Rp {{ formatPrice(product?.hargajual2 || 0) }}</span>
         </div>
-        <!-- <div class="flex items-center">
-          <div class="flex">
-            <AppIcon name="star" class="text-yellow-400" v-for="i in 5" :key="i" />
-          </div>
-          <span class="ml-2 text-gray-600">({{ product?.reviewCount || 24 }} ulasan)</span>
-        </div> -->
       </div>
 
       <!-- Description -->
@@ -217,7 +220,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, defineAsyncComponent } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AppIcon from '../components/atoms/AppIcon.vue';
 import MiniCartPreview from '../components/organisms/MiniCartPreview.vue';
@@ -225,6 +228,7 @@ import { useProductStore } from '../stores/product-store';
 import { storeToRefs } from 'pinia';
 import { useCartStore } from 'src/stores/cart-store';
 import { useAuthStore } from 'src/stores/auth-store';
+const AppProductImage = defineAsyncComponent(()=> import('src/components/organisms/product/AppProductImage.vue'))
 
 const route = useRoute();
 const router = useRouter();
@@ -246,6 +250,7 @@ const isNavigating = ref(false);
 onMounted(async () => {
   const productId = route.params.id;
   console.log('productId', productId);
+  console.log('product mounted', product?.value);
 
   Promise.all([
     getProductId(productId)
@@ -286,8 +291,6 @@ function continueShopping() {
 }
 
 function addToWishlist() {
-  // Add to wishlist logic
-  // console.log('Adding to wishlist:', product.value);
   wishlist(product.value?.id)
 }
 
