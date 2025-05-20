@@ -22,7 +22,7 @@
               :class="[aspectClass]"
             >
               <div class="flex flex-col items-center gap-2">
-                <div class="w-full h-full rounded-full bg-gray-300 animate-pulse"></div>
+                <div class="w-12 h-12 rounded-full bg-gray-300 animate-pulse"></div>
                 <div class="h-2 w-24 bg-gray-200 rounded animate-pulse"></div>
               </div>
             </div>
