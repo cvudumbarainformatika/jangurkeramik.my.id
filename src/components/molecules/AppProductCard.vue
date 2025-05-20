@@ -1,6 +1,6 @@
 <template>
   <div :class="[
-    'group bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300',
+    'group bg-white rounded-sm border border-gray-300 shadow-md overflow-hidden hover:shadow-xl transition-all duration-300',
     viewMode === 'grid' ? 'transform hover:-translate-y-1' : 'flex flex-row'
   ]" @click="emit('view-product', product)">
     <!-- Product Image -->
