@@ -157,6 +157,54 @@ export default defineConfig((ctx) => {
     // https://v2.quasar.dev/quasar-cli-vite/developing-pwa/configuring-pwa
     pwa: {
       workboxMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
+      workboxOptions: {
+        skipWaiting: false,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
+        runtimeCaching: [
+          {
+            urlPattern: new RegExp('^https://api\\.jangurkeramik\\.my\\.id/'),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 24 * 60 * 60 // 24 hours
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          // Dynamic Images dari API
+          {
+            urlPattern: new RegExp('^https://api\\.jangurkeramik\\.my\\.id/storage/'),
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'api-images',
+              expiration: {
+                maxEntries: 100,  // Menyimpan 100 gambar
+                maxAgeSeconds: 7 * 24 * 60 * 60 // 7 hari
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          // Static Images (logo, icons, dll)
+          {
+            urlPattern: /\.(png|jpg|jpeg|svg|gif)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'static-images',
+              expiration: {
+                maxEntries: 60,
+                maxAgeSeconds: 30 * 24 * 60 * 60 // 30 hari
+              }
+            }
+          }
+        ]
+      },
       manifest: {
         name: 'Jangur Keramik - Aplikasi Toko Keramik',
         short_name: 'jangurkeramik-my-id',

@@ -34,53 +34,78 @@ export default defineBoot(({ app, store }) => {
     return config;
   });
 
+  let isRefreshing = false;
+  let failedQueue = [];
+
+  const processQueue = (error, token = null) => {
+    failedQueue.forEach(prom => {
+      if (error) {
+        prom.reject(error);
+      } else {
+        prom.resolve(token);
+      }
+    });
+    failedQueue = [];
+  };
+
   // Tambahkan interceptor untuk menangani error CSRF dan autentikasi
-  api.interceptors.response.use(
-    response => response,
-    async error => {
-      // Jika error 419 (CSRF token mismatch), coba refresh CSRF token
-      if (error.response && error.response.status === 419) {
+ api.interceptors.response.use(
+  response => response,
+  async error => {
+    const originalRequest = error.config;
+
+    // Handle 401 and token refresh
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      // If already refreshing, queue the request
+      if (isRefreshing) {
         try {
-          console.log('Mencoba refresh CSRF token...');
-          // Panggil endpoint sanctum/csrf-cookie untuk mendapatkan token baru
-          await axios.get(`${import.meta.env.VITE_API_URL}/sanctum/csrf-cookie`, {
-            withCredentials: true
+          return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
+          }).then(token => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return api(originalRequest);
           });
-          
-          console.log('CSRF token diperbarui, mencoba ulang permintaan...');
-          // Coba ulang permintaan asli
-          return api(error.config);
-        } catch (refreshError) {
-          console.error('Failed to refresh CSRF token:', refreshError);
-          return Promise.reject(error);
+        } catch (err) {
+          return Promise.reject(err);
         }
       }
-      
-      // Jika error 401 (Unauthorized), mungkin token kedaluwarsa
-      if (error.response && error.response.status === 401) {
+
+      // Start refresh process
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
         const authStore = useAuthStore();
-        
-        // Jika pengguna seharusnya sudah login, coba refresh token
-        if (authStore.isLoggedIn) {
-          try {
-            console.log('Token mungkin kedaluwarsa, mencoba refresh...');
-            // Implementasikan logika refresh token di sini jika ada
-            // await authStore.refreshToken();
-            
-            // Coba ulang permintaan asli
-            return api(error.config);
-          } catch (refreshError) {
-            console.error('Failed to refresh auth token:', refreshError);
-            // Jika refresh gagal, logout pengguna
-            authStore.logout();
-            return Promise.reject(error);
-          }
+        const newToken = await authStore.refreshToken();
+
+        if (newToken) {
+          // Update request authorization header
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          
+          // Process queued requests
+          processQueue(null, newToken);
+          
+          // Retry original request
+          return api(originalRequest);
         }
+
+        // If no new token, clear queue and redirect to login
+        processQueue(new Error('Refresh failed'));
+        authStore.logout();
+        // window.location.href = '/login';
+        return Promise.reject(error);
+
+      } catch (refreshError) {
+        processQueue(refreshError);
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
-      
-      return Promise.reject(error);
     }
-  );
+
+    return Promise.reject(error);
+  }
+);
 
   app.config.globalProperties.$axios = axios;
   app.config.globalProperties.$api = api;

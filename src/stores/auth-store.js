@@ -105,8 +105,10 @@ export const useAuthStore = defineStore('auth', {
     // Tambahkan fungsi refreshToken
     async refreshToken() {
       try {
+        // Prevent multiple refresh calls
+      if (this.loading) return null;
         this.loading = true
-
+        console.log('Refreshing token...');
         // Refresh CSRF token terlebih dahulu
         await refreshCsrfToken()
 
@@ -115,6 +117,7 @@ export const useAuthStore = defineStore('auth', {
 
         if (response.data.success) {
           // Update token dan user jika perlu
+        console.log('Token refreshed successfully');
           this.token = response.data.token
           if (response.data.user) {
             this.user = response.data.user
