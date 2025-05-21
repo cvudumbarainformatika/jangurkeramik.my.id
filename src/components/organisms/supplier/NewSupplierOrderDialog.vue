@@ -96,8 +96,15 @@
         <button
           @click="checkoutOrder"
           class="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full hover:shadow-lg hover:from-orange-600 hover:to-orange-700 active:scale-95 transition-all"
+          :disabled="loading"
         >
-          Checkout Order
+          <template v-if="loading">
+            <span class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+            Simpan Order...
+          </template>
+          <template v-else>
+            Simpan Order
+          </template>
         </button>
       </div>
     </div>
@@ -124,6 +131,10 @@ const props = defineProps({
   modelValue:{
     Type:Boolean,
     default:false
+  },
+  loading: {
+    type: Boolean,
+    default: false
   }
 })
 

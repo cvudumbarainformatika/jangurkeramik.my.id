@@ -147,11 +147,13 @@
     <NewSupplierOrderDialog 
       v-if="authStore?.user?.kodejabatan !== '3' && authStore?.user?.kodejabatan !== 3" 
       v-model="showDialog" 
+      :loading="orderStore.loadingOrder"
       @close="showDialog=false" 
       @checkout="handleCheckout('pelanggan')" />
     <PelangganOrderDialog
       v-else
       v-model="showDialog" 
+      :loading="orderStore.loadingOrder"
       @close="showDialog=false" 
       @checkout="handleCheckout('supplier')" />
   </div>
@@ -162,6 +164,7 @@ import { ref, computed, defineAsyncComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import AppIcon from 'components/atoms/AppIcon.vue'
 import { useCartStore } from 'src/stores/cart-store'
+import { useToast } from 'src/composables/useToast'
 import { storeToRefs } from 'pinia'
 import { useOrderStore } from 'src/stores/order-store'
 import { useAuthStore } from 'src/stores/auth-store'
@@ -180,6 +183,8 @@ const orderStore = useOrderStore()
 const authStore = useAuthStore()
 
 const showDialog = ref(false)
+
+const { showToast } = useToast()
 
 const { items: cartItems, cartCount, cartTotal } = storeToRefs(cartStore)
 const { increaseQuantity, decreaseQuantity, removeFromCart } = cartStore
@@ -227,7 +232,19 @@ const handleCheckout = (jenis) => {
   const userId = authStore.user?.id
 
   orderStore.postOrder(userId, jenis)
-  showDialog.value = false
+  .then(() => {
+    showToast('Checkout Berhasil', {
+      type: 'brand',
+      showBrandIcon: true,
+      position: 'top',
+      duration: 3000
+    })
+
+    showDialog.value = false
+  })
+
+  
+
 
 
   // showDialog.value = true

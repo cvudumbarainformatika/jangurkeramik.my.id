@@ -9,6 +9,7 @@ export const useOrderStore = defineStore('order', {
     total_harga: 0,
     status_order: '1',
     status_pembayaran: '1',
+    loadingOrder: false,
   }),
   actions: {
     clearOrder() {
@@ -66,10 +67,18 @@ export const useOrderStore = defineStore('order', {
         }))
       }
       // POST ke backend (ganti URL sesuai API Anda)
-      const { data } = await api.post('/api/v2/order/penjualan', payload)
-      // Kosongkan cart setelah order sukses
-      cartStore.clearCart()
-      return data
+      this.loadingOrder = true
+      try {
+        const { data } = await api.post('/api/v2/order/penjualan', payload)
+        // Kosongkan cart setelah order sukses
+        cartStore.clearCart()
+        return data
+      } catch (error) {
+        console.error('Error posting order:', error)
+        throw error
+      } finally {
+        this.loadingOrder = false
+      }
     },
   },
   getters: {
