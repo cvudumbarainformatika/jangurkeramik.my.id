@@ -106,8 +106,8 @@
       </div>
 
       <!-- Description Skeleton -->
-      <div v-if="product?.category === 'Keramik' || product?.category === 'keramik' || isLoading" class="mb-6">
-        <h2 class="text-lg font-semibold mb-2">Deskripsi</h2>
+      <!-- <div v-if="product?.category === 'Keramik' || product?.category === 'keramik' || isLoading" class="mb-6">
+        <div class="text-lg font-semibold mb-2">Deskripsi</div>
         <template v-if="isLoading">
           <div class="space-y-2">
             <div class="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
@@ -118,11 +118,11 @@
         <template v-else>
           <p class="text-gray-700">{{ product?.description }}</p>
         </template>
-      </div>
+      </div> -->
 
       <!-- Specifications Skeleton -->
       <div class="mb-6">
-        <h2 class="text-lg font-semibold mb-2">Spesifikasi</h2>
+        <div class="text-lg font-semibold mb-2">Spesifikasi</div>
         <div class="bg-gray-50 rounded-lg p-4">
           <div class="grid grid-cols-2 gap-y-3">
             <template v-if="isLoading">
@@ -173,11 +173,11 @@
     </div>
 
     <!-- Mini Cart Preview -->
-    <MiniCartPreview
+    <!-- <MiniCartPreview
       :is-open="showMiniCart"
       :added-product="addedProduct"
       @close="showMiniCart = false"
-    />
+    /> -->
 
     <!-- Quick Buy Options - Appears when product is added to cart -->
     <Transition name="slide-up">
@@ -238,11 +238,12 @@
 import { ref, onMounted, watch, defineAsyncComponent } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AppIcon from '../components/atoms/AppIcon.vue';
-import MiniCartPreview from '../components/organisms/MiniCartPreview.vue';
+// import MiniCartPreview from '../components/organisms/MiniCartPreview.vue';
 import { useProductStore } from '../stores/product-store';
 import { storeToRefs } from 'pinia';
 import { useCartStore } from 'src/stores/cart-store';
 import { useAuthStore } from 'src/stores/auth-store';
+import { useToast } from 'src/composables/useToast.js';
 const AppProductImage = defineAsyncComponent(()=> import('src/components/organisms/product/AppProductImage.vue'))
 
 const route = useRoute();
@@ -255,6 +256,7 @@ const { getProductId, wishlist } = productStore;
 
 const { cartCount } = storeToRefs(cartStore)
 const {addToCart} = cartStore
+const { showToast } = useToast()
 
 // State for mini cart
 const showMiniCart = ref(false);
@@ -296,16 +298,28 @@ function formatPrice(price) {
 
 function addedToCart() {
   // Add to cart logic
-  console.log('Adding to cart:', product.value);
+  // console.log('Adding to cart:', product.value);
 
   // Set the added product for the mini cart
   addedProduct.value = product.value;
 
   // Always show quick buy options regardless of device
   showQuickBuyOptions.value = true;
+  
 
   // In a real app, you would also update your cart store
   addToCart(product.value);
+  // showToast('Produk berhasil ditambahkan ke keranjang', {
+  //   type: 'success',
+  //   position: 'top',
+  //   duration: 3000
+  // })
+  showToast('Produk berhasil ditambahkan ke keranjang', {
+    type: 'brand',
+    showBrandIcon: true,
+    position: 'top',
+    duration: 3000
+  })
 }
 
 function goToCart() {

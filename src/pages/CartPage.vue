@@ -5,7 +5,7 @@
       <div class="flex items-center">
         <!-- Back Button -->
         <button
-          @click="$router.back()"
+          @click="$router.push('/')"
           class="flex-shrink-0 px-2 py-1 text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
         >
           <AppIcon name="chevron-left" size="lg" />
@@ -217,7 +217,7 @@ function formatPrice(price) {
 
 function checkout() {
   // Implementasi checkout
-  console.log('Proceeding to checkout with items:', cartItems.value)
+  // console.log('Proceeding to checkout with items:', cartItems.value)
   showDialog.value = true
 }
 
