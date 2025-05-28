@@ -200,13 +200,15 @@
             <div class="font-medium line-clamp-1">{{ product?.name }}</div>
             <div class="text-orange-500 font-bold">Rp {{ formatPrice(product?.price || 0) }}</div>
 
-            <QuantitySelector
-              v-model:totalPcs="jumlah"
-              :maxPcs="lihatStok"
-              :isiPerDus="product?.isi"
-              :satuan-besar="product?.satuan_b"
-              :satuan-kecil="product?.satuan_k"
-            />
+            <div class="my-4">
+              <QuantitySelector
+                v-model="jumlah"
+                :maxPcs="lihatStok(product)"
+                :isiPerDus="product?.isi"
+                :satuan-besar="product?.satuan_b"
+                :satuan-kecil="product?.satuan_k"
+              />
+            </div>
 
 
           </div>

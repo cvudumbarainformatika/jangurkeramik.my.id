@@ -2,10 +2,9 @@
   <div class="flex flex-col gap-2">
     <div class="flex items-center gap-4">
       <!-- Dus control -->
-      <div class="flex flex-col items-center">
-        <label class="text-sm text-gray-600 mb-1">{{ satuanBesar }}</label>
+      <div class="flex flex-row items-center gap-4">
         <div class="flex items-center border rounded-lg overflow-hidden shadow-sm">
-          <button @click="decrease('dus')" class="px-2 py-1 text-gray-700 hover:bg-gray-100 disabled:opacity-50" :disabled="dus <= 0">
+          <button @click="decrease('dus')" class="px-2 py-1 text-gray-700 hover:bg-gray-100 disabled:opacity-50" :disabled="dus < 0">
             <AppIcon name="minus" size="sm" />
           </button>
           <input
@@ -19,11 +18,12 @@
             <AppIcon name="plus" size="sm" />
           </button>
         </div>
+
+          <div class="text-sm text-gray-600 mb-1">{{ satuanBesar }}</div>
       </div>
 
       <!-- Pcs control -->
-      <div class="flex flex-col items-center">
-        <label class="text-sm text-gray-600 mb-1">{{ satuanKecil }}</label>
+      <div class="flex flex-row items-center gap-4">
         <div class="flex items-center border rounded-lg overflow-hidden shadow-sm">
           <button @click="decrease('pcs')" class="px-2 py-1 text-gray-700 hover:bg-gray-100 disabled:opacity-50" :disabled="pcs <= 0 && dus <= 0">
             <AppIcon name="minus" size="sm" />
@@ -40,12 +40,13 @@
             <AppIcon name="plus" size="sm" />
           </button>
         </div>
+        <label class="text-sm text-gray-600 mb-1">{{ satuanKecil }}</label>
       </div>
     </div>
 
     <!-- Info -->
     <div class="text-sm text-gray-500 text-center">
-      Total: <strong>{{ totalPcs }}</strong> {{ satuanKecil }} / Maksimum: {{ maxPcs }}
+      Total: <strong>{{ totalPcs || 0 }}</strong> {{ satuanKecil }} / Maksimum: {{ maxPcs }}
     </div>
   </div>
 </template>
@@ -61,6 +62,10 @@ const props = defineProps({
   satuanBesar: { type: String, default: 'dus' },
   satuanKecil: { type: String, default: 'pcs' },
 });
+
+console.log('modelValue',props.modelValue);
+console.log('maxPcs',props.maxPcs);
+
 
 const emit = defineEmits(['update:modelValue']);
 
