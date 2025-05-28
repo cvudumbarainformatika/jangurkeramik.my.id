@@ -3,14 +3,19 @@
     <div class="flex flex-col items-center mb-6">
       <!-- User avatar or initials -->
       <div class="mb-4">
-        <div v-if="user && user.avatar && !avatarError" class="relative">
-          <img 
+        <div v-if="user" class="relative">
+          <!-- <img 
             :src="optimizedAvatarUrl" 
             :alt="user.nama || user.name" 
             class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
             @error="handleAvatarError"
             loading="eager"
             referrerpolicy="no-referrer"
+          /> -->
+          <AppAvatar
+            :user="user"
+            size="20"
+            alt="Avatar"
           />
           <div class="absolute bottom-0 right-0 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
         </div>
@@ -18,13 +23,13 @@
           v-else 
           class="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg"
         >
-          {{ userInitials }}
+          AA
         </div>
       </div>
       
       <!-- User name and email -->
       <div class="text-4xl font-bold text-gray-800 text-center">{{ user.nama || user.name }}</div>
-      <p class="text-gray-500">{{ user.email }}</p>
+      <p class="text-gray-500">{{ user.username }}</p>
       
       <!-- User role badge -->
       <div class="mt-2 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
@@ -86,6 +91,8 @@
 <script setup>
 import { defineAsyncComponent, ref, onMounted, computed } from 'vue';
 
+const AppAvatar = defineAsyncComponent(() => import('src/components/atoms/AppAvatar.vue'))
+
 const AppIcon = defineAsyncComponent(() => 
   import('../../atoms/AppIcon.vue')
 );
@@ -120,6 +127,7 @@ const optimizedAvatarUrl = computed(() => {
 });
 
 // Handler untuk error loading avatar
+// eslint-disable-next-line no-unused-vars
 const handleAvatarError = (event) => {
   console.error('Error loading avatar image:', event);
   avatarError.value = true;

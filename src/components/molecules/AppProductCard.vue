@@ -10,7 +10,7 @@
     ]">
       <AppProductImage
         :src="product?.images?.length 
-          ? product?.images.find(x=>x?.flag_thumbnail === '1')?.gambar 
+          ? product?.images.find(x=>x?.flag_thumbnail === '1')?.gambar || product?.images[0]?.gambar
           : null"
         :alt="product?.name"
         :aspect="viewMode === 'grid' ? (product.images.length ? '1/1' : '1/1') : ''"
@@ -18,9 +18,12 @@
       />
 
       <!-- Badges -->
-      <div class="absolute top-2 left-2 flex flex-col gap-1">
-        <!-- <span v-if="product.isNew" class="bg-blue-500 text-white text-xs px-2 py-1 rounded-full">Baru</span> -->
-        <span v-if="product.discount" class="bg-primary text-white text-xs px-2 py-1 rounded-full">-{{ product?.discount }}%</span>
+      <div class="absolute bottom-1 right-1 flex flex-col gap-1">
+        <span v-if="auth?.user" 
+          :class="`${setStok(product)==='No Stok'? 'bg-orange-800':'bg-orange-500'} text-white px-2 py-1 rounded-full`" style="font-size: 0.60rem;">
+
+          {{ setStok(product) }}
+        </span>
       </div>
 
       <!-- Quick Actions -->
@@ -44,7 +47,7 @@
       viewMode === 'grid' ? '' : 'w-2/3'
     ]">
       <div class="mb-1 flex items-center">
-        <span class="text-xs text-gray-500 truncate overflow-hidden whitespace-nowrap">{{ product?.category }}</span>
+        <div class="text-xs text-gray-700 truncate overflow-hidden whitespace-nowrap">{{ product?.category }}</div>
         <div class="ml-auto flex">
           <!-- <AppIcon
             v-for="i in 5"
@@ -58,17 +61,17 @@
 
       <!-- Title with fixed height container -->
       <div :class="[
-        viewMode === 'grid' ? 'h-16' : 'h-auto'
+        viewMode === 'grid' ? 'h-14' : 'h-auto'
       ]">
         <div :class="[
-          'font-semibold group-hover:text-orange-500 transition-colors',
-          viewMode === 'grid' ? 'text-md xs:text-sm sm:text-sm md:text-md lg:text-lg xl:text-xl line-clamp-2' : 'text-lg'
+          'text-xs sm:text-sm font-semibold group-hover:text-orange-500 transition-colors',
+          viewMode === 'grid' ? 'line-clamp-2' : ''
         ]">
           {{ product?.name }}
         </div>
       </div>
 
-      <p v-if="viewMode === 'list'" class="text-gray-600 mb-4 line-clamp-3">
+      <p v-if="viewMode === 'list'" class="text-gray-600 mb-4 line-clamp-2">
         {{ product?.namagabung || 'Product berkualitas tinggi dengan desain modern yang cocok untuk berbagai ruangan.' }}
       </p>
 
@@ -80,14 +83,14 @@
           <!-- <span v-if="product.discountPrice" class="text-gray-500 text-sm line-through">
             Rp {{ formatPrice(product.price) }}
           </span> -->
-          <span class="text-orange-500 font-bold text-base">
+          <span class="text-sm text-orange-500 font-bold text-base">
             Rp {{ formatPrice(product?.discountPrice || product?.price) }}
           </span>
         </div>
 
-        <button class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-lg transition-colors">
+        <!-- <button class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded-lg transition-colors">
           Beli
-        </button>
+        </button> -->
       </div>
     </div>
   </div>
@@ -99,7 +102,13 @@ import { defineAsyncComponent } from 'vue';
 import AppIconButton from '../atoms/AppIconButton.vue';
 // import AppProductImage from 'src/components/organisms/product/AppProductImage.vue';
 
+import { useAuthStore } from 'src/stores/auth-store'
+import { formatStok } from 'src/modules/konversi'
+
 const AppProductImage = defineAsyncComponent(() => import('src/components/organisms/product/AppProductImage.vue'));
+
+const auth = useAuthStore()
+
 
 defineProps({
   product: {
@@ -116,5 +125,14 @@ const emit = defineEmits(['view-product']);
 
 function formatPrice(price) {
   return new Intl.NumberFormat('id-ID').format(price);
+}
+
+function setStok(product){
+  const data = product?.stoks || []
+  const totalJumlahK = data?.reduce((total, item) => {
+    return total + parseInt(item.jumlah_k || 0);
+  }, 0);
+
+  return formatStok(totalJumlahK, product?.isi, product?.satuan_b, product?.satuan_k, 'No Stok')
 }
 </script>

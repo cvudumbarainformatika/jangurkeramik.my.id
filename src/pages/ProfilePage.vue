@@ -21,6 +21,17 @@
           <path d="M19 21H5a2 2 0 01-2-2V7a2 2 0 012-2h4l2-2h2l2 2h4a2 2 0 012 2v12a2 2 0 01-2 2z"/>
         </svg>
       </button>
+
+      <button
+        class="absolute top-4 left-4 bg-primary text-white rounded-full p-2 shadow hover:bg-primary-dark transition"
+        title="Edit Profil"
+        @click="$router.back()"
+      >
+        <AppIcon name="undo-2" color="white"></AppIcon>
+      </button>
+
+
+
       <div class="mt-4 text-center">
         <div class="text-2xl font-bold text-gray-800 capitalize">{{ user.nama }}</div>
         <div class="text-sm text-gray-500 mb-1">{{ user.email }}</div>
@@ -70,6 +81,7 @@
 <script setup>
 import { computed, defineAsyncComponent } from 'vue'
 import { useAuthStore } from 'src/stores/auth-store'
+import AppIcon from 'src/components/atoms/AppIcon.vue'
 
 const AppAvatar = defineAsyncComponent(() => import('src/components/atoms/AppAvatar.vue'))
 
@@ -84,10 +96,4 @@ function formatDate(dateStr) {
 </script>
 
 <style scoped>
-.bg-primary {
-  @apply bg-blue-600;
-}
-.bg-primary-dark {
-  @apply bg-blue-800;
-}
 </style>

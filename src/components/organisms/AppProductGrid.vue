@@ -41,7 +41,7 @@
     <!-- Products Grid -->
     <div :class="[
       viewMode === 'grid'
-        ? '!grid !grid-cols-2 sm:!grid-cols-2 md:!grid-cols-3 lg:!grid-cols-3 xl:!grid-cols-3 2xl:!grid-cols-4 gap-2 md:gap-4'
+        ? '!grid !grid-cols-3 sm:!grid-cols-3 md:!grid-cols-3 lg:!grid-cols-3 xl:!grid-cols-3 2xl:!grid-cols-4 gap-1 md:gap-4'
         : 'space-y-4'
     ]">
       <!-- <div class="grid grid-flow-col grid-rows-4 gap-4"> -->

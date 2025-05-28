@@ -1,21 +1,28 @@
 <template>
   <div>
-    <div class="mb-6">
+    <div class="text-center mb-8">
+      <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/20">
+        <AppIcon name="user" size="xl" class="text-white" />
+      </div>
+      <div class="text-lg font-medium text-gray-800 mb-2">Masuk ke Akun Anda</div>
+      <p class="text-gray-500">Akses fitur eksklusif dan kelola pesanan Anda</p>
+    </div>
+    <!-- <div class="mb-6">
       <h4 class="text-lg font-medium text-gray-800 mb-2">Masuk dengan Email</h4>
       <p class="text-gray-500">Masukkan email dan password Anda</p>
-    </div>
+    </div> -->
     
     <!-- Login form -->
     <form @submit.prevent="$emit('login')" class="space-y-4">
       <!-- Email input -->
       <div>
-        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
         <input 
           id="email"
           v-model="localEmail"
-          type="email" 
+          type="text" 
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
-          placeholder="nama@email.com"
+          placeholder="username"
           required
         />
       </div>
@@ -101,7 +108,7 @@ const localPassword = ref(props.loginForm.password);
 watch(localEmail, (newValue) => {
   emit('update:loginForm', {
     ...props.loginForm,
-    email: newValue
+    email: newValue + '@gmail.com'
   });
 });
 

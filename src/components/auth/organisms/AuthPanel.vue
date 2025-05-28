@@ -7,15 +7,15 @@
     
     <!-- Not logged in state with modern UI -->
     <div v-if="!isLoggedIn" class="p-6">
-      <AuthOptionsView 
+      <!-- <AuthOptionsView 
         v-if="currentView === 'options'"
         @login-with-google="$emit('login-with-google')"
         @email-login="$emit('set-current-view', 'email-login')"
         @register="$emit('register')"
-      />
+      /> -->
       
       <AuthEmailLoginView
-        v-else-if="currentView === 'email-login'"
+        v-if="currentView === 'email-login' || currentView === 'options'"
         :login-form="loginForm"
         @update:loginForm="$emit('update:loginForm', $event)"
         :show-password="showPassword"
@@ -73,9 +73,9 @@ const AuthHeader = defineAsyncComponent(() =>
 );
 
 // Lazy load view components - hanya dimuat saat diperlukan
-const AuthOptionsView = defineAsyncComponent(() => 
-  import('./AuthOptionsView.vue')
-);
+// const AuthOptionsView = defineAsyncComponent(() => 
+//   import('./AuthOptionsView.vue')
+// );
 const AuthEmailLoginView = defineAsyncComponent(() => 
   import('./AuthEmailLoginView.vue')
 );

@@ -18,39 +18,33 @@
         </template>
 
         <!-- Controls overlay - always visible -->
-        <div class="absolute top-8 px-4 py-1 w-full">
+        <div class="absolute top-10 px-4 py-1 w-full">
           <div class="flex items-center justify-start">
-            <button
-              @click="$router.back()"
-              class="flex text-white hover:bg-white/10 rounded-full transition-colors"
+             <button
+              class="bg-primary text-white rounded-full p-2 shadow hover:bg-primary-dark transition transition-colors"
+              title="Edit Profil"
+              @click="$router.push('/')"
             >
-              <AppIcon
-                name="chevron-left"
-                size="xl"
-                color="primary"
-                customClass="text-orange"
-              />
+              <AppIcon name="undo-2" color="white"></AppIcon>
             </button>
+            
 
             <div class="flex-1 w-full flex flex-row gap-4 justify-end items-center">
-              <button @click="addToWishlist"
-                class="flex text-white hover:bg-white/10 rounded-full transition-colors"
+              <button 
+                @click="addToWishlist"
+                class="bg-primary text-white rounded-full p-2 shadow hover:bg-primary-dark transition transition-colors"
               >
                 <AppIcon
                   name="heart"
-                  size="xl"
-                  color="primary"
-                  customClass="text-orange"
+                  color="white"
                 />
               </button>
               <button 
-                class="flex text-white hover:bg-white/10 rounded-full transition-colors"
+                class="bg-primary text-white rounded-full p-2 shadow hover:bg-primary-dark transition transition-colors"
               >
                 <AppIcon
-                  name="share"
-                  size="xl"
-                  color="primary"
-                  customClass="text-orange"
+                  name="external-link"
+                  color="white"
                 />
               </button>
             </div>
@@ -61,7 +55,7 @@
 
     <div class="container mx-auto px-4 pb-20 relative z-1">
       <!-- Product Info with Skeleton -->
-      <div class="mb-6 pt-10">
+      <div class="mb-6 pt-6">
         <div class="flex items-start">
           <div class="flex flex-col flex-1">
             <template v-if="isLoading">
@@ -70,21 +64,38 @@
               <div class="h-6 bg-gray-200 rounded-md w-1/2 animate-pulse"></div>
             </template>
             <template v-else>
-              <div class="text-2xl font-medium line-clamp-2 w-full">{{ product?.name }}</div>
-              <div class="flex items-center flex-wrap gap-2 mt-2">
-                <div class="bg-orange-500/80 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center text-md text-white/80">
-                  <AppIcon name="eye" size="md" class="mr-1 text-white/80" />
-                  <span class="font-medium">{{ product?.views?.views || 0 }}</span>
+              <div class="text-sm line-clamp-2 w-full">{{ product?.category }}</div>
+              <div class="text-xl font-medium line-clamp-2 w-full">{{ product?.name }}</div>
+              <div class="text-md font-medium line-clamp-3 w-full text-gray-500">{{ product?.namagabung }}</div>
+
+              <div class="flex items-center justify-between">
+                <div class="flex items-center flex-wrap gap-2 mt-2">
+                  <div class="bg-orange-500 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center text-md text-white/80">
+                    <AppIcon name="eye" size="md" class="mr-1 text-white/80" />
+                    <span class="font-medium">{{ product?.views?.views || 0 }}</span>
+                  </div>
+
+                  <!-- Stock Indicator - Glowing Badge -->
+                  <div v-if="product?.likes" class="relative">
+                    <div class="bg-orange-500 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center text-md">
+                      <AppIcon name="heart" size="md" class="mr-1 text-white/80" />
+                      <span class="font-medium text-white/80">{{ product?.likes?.likes || 0 }}</span>
+                    </div>
+                  </div>
+                
                 </div>
 
-                <!-- Stock Indicator - Glowing Badge -->
-                <div v-if="product?.likes" class="relative">
-                  <div class="bg-orange-500/80 backdrop-blur-md px-2 py-0.5 rounded-full flex items-center text-md">
-                    <AppIcon name="heart" size="md" class="mr-1 text-white/80" />
-                    <span class="font-medium text-white/80">{{ product?.likes?.likes || 0 }}</span>
+                <div>
+                  <div :class="`${setStok(product)==='No Stok'? 'bg-orange-800':'bg-orange-500'} text-white font-medium px-2 py-1 rounded-full`">
+                    <span v-if="auth?.user" 
+                      >
+
+                      {{ setStok(product) }}
+                    </span>
                   </div>
                 </div>
               </div>
+              
             </template>
           </div>
         </div>
@@ -105,21 +116,6 @@
         </div>
       </div>
 
-      <!-- Description Skeleton -->
-      <!-- <div v-if="product?.category === 'Keramik' || product?.category === 'keramik' || isLoading" class="mb-6">
-        <div class="text-lg font-semibold mb-2">Deskripsi</div>
-        <template v-if="isLoading">
-          <div class="space-y-2">
-            <div class="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
-            <div class="h-4 bg-gray-200 rounded w-5/6 animate-pulse"></div>
-            <div class="h-4 bg-gray-200 rounded w-4/6 animate-pulse"></div>
-          </div>
-        </template>
-        <template v-else>
-          <p class="text-gray-700">{{ product?.description }}</p>
-        </template>
-      </div> -->
-
       <!-- Specifications Skeleton -->
       <div class="mb-6">
         <div class="text-lg font-semibold mb-2">Spesifikasi</div>
@@ -127,8 +123,8 @@
           <div class="grid grid-cols-2 gap-y-3">
             <template v-if="isLoading">
               <template v-for="(_, index) in 4" :key="index">
-                <div class="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
-                <div class="h-4 bg-gray-200 rounded w-24 animate-pulse"></div>
+                <div class="h-2 bg-gray-200 rounded w-20 animate-pulse"></div>
+                <div class="h-2 bg-gray-200 rounded w-24 animate-pulse"></div>
               </template>
             </template>
             <template v-else>
@@ -149,10 +145,10 @@
       <div v-if="auth.isLoggedIn" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg flex items-center gap-3">
         <!-- Cart Icon with Badge -->
         <div
-          class="relative w-12 h-12 flex-shrink-0 bg-orange-100 rounded-full flex items-center justify-center cursor-pointer"
+          class="relative w-12 h-12 flex-shrink-0 bg-primary rounded-full flex items-center justify-center cursor-pointer"
           @click="goToCart"
         >
-          <AppIcon name="shopping-cart" size="md" class="text-orange-500" />
+          <AppIcon name="shopping-cart" size="md" color="white" />
           <div
             v-if="cartCount > 0"
             class="absolute -top-1 -right-1 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full border border-white"
@@ -164,9 +160,9 @@
         <!-- Add to Cart Button -->
         <button
           class="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 rounded-full flex items-center justify-center hover:shadow-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300"
-          @click="addedToCart"
+          @click="setQuantity"
         >
-          <AppIcon name="plus" size="sm" class="mr-2" />
+          <AppIcon name="plus" size="md" class="mr-2" color="white" />
           Masukkan Keranjang
         </button>
       </div>
@@ -183,10 +179,10 @@
     <Transition name="slide-up">
       <div
         v-if="showQuickBuyOptions"
-        class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-30"
+        class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 shadow-xl z-30"
       >
         <div class="flex justify-between items-center mb-3 border-b border-gray-300 px-4 py-2">
-          <div class="font-medium text-gray-800">Produk Berahasil ditambahkan ke keranjang</div>
+          <div class="font-medium text-gray-800">Harap Set Quantity Pesanan</div>
           <button @click="showQuickBuyOptions = false" class="p-1">
             <AppIcon name="x" size="sm" class="text-gray-500" />
           </button>
@@ -203,6 +199,16 @@
           <div class="flex-1">
             <div class="font-medium line-clamp-1">{{ product?.name }}</div>
             <div class="text-orange-500 font-bold">Rp {{ formatPrice(product?.price || 0) }}</div>
+
+            <QuantitySelector
+              v-model:totalPcs="jumlah"
+              :maxPcs="lihatStok"
+              :isiPerDus="product?.isi"
+              :satuan-besar="product?.satuan_b"
+              :satuan-kecil="product?.satuan_k"
+            />
+
+
           </div>
         </div>
 
@@ -244,7 +250,11 @@ import { storeToRefs } from 'pinia';
 import { useCartStore } from 'src/stores/cart-store';
 import { useAuthStore } from 'src/stores/auth-store';
 import { useToast } from 'src/composables/useToast.js';
+import { formatStok } from 'src/modules/konversi'
+
+
 const AppProductImage = defineAsyncComponent(()=> import('src/components/organisms/product/AppProductImage.vue'))
+const QuantitySelector = defineAsyncComponent(()=> import('src/components/atoms/QuantitySelector.vue'))
 
 const route = useRoute();
 const router = useRouter();
@@ -265,6 +275,8 @@ const showQuickBuyOptions = ref(false);
 const isNavigating = ref(false);
 const isLoading = ref(true);
 
+const jumlah = ref(1)
+
 onMounted(async () => {
   const productId = route.params.id;
   isLoading.value = true;
@@ -278,25 +290,21 @@ onMounted(async () => {
   }
 });
 
-// Add loading state when route changes
-watch(() => route.params.id, async (newId) => {
-  if (newId) {
-    isLoading.value = true;
-    try {
-      await getProductId(newId);
-    } catch (error) {
-      console.error('Error loading product:', error);
-    } finally {
-      isLoading.value = false;
-    }
-  }
-});
-
 function formatPrice(price) {
   return new Intl.NumberFormat('id-ID').format(price || 0);
 }
 
-function addedToCart() {
+function setStok(product){
+  const data = product?.stoks || []
+  const totalJumlahK = data?.reduce((total, item) => {
+    return total + parseInt(item.jumlah_k || 0);
+  }, 0);
+
+  return formatStok(totalJumlahK, product?.isi, product?.satuan_b, product?.satuan_k, 'No Stok')
+}
+
+
+function setQuantity() {
   // Add to cart logic
   // console.log('Adding to cart:', product.value);
 
@@ -305,7 +313,30 @@ function addedToCart() {
 
   // Always show quick buy options regardless of device
   showQuickBuyOptions.value = true;
-  
+
+  // In a real app, you would also update your cart store
+  // addToCart(product.value);
+  // showToast('Produk berhasil ditambahkan ke keranjang', {
+  //   type: 'success',
+  //   position: 'top',
+  //   duration: 3000
+  // })
+  // showToast('Produk berhasil ditambahkan ke keranjang', {
+  //   type: 'brand',
+  //   showBrandIcon: true,
+  //   position: 'top',
+  //   duration: 3000
+  // })
+}
+
+// eslint-disable-next-line no-unused-vars
+function addedToCart() {
+
+  // Set the added product for the mini cart
+  addedProduct.value = product.value;
+
+  // Always show quick buy options regardless of device
+  showQuickBuyOptions.value = true;
 
   // In a real app, you would also update your cart store
   addToCart(product.value);
@@ -320,6 +351,14 @@ function addedToCart() {
     position: 'top',
     duration: 3000
   })
+}
+
+function lihatStok(product){
+  const data = product?.stoks || []
+  const totalJumlahK = data?.reduce((total, item) => {
+    return total + parseInt(item.jumlah_k || 0);
+  }, 0);
+  return totalJumlahK
 }
 
 function goToCart() {
@@ -345,6 +384,21 @@ function addToWishlist() {
 watch(showMiniCart, (newVal) => {
   if (newVal) {
     showQuickBuyOptions.value = false;
+  }
+});
+
+
+// Add loading state when route changes
+watch(() => route.params.id, async (newId) => {
+  if (newId) {
+    isLoading.value = true;
+    try {
+      await getProductId(newId);
+    } catch (error) {
+      console.error('Error loading product:', error);
+    } finally {
+      isLoading.value = false;
+    }
   }
 });
 </script>
