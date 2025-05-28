@@ -1,124 +1,154 @@
 <template>
-  <div class="flex flex-col gap-2">
-    <div class="flex items-center gap-4">
-      <!-- Dus control -->
-      <div class="flex flex-row items-center gap-4">
-        <div class="flex items-center border rounded-lg overflow-hidden shadow-sm">
-          <button @click="decrease('dus')" class="px-2 py-1 text-gray-700 hover:bg-gray-100 disabled:opacity-50" :disabled="dus < 0">
-            <AppIcon name="minus" size="sm" />
-          </button>
-          <input
-            type="number"
-            class="w-16 text-center py-1 border-x border-gray-200 focus:outline-none"
-            v-model.number="dus"
-            @input="syncTotal"
-            min="0"
-          />
-          <button @click="increase('dus')" class="px-2 py-1 text-gray-700 hover:bg-gray-100" :disabled="isMax">
-            <AppIcon name="plus" size="sm" />
-          </button>
-        </div>
+  <div class="flex items-center gap-1">
+    <!-- Decrease Button -->
+    <button
+      @click="decrease"
+      class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-l-md hover:bg-gray-100 disabled:opacity-50"
+      :disabled="modelValue <= 0"
+    >
+      <AppIcon name="minus" size="sm" />
+    </button>
 
-          <div class="text-sm text-gray-600 mb-1">{{ satuanBesar }}</div>
-      </div>
+    <!-- Input Field -->
+    <input
+      type="number"
+      class="w-16 h-8 text-center border-t border-b border-gray-300 bg-white focus:outline-none focus:ring"
+      :value="displayValue"
+      @input="onInput($event.target.value)"
+      :max="inputMode === 'pcs' ? maxPcs : Math.floor(maxPcs / isi)"
+      min="0"
+    />
 
-      <!-- Pcs control -->
-      <div class="flex flex-row items-center gap-4">
-        <div class="flex items-center border rounded-lg overflow-hidden shadow-sm">
-          <button @click="decrease('pcs')" class="px-2 py-1 text-gray-700 hover:bg-gray-100 disabled:opacity-50" :disabled="pcs <= 0 && dus <= 0">
-            <AppIcon name="minus" size="sm" />
-          </button>
-          <input
-            type="number"
-            class="w-16 text-center py-1 border-x border-gray-200 focus:outline-none"
-            v-model.number="pcs"
-            @input="syncTotal"
-            min="0"
-            :max="isiPerDus - 1"
-          />
-          <button @click="increase('pcs')" class="px-2 py-1 text-gray-700 hover:bg-gray-100" :disabled="isMax">
-            <AppIcon name="plus" size="sm" />
-          </button>
-        </div>
-        <label class="text-sm text-gray-600 mb-1">{{ satuanKecil }}</label>
-      </div>
+    <!-- Increase Button -->
+    <button
+      @click="increase"
+      class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-r-md hover:bg-gray-100 disabled:opacity-50"
+      :disabled="jumlahTotal >= maxPcs"
+    >
+      <AppIcon name="plus" size="sm" />
+    </button>
+
+    <!-- Satuan Toggle Buttons -->
+    <div class="flex border border-gray-300 rounded-md overflow-hidden">
+      <button
+        class="px-3 h-8 text-sm focus:outline-none"
+        :class="inputMode === 'pcs' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+        @click="handleSatuanKecil"
+      >
+        {{ satuanKecil }}
+      </button>
+      <button
+        class="px-3 h-8 text-sm focus:outline-none disabled:opacity-50 relative"
+        :class="inputMode === 'dus' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+        @click="handleSatuanBesar"
+        :disabled="maxPcs < isi"
+      >
+        {{ satuanBesar }}
+        <span
+          v-if="showTooltip"
+          class="absolute top-full mt-1 text-xs bg-black text-white px-2 py-1 rounded shadow z-10"
+        >
+          Stok belum cukup untuk {{ satuanBesar }}
+        </span>
+      </button>
     </div>
 
-    <!-- Info -->
-    <div class="text-sm text-gray-500 text-center">
-      Total: <strong>{{ totalPcs || 0 }}</strong> {{ satuanKecil }} / Maksimum: {{ maxPcs }}
-    </div>
+    <!-- Label
+    <span class="text-sm text-gray-600 whitespace-nowrap">
+      {{ jumlahTotal }}
+    </span> -->
   </div>
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import AppIcon from 'src/components/atoms/AppIcon.vue'
 
 const props = defineProps({
-  modelValue: Number,
-  maxPcs: Number,
-  isiPerDus: Number,
-  satuanBesar: { type: String, default: 'dus' },
-  satuanKecil: { type: String, default: 'pcs' },
+  modelValue: { type: Number, required: true },
+  maxPcs: { type: Number, default: 1000 },
+  isiPerDus: { type: [Number, String], default: 1 },
+  satuanBesar: { type: String, default: 'Dus' },
+  satuanKecil: { type: String, default: 'Pcs' },
 });
 
-console.log('modelValue',props.modelValue);
-console.log('maxPcs',props.maxPcs);
+const emit = defineEmits(['update:modelValue', 'update:inputMode']);
 
+const isi = computed(() => parseInt(props.isiPerDus) || 1);
+const inputMode = ref('pcs');
+const showTooltip = ref(false);
 
-const emit = defineEmits(['update:modelValue']);
-
-const dus = ref(0);
-const pcs = ref(0);
-
-const totalPcs = computed(() => dus.value * props.isiPerDus + pcs.value);
-const isMax = computed(() => totalPcs.value >= props.maxPcs);
-
-const syncTotal = () => {
-  let total = dus.value * props.isiPerDus + pcs.value;
-  if (total > props.maxPcs) total = props.maxPcs;
-
-  dus.value = Math.floor(total / props.isiPerDus);
-  pcs.value = total % props.isiPerDus;
-
-  emit('update:modelValue', total);
-};
-
-const increase = (type) => {
-  let total = totalPcs.value;
-  if (total >= props.maxPcs) return;
-
-  if (type === 'dus') dus.value++;
-  else if (type === 'pcs') pcs.value++;
-
-  syncTotal();
-};
-
-const decrease = (type) => {
-  if (type === 'dus' && dus.value > 0) dus.value--;
-  else if (type === 'pcs' && pcs.value > 0) pcs.value--;
-
-  syncTotal();
-};
-
-watch(
-  () => props.modelValue,
-  (val) => {
-    dus.value = Math.floor(val / props.isiPerDus);
-    pcs.value = val % props.isiPerDus;
+const jumlahTotal = computed({
+  get: () => props.modelValue,
+  set: (val) => {
+    const nilai = Math.max(0, Math.min(props.maxPcs, parseInt(val) || 0));
+    emit('update:modelValue', nilai);
   },
-  { immediate: true }
-);
+});
+
+const displayValue = computed(() => {
+  return inputMode.value === 'dus'
+    ? Math.floor(jumlahTotal.value / isi.value)
+    : jumlahTotal.value;
+});
+
+function onInput(val) {
+  const parsed = parseInt(val) || 0;
+  jumlahTotal.value = inputMode.value === 'dus'
+    ? parsed * isi.value
+    : parsed;
+}
+
+function increase() {
+  const step = inputMode.value === 'dus' ? isi.value : 1;
+  if (jumlahTotal.value + step <= props.maxPcs) {
+    jumlahTotal.value += step;
+  }
+}
+
+function decrease() {
+  const step = inputMode.value === 'dus' ? isi.value : 1;
+  if (jumlahTotal.value - step >= 0) {
+    jumlahTotal.value -= step;
+  }
+}
+
+function handleSatuanBesar(){
+  if (props.maxPcs < isi.value) {
+    alert('Stok belum cukup untuk ' + props.satuanBesar)
+    return
+  }
+  inputMode.value = 'dus'
+  emit('update:inputMode', props.satuanBesar)
+}
+function handleSatuanKecil(){
+  inputMode.value = 'pcs'
+  emit('update:inputMode', props.satuanKecil)
+}
+
+// const labelOutput = computed(() => {
+//   const total = jumlahTotal.value;
+//   const besar = Math.floor(total / isi.value);
+//   const kecil = total % isi.value;
+
+//   if (total === 0) return 'Stok habis';
+
+//   const result = [];
+//   if (besar > 0) result.push(`${besar} ${props.satuanBesar}`);
+//   if (kecil > 0) result.push(`${kecil} ${props.satuanKecil}`);
+
+//   return result.join(' + ');
+// });
+
+watch(inputMode, () => {
+  jumlahTotal.value = 0;
+});
 </script>
 
 <style scoped>
-input[type='number']::-webkit-outer-spin-button,
-input[type='number']::-webkit-inner-spin-button {
+input::-webkit-inner-spin-button,
+input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
-}
-input[type='number'] {
-  -moz-appearance: textfield;
 }
 </style>

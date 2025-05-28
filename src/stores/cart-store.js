@@ -20,23 +20,26 @@ export const useCartStore = defineStore('cart', {
 
   actions: {
     addToCart(newItem) {
-      const existing = this.items.find((item) => item.barang_id === newItem.id)
-      if (existing) {
-        const qty = Number(newItem?.quantity) || 1
-        existing.quantity += qty
-      } else {
+      // console.log('store', newItem);
+      // this.items = []
+      
+      // const existing = this.items.find((item) => item.barang_id === newItem.id)
+      // if (existing) {
+      //   const qty = Number(newItem?.quantity) || 1
+      //   existing.quantity += qty
+      // } else {
         this.items.push({
           barang_id: newItem.id,
           name: newItem.name,
           image: newItem.image,
-          quantity: 1,
+          quantity: newItem.quantity,
           price: parseFloat(newItem.price),
           synced: false,
         })
-      }
-
+      // }
+      const lastIndex = this.items?.length - 1;
       // Segera sync 1 item saja
-      this.syncItemToServer(newItem.id)
+      this.syncItemToServer(lastIndex)
     },
 
     updateCartItemQuantity(itemId, newQty) {
@@ -99,8 +102,8 @@ export const useCartStore = defineStore('cart', {
       }
     },
 
-    async syncItemToServer(product_id) {
-      const item = this.items.find((i) => i.barang_id === product_id)
+    async syncItemToServer(index) {
+      const item = this.items[index]
       if (!item || item.synced) return
 
       // console.log(item);
@@ -112,7 +115,7 @@ export const useCartStore = defineStore('cart', {
       }
 
       try {
-        await api.post('/api/v2/cart', payload)
+        await api.post('api/v2/cart', payload)
 
         item.synced = true
       } catch (error) {

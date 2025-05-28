@@ -142,9 +142,10 @@
       </div>
 
       <!-- Fixed Bottom Action Buttons -->
-      <div v-if="auth.isLoggedIn" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg flex items-center gap-3">
+      <div v-if="auth.isLoggedIn && lihatStok(product) > 0" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg flex items-center gap-3">
         <!-- Cart Icon with Badge -->
         <div
+          
           class="relative w-12 h-12 flex-shrink-0 bg-primary rounded-full flex items-center justify-center cursor-pointer"
           @click="goToCart"
         >
@@ -165,6 +166,7 @@
           <AppIcon name="plus" size="md" class="mr-2" color="white" />
           Masukkan Keranjang
         </button>
+        
       </div>
     </div>
 
@@ -207,6 +209,10 @@
                 :isiPerDus="product?.isi"
                 :satuan-besar="product?.satuan_b"
                 :satuan-kecil="product?.satuan_k"
+                @update:input-mode="(val)=> {
+                  console.log(val);
+                  satuan = val
+                }"
               />
             </div>
 
@@ -223,7 +229,7 @@
             Lanjut Belanja
           </button>
           <button
-            @click="goToCart"
+            @click="addedToCart"
             class="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2 rounded-full flex items-center justify-center hover:shadow-lg hover:from-orange-600 hover:to-orange-700 active:scale-95 transition-all disabled:opacity-80"
             :disabled="isNavigating"
           >
@@ -232,8 +238,8 @@
               Menuju Keranjang...
             </template>
             <template v-else>
-              <AppIcon name="shopping-cart" size="sm" class="mr-1" />
-              Lihat Keranjang
+              <AppIcon name="shopping-cart" size="sm" class="mr-1" color="white" />
+              Masuk Keranjang
             </template>
           </button>
         </div>
@@ -267,7 +273,8 @@ const { product } = storeToRefs(productStore);
 const { getProductId, wishlist } = productStore;
 
 const { cartCount } = storeToRefs(cartStore)
-const {addToCart} = cartStore
+ 
+const { addToCart } = cartStore
 const { showToast } = useToast()
 
 // State for mini cart
@@ -277,7 +284,8 @@ const showQuickBuyOptions = ref(false);
 const isNavigating = ref(false);
 const isLoading = ref(true);
 
-const jumlah = ref(1)
+const jumlah = ref(0)
+const satuan = ref(product.satuan_k)
 
 onMounted(async () => {
   const productId = route.params.id;
@@ -331,17 +339,26 @@ function setQuantity() {
   // })
 }
 
-// eslint-disable-next-line no-unused-vars
+ 
 function addedToCart() {
+  const quantity = jumlah.value
+  const unit = satuan.value
+  const item = {
+    ... product.value,
+    quantity,unit
+  }
 
   // Set the added product for the mini cart
-  addedProduct.value = product.value;
+  addedProduct.value = item;
 
   // Always show quick buy options regardless of device
-  showQuickBuyOptions.value = true;
+  showQuickBuyOptions.value = false;
+
+  // console.log('added', item, jumlah.value );
+  
 
   // In a real app, you would also update your cart store
-  addToCart(product.value);
+  addToCart(item);
   // showToast('Produk berhasil ditambahkan ke keranjang', {
   //   type: 'success',
   //   position: 'top',
