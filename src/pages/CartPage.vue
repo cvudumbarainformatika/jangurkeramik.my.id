@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-200">
     <!-- Header -->
-    <div class="sticky top-0 z-10 px-4 pt-10 pb-4 bg-white shadow-sm">
+    <div class="sticky top-0 z-10 px-2 pt-10 pb-4 bg-white shadow-sm">
       <div class="flex items-center">
         <!-- Back Button -->
         <button
@@ -15,7 +15,7 @@
       </div>
     </div>
 
-    <div class="container mx-auto px-4 py-6">
+    <div class="container mx-auto px-2 py-4">
       <!-- Empty Cart State -->
       <div v-if="cartItems.length === 0" class="text-center py-16 bg-white rounded-xl shadow-sm">
         <AppIcon name="shopping-cart" size="xl" class="mx-auto mb-4 text-gray-300" />
@@ -33,14 +33,14 @@
       <div v-else>
         <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-4">
           <div class="p-4 border-b border-gray-100">
-            <div class="font-semibold">Produk dalam Keranjang ({{ cartItems?.length }})</div>
-            <div class="font-semibold">Jumlah Item dalam Keranjang ({{ cartCount }})</div>
+            <div class="text-xs font-semibold">Produk dalam Keranjang ({{ cartItems?.length }})</div>
+            <!-- <div class="text-xs font-semibold">Jumlah Item dalam Keranjang ({{ cartCount }})</div> -->
           </div>
 
           <div
             v-for="(item, index) in cartItems"
-            :key="item.id"
-            class="p-4 border-b border-gray-100 last:border-b-0"
+            :key="index"
+            class="px-2 py-4 border-b border-gray-100 last:border-b-0 relative"
           >
             <div class="flex gap-3">
               <!-- Product Image -->
@@ -54,12 +54,12 @@
 
               <!-- Product Details -->
               <div class="flex-1">
-                <div class="font-medium line-clamp-2">{{ item?.name }}</div>
-                <div class="text-orange-500 font-bold mt-1">Rp {{ formatPrice(item?.price) }}</div>
+                <div class="font-medium line-clamp-2">{{ item?.product?.name }}</div>
+                <div class="text-orange-500 font-bold mt-1">Rp {{ formatPrice(item?.subtotal) }}</div>
 
                 <!-- Quantity Controls -->
                 <div class="flex items-center mt-2">
-                  <button
+                  <!-- <button
                     @click="decreaseQuantity(index)"
                     class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-l-md"
                     :disabled="item.quantity <= 1"
@@ -76,12 +76,33 @@
                     class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-r-md"
                   >
                     <AppIcon name="plus" size="sm" />
-                  </button>
+                  </button> -->
+                  <QuantitySelector
+                    v-model="item.quantity"
+                    :maxPcs="1000"
+                    :isiPerDus="item?.product?.isi"
+                    :satuan-besar="item?.satuans[1]"
+                    :satuan-kecil="item?.satuans[0]"
+                    :default-unit="item.satuan"
+                    @update:model-value="(val)=> {
+                      if (!isMounted) {
+                        cartStore.updateCartItemQuantity(index, val)
+                      }
+                    }"
+                    @update:input-mode="(val)=> {
+                      item.satuan = val
+                    }"
+                  />
 
-                  <!-- Remove Button -->
+                </div>
+
+                <!-- Remove Button -->
+                <div class="flex justify-between mt-4 pr-2 text-xs">
+                  <div>Harga / {{ item?.product?.satuan_k }} :  <span class="text-orange-500"> Rp {{ formatPrice(item?.price)}}</span></div>
+
                   <button
-                    @click="removeFromCart(item)"
-                    class="ml-auto text-gray-400 hover:text-red-500"
+                    @click="removeFromCart(index)"
+                    class="text-gray-400 hover:text-red-500"
                   >
                     <AppIcon name="trash" size="sm" />
                   </button>
@@ -160,7 +181,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineAsyncComponent } from 'vue'
+import { ref, computed, defineAsyncComponent, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import AppIcon from 'components/atoms/AppIcon.vue'
 import { useCartStore } from 'src/stores/cart-store'
@@ -175,6 +196,7 @@ import { useAuthStore } from 'src/stores/auth-store'
 
 const NewSupplierOrderDialog = defineAsyncComponent(()=> import('components/organisms/supplier/NewSupplierOrderDialog.vue'))
 const PelangganOrderDialog = defineAsyncComponent(()=> import('components/organisms/pelanggan/PelangganOrderDialog.vue'))
+const QuantitySelector = defineAsyncComponent(()=> import('src/components/atoms/QuantitySelector.vue'))
 
 // eslint-disable-next-line no-unused-vars
 const router = useRouter()
@@ -186,8 +208,19 @@ const showDialog = ref(false)
 
 const { showToast } = useToast()
 
-const { items: cartItems, cartCount, cartTotal } = storeToRefs(cartStore)
+const { items: cartItems, cartTotal } = storeToRefs(cartStore)
+// eslint-disable-next-line no-unused-vars
 const { increaseQuantity, decreaseQuantity, removeFromCart } = cartStore
+
+const isMounted = ref(false)
+
+onMounted(() => {
+  // Flag aktif hanya untuk 1 tick (mounting)
+  isMounted.value = true;
+  nextTick(() => {
+    isMounted.value = false; // kembali normal
+  });
+});
 
 // Biaya pengiriman
 // const shipping = ref(25000)

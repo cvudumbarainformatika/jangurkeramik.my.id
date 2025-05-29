@@ -16,6 +16,7 @@ export const useCartStore = defineStore('cart', {
     // Total jumlah item (misal: 2 apel + 3 jeruk = 5)
     cartCount: (state) => state.items.reduce((sum, item) => sum + item.quantity, 0),
     cartTotal: (state) => state.items.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    cartItems: (state) => state.items?.length || 0,
   },
 
   actions: {
@@ -33,29 +34,44 @@ export const useCartStore = defineStore('cart', {
           name: newItem.name,
           image: newItem.image,
           quantity: newItem.quantity,
+          satuan: newItem.satuan,
+          satuans: newItem.satuans,
           price: parseFloat(newItem.price),
+          subtotal: parseFloat(newItem.subtotal),
+          product:newItem.product,
+
           synced: false,
         })
       // }
       const lastIndex = this.items?.length - 1;
-      // Segera sync 1 item saja
       this.syncItemToServer(lastIndex)
     },
 
-    updateCartItemQuantity(itemId, newQty) {
-      const item = this.items.find((i) => i.barang_id === itemId)
+    updateCartItemQuantity(index, newQty) {
+      const item = this.items[index]
+      console.log('updateCartItemQuantity :', item, newQty);
+      const sub = parseFloat(item?.price || 0) * parseFloat(newQty || 0);
+      
       if (item) {
         item.quantity = newQty
+        item.subtotal = sub
         item.synced = false
-        if (item.quantity <= 0) {
-          this.removeFromCart(itemId)
+        if (item.quantity < 0) {
+          this.removeFromCart(index)
         }
+      }
+
+      const itemId = item.id || null
+
+      if (itemId) {
+        this.syncItemQuantityToServer(itemId)
       }
     },
 
-    async removeFromCart(item) {
-      const itemId = item?.barang_id || null
-      this.items = this.items.filter((barang) => barang?.barang_id !== itemId)
+    async removeFromCart(index) {
+      const itemId = this.items[index]?.id || null
+      const newItems = this.items?.filter((it) => it?.id !== itemId)
+      this.items = newItems
 
       // console.log('remove item', item);
       
@@ -90,7 +106,6 @@ export const useCartStore = defineStore('cart', {
       const item = this.items[index]
       item.quantity++
       item.synced = false
-      this.syncItemQuantityToServer(item.barang_id)
     },
 
     decreaseQuantity(index) {
@@ -98,7 +113,6 @@ export const useCartStore = defineStore('cart', {
       if (item.quantity > 1) {
         item.quantity--
         item.synced = false
-        this.syncItemQuantityToServer(item.barang_id)
       }
     },
 
@@ -106,13 +120,9 @@ export const useCartStore = defineStore('cart', {
       const item = this.items[index]
       if (!item || item.synced) return
 
-      // console.log(item);
+      console.log('syncItemToServer',item);
 
-      const payload = {
-        barang_id: item.barang_id,
-        quantity: item.quantity,
-        price: item.price,
-      }
+      const payload = item
 
       try {
         await api.post('api/v2/cart', payload)
@@ -163,22 +173,22 @@ export const useCartStore = defineStore('cart', {
     //   }
     // },
 
-    syncItemQuantityToServer(barang_id) {
+    syncItemQuantityToServer(itemId) {
       // Clear timeout sebelumnya jika ada
-      if (this._quantitySyncTimeouts[barang_id]) {
-        clearTimeout(this._quantitySyncTimeouts[barang_id])
+      if (this._quantitySyncTimeouts[itemId]) {
+        clearTimeout(this._quantitySyncTimeouts[itemId])
       }
 
       // Jadwalkan sync baru setelah 800ms
-      this._quantitySyncTimeouts[barang_id] = setTimeout(async () => {
-        const item = this.items.find((i) => i.barang_id === barang_id)
+      this._quantitySyncTimeouts[itemId] = setTimeout(async () => {
+        const item = this.items.find((i) => i.id === itemId)
         if (!item) return
 
         try {
-          await api.post('/api/v2/cart', {
-            barang_id: item.barang_id,
+          await api.put(`/api/v2/cart/${itemId}`, {
             quantity: item.quantity,
             price: item.price,
+            subtotal: item.subtotal,
           })
           item.synced = true
           console.log('debaounce sukses')

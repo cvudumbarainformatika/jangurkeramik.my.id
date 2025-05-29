@@ -47,7 +47,7 @@
       viewMode === 'grid' ? '' : 'w-2/3'
     ]">
       <div class="mb-1 flex items-center">
-        <div class="text-xs text-gray-700 truncate overflow-hidden whitespace-nowrap">{{ product?.category }}</div>
+        <div class="text-xs text-gray-700 truncate overflow-hidden whitespace-nowrap" style="font-size: 0.60rem;;">{{ product?.category }}</div>
         <div class="ml-auto flex">
           <!-- <AppIcon
             v-for="i in 5"
@@ -61,7 +61,7 @@
 
       <!-- Title with fixed height container -->
       <div :class="[
-        viewMode === 'grid' ? 'h-14' : 'h-auto'
+        viewMode === 'grid' ? 'h-10' : 'h-auto'
       ]">
         <div :class="[
           'text-xs sm:text-sm font-semibold group-hover:text-orange-500 transition-colors',

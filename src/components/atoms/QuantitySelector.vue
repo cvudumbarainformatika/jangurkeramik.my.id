@@ -1,6 +1,7 @@
 <template>
-  <div class="flex items-center gap-1">
-    <!-- Decrease Button -->
+  <div class="flex items-center gap-2 text-xs">
+    <div class="flex items-center">
+      <!-- Decrease Button -->
     <button
       @click="decrease"
       class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-l-md hover:bg-gray-100 disabled:opacity-50"
@@ -27,19 +28,20 @@
     >
       <AppIcon name="plus" size="sm" />
     </button>
+    </div>
 
     <!-- Satuan Toggle Buttons -->
     <div class="flex border border-gray-300 rounded-md overflow-hidden">
       <button
         class="px-3 h-8 text-sm focus:outline-none"
-        :class="inputMode === 'pcs' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+        :class="inputMode === satuanKecil ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
         @click="handleSatuanKecil"
       >
         {{ satuanKecil }}
       </button>
       <button
         class="px-3 h-8 text-sm focus:outline-none disabled:opacity-50 relative"
-        :class="inputMode === 'dus' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
+        :class="inputMode === satuanBesar ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'"
         @click="handleSatuanBesar"
         :disabled="maxPcs < isi"
       >
@@ -61,7 +63,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted } from 'vue';
 import AppIcon from 'src/components/atoms/AppIcon.vue'
 
 const props = defineProps({
@@ -70,12 +72,19 @@ const props = defineProps({
   isiPerDus: { type: [Number, String], default: 1 },
   satuanBesar: { type: String, default: 'Dus' },
   satuanKecil: { type: String, default: 'Pcs' },
+  defaultUnit: { type: String, default: 'Pcs' },
 });
 
 const emit = defineEmits(['update:modelValue', 'update:inputMode']);
 
+onMounted(()=> {
+  inputMode.value = props.defaultUnit
+  console.log('mounted', inputMode.value);
+  
+})
+
 const isi = computed(() => parseInt(props.isiPerDus) || 1);
-const inputMode = ref('pcs');
+const inputMode = ref('');
 const showTooltip = ref(false);
 
 const jumlahTotal = computed({
@@ -87,27 +96,27 @@ const jumlahTotal = computed({
 });
 
 const displayValue = computed(() => {
-  return inputMode.value === 'dus'
+  return inputMode.value === props.satuanBesar
     ? Math.floor(jumlahTotal.value / isi.value)
     : jumlahTotal.value;
 });
 
 function onInput(val) {
   const parsed = parseInt(val) || 0;
-  jumlahTotal.value = inputMode.value === 'dus'
+  jumlahTotal.value = inputMode.value === props.satuanBesar
     ? parsed * isi.value
     : parsed;
 }
 
 function increase() {
-  const step = inputMode.value === 'dus' ? isi.value : 1;
+  const step = inputMode.value === props.satuanBesar ? isi.value : 1;
   if (jumlahTotal.value + step <= props.maxPcs) {
     jumlahTotal.value += step;
   }
 }
 
 function decrease() {
-  const step = inputMode.value === 'dus' ? isi.value : 1;
+  const step = inputMode.value === props.satuanBesar ? isi.value : 1;
   if (jumlahTotal.value - step >= 0) {
     jumlahTotal.value -= step;
   }
@@ -118,11 +127,11 @@ function handleSatuanBesar(){
     alert('Stok belum cukup untuk ' + props.satuanBesar)
     return
   }
-  inputMode.value = 'dus'
+  inputMode.value = props.satuanBesar
   emit('update:inputMode', props.satuanBesar)
 }
 function handleSatuanKecil(){
-  inputMode.value = 'pcs'
+  inputMode.value = props.satuanKecil
   emit('update:inputMode', props.satuanKecil)
 }
 
@@ -143,6 +152,7 @@ function handleSatuanKecil(){
 watch(inputMode, () => {
   jumlahTotal.value = 0;
 });
+
 </script>
 
 <style scoped>

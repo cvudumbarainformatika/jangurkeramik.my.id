@@ -151,10 +151,10 @@
         >
           <AppIcon name="shopping-cart" size="md" color="white" />
           <div
-            v-if="cartCount > 0"
+            v-if="cartItems > 0"
             class="absolute -top-1 -right-1 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full border border-white"
           >
-            {{ cartCount > 99 ? '99+' : cartCount }}
+            {{ cartItems > 99 ? '99+' : cartItems }}
           </div>
         </div>
 
@@ -209,14 +209,12 @@
                 :isiPerDus="product?.isi"
                 :satuan-besar="product?.satuan_b"
                 :satuan-kecil="product?.satuan_k"
-                @update:input-mode="(val)=> {
-                  console.log(val);
-                  satuan = val
-                }"
+                @update:input-mode="handleUnitChange"
               />
             </div>
 
 
+            <div class="text-orange-500 font-bold">Subtotal : Rp {{ formatPrice(sub || 0) }}</div>
           </div>
         </div>
 
@@ -272,7 +270,7 @@ const auth = useAuthStore()
 const { product } = storeToRefs(productStore);
 const { getProductId, wishlist } = productStore;
 
-const { cartCount } = storeToRefs(cartStore)
+const { cartItems } = storeToRefs(cartStore)
  
 const { addToCart } = cartStore
 const { showToast } = useToast()
@@ -285,7 +283,8 @@ const isNavigating = ref(false);
 const isLoading = ref(true);
 
 const jumlah = ref(0)
-const satuan = ref(product.satuan_k)
+const unit = ref(product.satuan_k)
+const sub = ref(0)
 
 onMounted(async () => {
   const productId = route.params.id;
@@ -315,61 +314,58 @@ function setStok(product){
 
 
 function setQuantity() {
-  // Add to cart logic
-  // console.log('Adding to cart:', product.value);
-
-  // Set the added product for the mini cart
   addedProduct.value = product.value;
-
-  // Always show quick buy options regardless of device
   showQuickBuyOptions.value = true;
-
-  // In a real app, you would also update your cart store
-  // addToCart(product.value);
-  // showToast('Produk berhasil ditambahkan ke keranjang', {
-  //   type: 'success',
-  //   position: 'top',
-  //   duration: 3000
-  // })
-  // showToast('Produk berhasil ditambahkan ke keranjang', {
-  //   type: 'brand',
-  //   showBrandIcon: true,
-  //   position: 'top',
-  //   duration: 3000
-  // })
 }
 
  
 function addedToCart() {
   const quantity = jumlah.value
-  const unit = satuan.value
+  const satuan = unit.value
+  const satuans = [product.value.satuan_k, product.value.satuan_b]
+
+  const images = product.value?.images;
+
+  product.value.image = Array.isArray(images) && images.length
+    ? images.find(x => x?.flag_thumbnail === '1')?.gambar 
+        || images[0]?.gambar 
+        || null
+    : null
+
+    const subtotal = sub.value
+
   const item = {
     ... product.value,
-    quantity,unit
+    quantity,satuan,subtotal,satuans
   }
 
   // Set the added product for the mini cart
   addedProduct.value = item;
 
-  // Always show quick buy options regardless of device
   showQuickBuyOptions.value = false;
 
-  // console.log('added', item, jumlah.value );
-  
-
-  // In a real app, you would also update your cart store
   addToCart(item);
-  // showToast('Produk berhasil ditambahkan ke keranjang', {
-  //   type: 'success',
-  //   position: 'top',
-  //   duration: 3000
-  // })
   showToast('Produk berhasil ditambahkan ke keranjang', {
     type: 'brand',
     showBrandIcon: true,
     position: 'top',
     duration: 3000
   })
+}
+
+
+function handleUnitChange(val){
+  unit.value = val
+  jumlah.value = 0
+}
+
+function handleSubtotalItem(val){
+  
+  jumlah.value = val
+  const totalSub = parseFloat(product.value?.price || 0) * parseFloat(val || 0);
+
+  sub.value = totalSub
+  console.log('hanle subtotal', sub.value);
 }
 
 function lihatStok(product){
@@ -403,6 +399,11 @@ function addToWishlist() {
 watch(showMiniCart, (newVal) => {
   if (newVal) {
     showQuickBuyOptions.value = false;
+  }
+});
+watch(jumlah, (newVal) => {
+  if (newVal !== null && newVal !== undefined) {
+    handleSubtotalItem(newVal)
   }
 });
 
