@@ -143,15 +143,15 @@ export const useProductStore = defineStore('product', {
 
         const response = await api.get(`api/v2/product/get-products`, params);
 
-        console.log('products',response.data);
+        // console.log('products',response.data);
         this.meta = response.data?.meta || null;
 
         const products = response.data?.data?.data || [];
 
 
 
-        console.log('meta',this.meta);
-        console.log('products',products);
+        // console.log('meta',this.meta);
+        // console.log('products',products);
 
 
         this.products = products;

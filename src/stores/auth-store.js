@@ -145,7 +145,7 @@ export const useAuthStore = defineStore('auth', {
 
         // Panggil endpoint untuk memeriksa token
         const response = await api.get('api/v2/auth/me')
-        console.log('Auth check response:', response)
+        // console.log('Auth check response:', response)
 
         // Jika token valid, perbarui data user jika ada
         if (response.data.success) {

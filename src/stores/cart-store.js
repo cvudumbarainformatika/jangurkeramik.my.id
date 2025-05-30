@@ -73,13 +73,13 @@ export const useCartStore = defineStore('cart', {
       const newItems = this.items?.filter((it) => it?.id !== itemId)
       this.items = newItems
 
-      // console.log('remove item', item);
+      console.log('remove item', this.items);
       
 
       // Hapus item dari server
       try {
         await api.delete(`/api/v2/cart/${itemId}`)
-        console.log('Item berhasil dihapus dari server:', itemId);
+        // console.log('Item berhasil dihapus dari server:', itemId);
         
       } catch (error) {
         console.error('Gagal hapus item dari server:', error)
@@ -134,42 +134,29 @@ export const useCartStore = defineStore('cart', {
       }
     },
 
-    async syncAllToServer() {
-      const unsyncedItems = this.items.filter((i) => !i.synced)
-      if (unsyncedItems.length === 0) return
+    // async syncAllToServer() {
+    //   const unsyncedItems = this.items.filter((i) => !i.synced)
+    //   if (unsyncedItems.length === 0) return
 
-      const snapshot = JSON.parse(JSON.stringify(this.items))
-
-      try {
-        await api.post('/api/v2/cart', {
-          items: unsyncedItems.map((i) => ({
-            barang_id: i.barang_id,
-            quantity: i.quantity,
-            price: i.price,
-          })),
-        })
-
-        // Tandai semuanya sukses
-        unsyncedItems.forEach((i) => {
-          i.synced = true
-        })
-      } catch (error) {
-        console.error('Gagal sync batch:', error)
-        this.items = snapshot // rollback
-      }
-    },
-
-    // async syncCartToServer() {
-    //   const snapshot = JSON.parse(JSON.stringify(this.items)) // simpan state lama
+    //   const snapshot = JSON.parse(JSON.stringify(this.items))
 
     //   try {
-    //     await api.post('/api/v2/cart', { items: this.items })
-    //     // Jika berhasil, bisa set flag `lastSynced` (opsional)
-    //   } catch (err) {
-    //     console.error('Sync gagal:', err)
+    //     await api.post('/api/v2/cart', {
+    //       items: unsyncedItems.map((i) => ({
+    //         barang_id: i.barang_id,
+    //         quantity: i.quantity,
+    //         price: i.price,
+
+    //       })),
+    //     })
+
+    //     // Tandai semuanya sukses
+    //     unsyncedItems.forEach((i) => {
+    //       i.synced = true
+    //     })
+    //   } catch (error) {
+    //     console.error('Gagal sync batch:', error)
     //     this.items = snapshot // rollback
-    //     // opsional: beri notifikasi
-    //     // this.$toast?.error('Gagal sync cart ke server.')
     //   }
     // },
 
@@ -196,14 +183,14 @@ export const useCartStore = defineStore('cart', {
           console.error('Gagal sync quantity:', err)
           item.synced = false
         }
-      }, 800)
+      }, 300)
     },
 
     async restoreCartFromServer() {
       try {
         const response = await api.get('/api/v2/cart')
 
-        console.log('from server', response)
+        // console.log('from server', response)
 
         const serverCart = response.data.items
 

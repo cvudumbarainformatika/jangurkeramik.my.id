@@ -20,7 +20,7 @@ export const useMasterStore = defineStore('master', {
     async fetchSales() {
       try {
         const response = await api.get('api/v2/master/sales')
-        console.log('sales', response);
+        // console.log('sales', response);
         
         this.sales = response?.data || []
       } catch (error) {
@@ -35,7 +35,7 @@ export const useMasterStore = defineStore('master', {
             q: query,
           },
         })
-        console.log('pelanggan', response);
+        // console.log('pelanggan', response);
         this.pelanggans = response?.data || []
       } catch (error) {
         console.error('Error adding sales:', error)

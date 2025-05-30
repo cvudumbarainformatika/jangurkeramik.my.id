@@ -54,8 +54,8 @@
             
             <!-- Brand name -->
             <div class="flex flex-col">
-              <span class="text-xl font-bold bg-gradient-to-r from-orange-600 via-indigo-500 to-purple-600 bg-clip-text text-transparent transition-all duration-300 group-hover:from-blue-500 group-hover:to-purple-500">Jangur Keramik</span>
-              <span class="text-xs text-gray-500 tracking-wider">PREMIUM QUALITY</span>
+              <span class="text-lg font-bold bg-gradient-to-r from-orange-600 via-orange-300 to-orange-500 bg-clip-text text-transparent transition-all duration-300 group-hover:from-blue-500 group-hover:to-purple-500">Jangur Keramik</span>
+              <span class="text-xs text-gray-500  -mt-1">PREMIUM QUALITY</span>
             </div>
           </router-link>
           

@@ -170,13 +170,6 @@
       </div>
     </div>
 
-    <!-- Mini Cart Preview -->
-    <!-- <MiniCartPreview
-      :is-open="showMiniCart"
-      :added-product="addedProduct"
-      @close="showMiniCart = false"
-    /> -->
-
     <!-- Quick Buy Options - Appears when product is added to cart -->
     <Transition name="slide-up">
       <div
@@ -209,6 +202,7 @@
                 :isiPerDus="product?.isi"
                 :satuan-besar="product?.satuan_b"
                 :satuan-kecil="product?.satuan_k"
+                :default-unit="product?.satuan_k"
                 @update:input-mode="handleUnitChange"
               />
             </div>
@@ -289,6 +283,7 @@ const sub = ref(0)
 onMounted(async () => {
   const productId = route.params.id;
   isLoading.value = true;
+  unit.value = product.value.satuan_k
   
   try {
     await getProductId(productId);
@@ -314,7 +309,14 @@ function setStok(product){
 
 
 function setQuantity() {
-  addedProduct.value = product.value;
+  const satuan = unit.value
+  console.log('setQuantity', satuan);
+  
+  const item = {
+    ... product.value,
+    satuan
+  }
+  addedProduct.value = item;
   showQuickBuyOptions.value = true;
 }
 

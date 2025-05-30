@@ -39,7 +39,7 @@
 
           <div
             v-for="(item, index) in cartItems"
-            :key="index"
+            :key="item.id"
             class="px-2 py-4 border-b border-gray-100 last:border-b-0 relative"
           >
             <div class="flex gap-3">
@@ -59,24 +59,7 @@
 
                 <!-- Quantity Controls -->
                 <div class="flex items-center mt-2">
-                  <!-- <button
-                    @click="decreaseQuantity(index)"
-                    class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-l-md"
-                    :disabled="item.quantity <= 1"
-                  >
-                    <AppIcon name="minus" size="sm" />
-                  </button>
-                  <div
-                    class="w-10 h-8 flex items-center justify-center border-t border-b border-gray-300 bg-gray-50"
-                  >
-                    {{ item.quantity }}
-                  </div>
-                  <button
-                    @click="increaseQuantity(index)"
-                    class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-r-md"
-                  >
-                    <AppIcon name="plus" size="sm" />
-                  </button> -->
+                  <!-- {{ item.satuan }} -->
                   <QuantitySelector
                     v-model="item.quantity"
                     :maxPcs="1000"
@@ -84,11 +67,7 @@
                     :satuan-besar="item?.satuans[1]"
                     :satuan-kecil="item?.satuans[0]"
                     :default-unit="item.satuan"
-                    @update:model-value="(val)=> {
-                      if (!isMounted) {
-                        cartStore.updateCartItemQuantity(index, val)
-                      }
-                    }"
+                    @update:model-value="(val)=> updateCartItemQuantity(index,val)"
                     @update:input-mode="(val)=> {
                       item.satuan = val
                     }"
@@ -115,7 +94,7 @@
         <!-- Order Summary -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-4">
           <div class="p-4 border-b border-gray-100">
-            <div class="font-semibold">Ringkasan Pesanan</div>
+            <div class="font-semibold">Ringkasan Pesanan</div>  
           </div>
 
           <div class="p-4">
@@ -181,7 +160,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineAsyncComponent, onMounted, nextTick } from 'vue'
+import { ref, computed, defineAsyncComponent, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import AppIcon from 'components/atoms/AppIcon.vue'
 import { useCartStore } from 'src/stores/cart-store'
@@ -210,16 +189,12 @@ const { showToast } = useToast()
 
 const { items: cartItems, cartTotal } = storeToRefs(cartStore)
 // eslint-disable-next-line no-unused-vars
-const { increaseQuantity, decreaseQuantity, removeFromCart } = cartStore
+const { increaseQuantity, decreaseQuantity, removeFromCart, updateCartItemQuantity, restoreCartFromServer } = cartStore
 
-const isMounted = ref(false)
+// const isMounted = ref(false)
 
 onMounted(() => {
-  // Flag aktif hanya untuk 1 tick (mounting)
-  isMounted.value = true;
-  nextTick(() => {
-    isMounted.value = false; // kembali normal
-  });
+  restoreCartFromServer()
 });
 
 // Biaya pengiriman
@@ -276,10 +251,5 @@ const handleCheckout = (jenis) => {
     showDialog.value = false
   })
 
-  
-
-
-
-  // showDialog.value = true
 }
 </script>

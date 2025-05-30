@@ -80,27 +80,39 @@ const emit = defineEmits(['update:modelValue', 'update:inputMode']);
 onMounted(()=> {
   inputMode.value = props.defaultUnit
   console.log('mounted', inputMode.value);
+  console.log('QuantitySelector mounted with', props.modelValue);
+  internalValue.value = props.modelValue
+  hasInteracted.value = false
   
 })
 
+
+// State lokal
 const isi = computed(() => parseInt(props.isiPerDus) || 1);
 const inputMode = ref('');
 const showTooltip = ref(false);
+const hasInteracted = ref(false);
+const internalValue = ref(props.modelValue)
 
+// Komputasi jumlah total berdasarkan input user
 const jumlahTotal = computed({
-  get: () => props.modelValue,
+  get: () => internalValue.value, // ✅ bukan lagi props,
   set: (val) => {
+    hasInteracted.value = true; // <-- User mulai input
     const nilai = Math.max(0, Math.min(props.maxPcs, parseInt(val) || 0));
-    emit('update:modelValue', nilai);
+    // emit('update:modelValue', nilai);
+    internalValue.value = nilai
   },
 });
 
+// Tampilkan angka sesuai satuan saat ini
 const displayValue = computed(() => {
   return inputMode.value === props.satuanBesar
-    ? Math.floor(jumlahTotal.value / isi.value)
+    ? Math.floor(jumlahTotal.value / isi.value) 
     : jumlahTotal.value;
 });
 
+// Input manual
 function onInput(val) {
   const parsed = parseInt(val) || 0;
   jumlahTotal.value = inputMode.value === props.satuanBesar
@@ -108,7 +120,10 @@ function onInput(val) {
     : parsed;
 }
 
+
+// Tombol tambah/kurang
 function increase() {
+  hasInteracted.value = true
   const step = inputMode.value === props.satuanBesar ? isi.value : 1;
   if (jumlahTotal.value + step <= props.maxPcs) {
     jumlahTotal.value += step;
@@ -116,12 +131,15 @@ function increase() {
 }
 
 function decrease() {
+  hasInteracted.value = true
   const step = inputMode.value === props.satuanBesar ? isi.value : 1;
   if (jumlahTotal.value - step >= 0) {
     jumlahTotal.value -= step;
   }
 }
 
+
+// Toggle satuan
 function handleSatuanBesar(){
   if (props.maxPcs < isi.value) {
     alert('Stok belum cukup untuk ' + props.satuanBesar)
@@ -135,23 +153,40 @@ function handleSatuanKecil(){
   emit('update:inputMode', props.satuanKecil)
 }
 
-// const labelOutput = computed(() => {
-//   const total = jumlahTotal.value;
-//   const besar = Math.floor(total / isi.value);
-//   const kecil = total % isi.value;
-
-//   if (total === 0) return 'Stok habis';
-
-//   const result = [];
-//   if (besar > 0) result.push(`${besar} ${props.satuanBesar}`);
-//   if (kecil > 0) result.push(`${kecil} ${props.satuanKecil}`);
-
-//   return result.join(' + ');
-// });
-
+// Saat inputMode berubah, sync ulang modelValue dari parent jika belum interaksi
 watch(inputMode, () => {
-  jumlahTotal.value = 0;
+ // Jangan reset kalau parent sudah kirim nilai
+  // if (!hasInteracted.value && props.modelValue === 0) {
+  //   jumlahTotal.value = 0;
+  // } else {
+  //   jumlahTotal.value = props.modelValue
+  // }
+
+  if (!hasInteracted.value) {
+    internalValue.value = props.modelValue;
+  } else {
+    jumlahTotal.value = 0;
+  }
+  
 });
+
+
+// Saat modelValue parent berubah (misal load awal/cart restore), sync internal jika belum interaksi
+watch(() => props.modelValue, (val) => {
+  // if (!hasInteracted.value && val !== internalValue.value) {
+  //   internalValue.value = val
+  // }
+  internalValue.value = val
+})
+
+
+// Emit ke parent hanya jika input berasal dari user
+watch(internalValue, (val) => {
+  console.log('internalValue changed to', val);
+  if (val !== props.modelValue) {
+    emit('update:modelValue', val)
+  }
+})
 
 </script>
 

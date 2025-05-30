@@ -10,6 +10,15 @@ export const useOrderStore = defineStore('order', {
     status_order: '1',
     status_pembayaran: '1',
     loadingOrder: false,
+
+
+    // history order
+    orders:[],
+    loading:false,
+    selectedOrder:null,
+    showDetail:false,
+
+    loadingUpdateStatus:false
   }),
   actions: {
     clearOrder() {
@@ -63,7 +72,9 @@ export const useOrderStore = defineStore('order', {
           barang_id: item.barang_id,
           jumlah: item.quantity,
           harga: parseFloat(item.price),
-          subtotal: parseFloat(item.price) * item.quantity
+          subtotal: parseFloat(item.price) * item.quantity,
+          satuan: item.satuan,
+          satuans: items.satuans
         }))
       }
       // POST ke backend (ganti URL sesuai API Anda)
@@ -80,7 +91,74 @@ export const useOrderStore = defineStore('order', {
         this.loadingOrder = false
       }
     },
+
+    async historyOrder(){
+      this.loading = true
+      try {
+        const { data } = await api.get('/api/v2/order/penjualan/by-pelanggan')
+        console.log('Data orders:', data);
+        
+        this.orders = data?.data || []
+
+      }catch (error){
+        console.log('error history-order',error);
+        
+      } finally {
+        this.loading = false
+      }
+    },
+
+
+    async getOrderByNoOrder(value){
+        this.loadingOrder=true
+        try {
+          const resp = await api.get(`api/v2/order/by-noorder?order=${value}`)
+          this.selectedOrder = resp?.data?.data
+          console.log('getOrderByNoOrder', this.selectedOrder);
+          
+        } catch (error) {
+          console.log('getOrderByNoOrder', error);
+          
+        } finally {
+          // console.log('getOrderByNoOrder');
+          this.loadingOrder=false
+        }
+
+    },
+
+    async updatePembayaran(item){
+      console.log('updatePembayaran', item);
+      this.loadingUpdateStatus=true
+      const payload = {
+        noorder: this.selectedOrder?.noorder,
+        metode_bayar: item?.metode || 'Kredit',
+        tempo: item?.tempo || 0,
+        bayar: item.dp || item?.total || 0,
+        catatan: item?.catatan || null,
+        status_order: '4'
+      }
+
+      console.log('payload', payload);
+      
+
+      try {
+        const resp = await api.post('api/v2/order/update-pembayaran', payload)
+        console.log('updatePembayaran', resp);
+        
+      } catch (error) {
+        console.log('updatePembayaran', error);
+        
+      } finally{
+        this.loadingUpdateStatus=false
+      }
+      
+    }
+
   },
+
+
+  
+
   getters: {
     totalItems: (state) => state.items.length,
     isReady: (state) => !!state.selectedSupplier  && useCartStore().items.length > 0,

@@ -13,8 +13,8 @@
         </div>
         <div 
           v-else 
-          class="rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-xl font-bold shadow-lg object-cover border"
           :class="`w-${size} h-${size}`"
+          class="rounded-full bg-gradient-to-br from-blue-500 to-indigo-800 flex items-center justify-center text-white text-xl font-bold shadow-lg object-cover border"
           >
           {{ userInitials }}
         </div>

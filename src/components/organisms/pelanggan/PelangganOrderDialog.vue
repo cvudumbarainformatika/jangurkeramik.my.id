@@ -6,22 +6,10 @@
     height="60vh"
   >
     <template #body>
-      <div class="flex flex-col p-4 bg-gray-200">
+      <div class="flex flex-col p-1 bg-gray-200">
         <div class="bg-white shadow-sm rounded-lg">
          
-        <div class="bg-white shadow-sm rounded-lg p-4">
-          <!-- <AutocompleteInput
-            v-model="searchQuery"
-            :options="pelanggans"
-            option-label="nama"
-            option-value="id"
-            :return-value-only="false"
-            placeholder="Cari Pelanggan berdasarkan nama"
-            @update:model-value="(value) => {
-              selectedPelanggan = value;
-            }"
-          /> -->
-
+        <div v-if="!selectedPelanggan" class="bg-white shadow-sm rounded-lg p-4">
           <AppInput
             v-model="searchQuery"
             placeholder="Cari Pelanggan Berdasarkan nama"
@@ -92,11 +80,11 @@
       v-if="selectedPelanggan"
       class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg"
     >
-      <div class="flex justify-between items-center ">
+      <div class="flex justify-center items-center ">
 
         <button
           @click="checkoutOrder"
-          class="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full hover:shadow-lg hover:from-orange-600 hover:to-orange-700 active:scale-95 transition-all"
+          class="full-width px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full hover:shadow-lg hover:from-orange-600 hover:to-orange-700 active:scale-95 transition-all"
           :disabled="loading"
         >
           <template v-if="loading">

@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-200">
     <!-- Header -->
-    <header class="sticky top-0 z-10 bg-white shadow flex items-center ">
-     <div class="flex items-center justify-between w-full px-2 py-3 mb-2">
+    <header class="sticky top-0 z-10 bg-white shadow flex items-center border-b border-gray-500">
+     <div class="flex items-center justify-between w-full px-2 py-3 mb-2 border-b border-gray-200">
       <div class="flex items-center ">
        <button
         @click="$router.back()"
@@ -12,7 +12,7 @@
       >
         <AppIcon name="arrow-left" size="sm" class="text-gray-600" />
       </button>
-      <div class="text-lg font-bold">Riwayat Pesanan</div>
+      <div class="text-sm font-bold">Riwayat Pesanan</div>
      </div>
 
       <div class="flex items-center justify-end mb-2 px-4 pt-2">
@@ -51,50 +51,38 @@
       
       <!-- List orders scrollable -->
       <div class="flex-1 overflow-y-auto space-y-3 px-2">
-        <div v-if="loading" class="space-y-3 px-4">
-          <div v-for="i in 3" :key="i" class="h-[90px] bg-gray-200 rounded-xl animate-pulse" />
-        </div>
-        <div v-else-if="filteredOrders.length === 0" class="text-center text-gray-400 py-10">
-          <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-2 h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0H4" />
-          </svg>
-          <div>Belum ada pesanan.</div>
-        </div>
-        <div v-else class="pt-2">
-          <!-- <div
-            v-for="order in filteredOrders"
-            :key="order.id"
-            class="bg-white rounded-xl shadow flex items-center gap-3 p-3 cursor-pointer hover:ring-2 ring-primary transition mb-3"
-            @click="openDetail(order)"
-          >
-            <img
-              :src="order.rincians?.[0]?.image || '/images/No-Image.svg'"
-              class="w-16 h-16 rounded-lg object-cover border"
-              alt="Produk"
-            />
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-gray-800 truncate">#{{ order.noorder }}</span>
-                <OrderStatusBadge :status="order.status_order" />
-              </div>
-              <div class="text-xs text-gray-500 mt-1">
-                {{ order.rincians?.length }} produk &middot; {{ formatRupiah(order.total_harga) }}
-              </div>
-              <div class="text-xs text-gray-400 mt-1">
-                {{ order.tglorder ? new Date(order.tglorder).toLocaleDateString() : '' }}
-              </div>
+        <Transition>
+          <div v-if="loading" class="pt-2 " key="skeleton">
+            <SkeletonOrderCard v-for="n in 5" :key="n" class="mb-2"/>
+          </div>
+          
+          <div v-else class="pt-2">
+
+            <template v-if="filteredOrders.length">
+              <OrderCard
+                 v-for="item in filteredOrders" :key="item.id"
+                :order="item"
+                :auth="auth.user"
+                @open-detail="openDetail(item)"
+                @pembayaran="openPembayaran(item)"
+                class="mb-1"
+              />
+            </template>
+
+            <div v-else class="text-center text-gray-400 py-20">
+                <AppIcon name="clock" size="xl" class="mx-auto mb-4 text-gray-300" />
+                <div class="text-lg font-semibold text-gray-700 mb-2">Belum Ada Pesanan</div>
+                <p class="text-gray-500 mb-6">Anda belum memiliki riwayat pesanan</p>
+                <button 
+                  @click="$router.push('/')" 
+                  class="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-full hover:shadow-md transition-all"
+                >
+                  Mulai Belanja
+                </button>
             </div>
-            <AppIcon name="chevron-right" size="md" class="text-gray-400" />
-          </div> -->
-          <template v-for="item in filteredOrders" :key="item.id">
-            <OrderCard
-              :order="item"
-              :auth="auth.user"
-              @click="openDetail(item)"
-              class="mb-1"
-            />
-          </template>
-        </div>
+            
+          </div>
+        </Transition>
         <OrderDetailDialog v-model="showDetail" :order="selectedOrder" />
       </div>
     </div>
@@ -104,23 +92,30 @@
 <script setup>
 import { ref, computed, onMounted, defineAsyncComponent } from 'vue'
 import { useAuthStore } from 'src/stores/auth-store'
-import { api } from 'src/boot/axios'
+import { useOrderStore } from 'src/stores/order-store'
+import { useRouter } from 'vue-router'
+// import { api } from 'src/boot/axios'
 // import OrderStatusBadge from 'components/organisms/order/OrderStatusBadge.vue'
 
 import OrderDetailDialog from 'components/organisms/order/OrderDetailDialog.vue'
 import AppIcon from 'src/components/atoms/AppIcon.vue';
+import { storeToRefs } from 'pinia';
 
 
 const OrderCard = defineAsyncComponent(() => import('components/organisms/order/OrderCard.vue'))
+const SkeletonOrderCard = defineAsyncComponent(()=> import('src/components/organisms/order/SkeletonOrderCard.vue'))
 
+
+ 
+const router = useRouter()
 const auth = useAuthStore()
+const orderStore = useOrderStore()
+const { historyOrder } = orderStore
+const { loading, orders, selectedOrder, showDetail } = storeToRefs(orderStore)
 
-const orders = ref([])
-const loading = ref(true)
+
 const search = ref('')
 const status = ref('all')
-const showDetail = ref(false)
-const selectedOrder = ref(null)
 
 const statusList = [
   { label: 'Semua', value: 'all' },
@@ -142,9 +137,13 @@ const filteredOrders = computed(() => {
 })
 
  
-function openDetail(order) {
-  selectedOrder.value = order
-  showDetail.value = true
+function openDetail(item) {
+  selectedOrder.value = item
+  router.push(`/orders/${item?.noorder}`)
+}
+function openPembayaran(item) {
+  selectedOrder.value = item
+  router.push(`/orders/pembayaran/${item?.noorder}`)
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -153,15 +152,9 @@ function formatRupiah(val) {
 }
 
 onMounted(async () => {
-  loading.value = true
-  try {
-    const { data } = await api.get('/api/v2/order/penjualan/by-pelanggan')
-    console.log('Data orders:', data);
-    
-    orders.value = data?.data || []
-  } finally {
-    loading.value = false
-  }
+  Promise.all([
+    historyOrder()
+  ])
 })
 </script>
 
@@ -185,16 +178,10 @@ onMounted(async () => {
   height: 0 !important;
   background: transparent !important;
 }
-/* .bg-primary {
-  @apply bg-orange-500;
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.1s ease;
 }
-.text-primary {
-  @apply text-orange-600;
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
-.border-primary {
-  @apply border-orange-500;
-}
-.ring-primary {
-  @apply ring-orange-300;
-} */
 </style>
