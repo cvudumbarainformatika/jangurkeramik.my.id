@@ -27,6 +27,7 @@ jobs:
         env:
           VITE_API_URL: ${{ vars.VITE_API_URL }}
           VITE_PATH_IMAGE: ${{ vars.VITE_PATH_IMAGE }}
+          VITE_PATH_WS: ${{ vars.VITE_PATH_WS }}
         run: |
           npm install
           npx quasar build -m pwa

@@ -152,6 +152,30 @@ export const useOrderStore = defineStore('order', {
         this.loadingUpdateStatus=false
       }
       
+    },
+    
+    async selesaikanOrder(item){
+      // console.log('updatePembayaran', item);
+      this.loadingUpdateStatus=true
+      const payload = {
+        id: item?.id,
+        status_order: '6'
+      }
+
+      console.log('payload', payload);
+      
+
+      try {
+        const resp = await api.post('api/v2/order/update-selesai', payload)
+        console.log('updateSelesai', resp);
+        
+      } catch (error) {
+        console.log('updatePembayaran', error);
+        
+      } finally{
+        this.loadingUpdateStatus=false
+      }
+      
     }
 
   },

@@ -65,6 +65,7 @@
                 :auth="auth.user"
                 @open-detail="openDetail(item)"
                 @pembayaran="openPembayaran(item)"
+                @selesaikan="selesaikanOrder(item)"
                 class="mb-1"
               />
             </template>
@@ -110,7 +111,7 @@ const SkeletonOrderCard = defineAsyncComponent(()=> import('src/components/organ
 const router = useRouter()
 const auth = useAuthStore()
 const orderStore = useOrderStore()
-const { historyOrder } = orderStore
+const { historyOrder, selesaikanOrder } = orderStore
 const { loading, orders, selectedOrder, showDetail } = storeToRefs(orderStore)
 
 

@@ -20,6 +20,7 @@
     <AppBottomNavigation v-if="isMobile && isBottomActive" />
     <!-- Optional: Install Prompt -->
     <InstallPrompt />
+    <NgurusiWebsockets />
   </div>
 </template>
 
@@ -30,6 +31,7 @@ import BackgroundDecorator from 'src/components/ui/BackgroundDecorator.vue'
 
 import AppBottomNavigation from 'src/components/organisms/AppBottomNavigation.vue'
 import InstallPrompt from 'src/components/atoms/InstallPrompt.vue'
+import NgurusiWebsockets from 'src/components/atoms/NgurusiWebsockets.vue'
 import { useAuthStore } from 'src/stores/auth-store'
 
 const auth = useAuthStore()

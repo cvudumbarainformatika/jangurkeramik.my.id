@@ -14,7 +14,6 @@
     "build": "quasar build",
     "postinstall": "quasar prepare",
     "deploy": "git fetch origin && git checkout deploy && git merge origin/master --no-edit && git push origin deploy && git checkout master"
-
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
@@ -24,6 +23,7 @@
     "pinia-plugin-persistedstate": "^4.2.0",
     "quasar": "^2.16.0",
     "register-service-worker": "^1.7.2",
+    "socket.io-client": "^4.8.1",
     "vue": "^3.4.18",
     "vue-i18n": "^11.0.0",
     "vue-router": "^4.0.0"

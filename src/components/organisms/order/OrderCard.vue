@@ -70,16 +70,17 @@
           Pembayaran
         </button>
         <button 
-          v-if="parseInt(order.status_order) === 6"
-          class="flex-1 p-2 text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors"
-        >
-          Pesan Lagi
-        </button>
-        <button 
-          v-if="parseInt(order.status_order) < 6 && parseInt(order.status_order) > 4"
-          class="flex-1 p-2 text-sm bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-colors"
+          v-if="parseInt(order.status_order) < 3"
+          class="flex-1 p-2 text-sm bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-colors"
         >
           Batalkan
+        </button>
+        <button 
+          v-if="parseInt(order.status_order) === 5"
+          @click="$emit('selesaikan', order)"
+          class="flex-1 p-2 text-sm bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-colors"
+        >
+          Selesaikan
         </button>
       </div>
     </div>
