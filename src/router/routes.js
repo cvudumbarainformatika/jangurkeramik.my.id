@@ -22,7 +22,30 @@ const routes = [
       { path: 'history', component: () => import('pages/HistoryPage.vue') },
       { path: 'history/:id', component: () => import('pages/HistoryOrderDetail.vue') },
 
-      { path: 'profile', component: () => import('pages/ProfilePage.vue') },
+      // { path: 'profile', component: () => import('pages/ProfilePage.vue') },
+      {
+        path: 'profile',
+        component: () => import('pages/ProfilePage.vue'),
+        children: [
+          {
+            path: '',
+            component: () => import('pages/profile/ProfilePage.vue')
+          },
+          {
+            path: 'schedule',
+            component: () => import('pages/profile/SchedulePage.vue')
+          },
+          {
+            path: 'absensi',
+            component: () => import('pages/profile/AbsensiPage.vue')
+          },
+          {
+            path: 'history',
+            component: () => import('pages/profile/HistoryAbsensiPage.vue')
+          },
+        ]
+      },
+
       { path: 'favorites', component: () => import('pages/FavoritesPage.vue') },
 
       // auth

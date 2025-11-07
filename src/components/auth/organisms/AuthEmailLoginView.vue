@@ -74,12 +74,12 @@
         <span>Kembali</span>
       </button>
       
-      <button 
+      <!-- <button 
         @click="$emit('register')"
         class="text-blue-600 hover:text-blue-800"
       >
         Daftar
-      </button>
+      </button> -->
     </div>
   </div>
 </template>

@@ -115,49 +115,88 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import { useAuthStore } from 'src/stores/auth-store'
 import AppIcon from '../atoms/AppIcon.vue'
 import { useCartStore } from 'src/stores/cart-store'
 import { storeToRefs } from 'pinia'
+// eslint-disable-next-line no-unused-vars
+import { useRouter, useRoute } from 'vue-router'
 
 const authStore = useAuthStore()
 const isLoggedIn = computed(() => authStore.isLoggedIn)
+
+// const router = useRouter()
+const route = useRoute()
+
+
 
 const cartStore = useCartStore()
 
 const { items } = storeToRefs(cartStore)
 
+
+watch(
+  () => route,
+  (obj) => {
+    console.log('obj', obj);
+    
+  },
+  { deep: true }
+)
+
 // Navigation items with dynamic badges
-const navItems = computed(() => [
-  {
-    label: 'Beranda',
-    icon: 'home',
-    to: '/',
-  },
-  {
-    label: 'Pesanan',
-    icon: 'clipboard-list', // atau 'package', 'truck', dsb
-    to: isLoggedIn.value ? '/orders' : '/no-auth',
-  },
-  {
-    label: 'Keranjang',
-    icon: 'shopping-bag',
-    to: isLoggedIn.value ? '/cart' : '/no-auth',
-    badge: isLoggedIn.value ? items.value?.length || 0 : 0,
-  },
-  {
-    label: 'Favorit',
-    icon: 'heart',
-    to: isLoggedIn.value ? '/favorites' : '/no-auth',
-    badge: isLoggedIn.value ? 0 : 0,
-  },
-  {
-    label: 'Akun',
-    icon: 'user',
-    to: isLoggedIn.value ? '/profile' : '/no-auth',
-  },
-])
+// const navItems = computed(() => [
+//   {
+//     label: 'Beranda',
+//     icon: 'home',
+//     to: '/',
+//   },
+//   {
+//     label: 'Pesanan',
+//     icon: 'clipboard-list', // atau 'package', 'truck', dsb
+//     to: isLoggedIn.value ? '/orders' : '/no-auth',
+//   },
+//   {
+//     label: 'Keranjang',
+//     icon: 'shopping-bag',
+//     to: isLoggedIn.value ? '/cart' : '/no-auth',
+//     badge: isLoggedIn.value ? items.value?.length || 0 : 0,
+//   },
+//   {
+//     label: 'Favorit',
+//     icon: 'heart',
+//     to: isLoggedIn.value ? '/favorites' : '/no-auth',
+//     badge: isLoggedIn.value ? 0 : 0,
+//   },
+//   {
+//     label: 'Akun',
+//     icon: 'user',
+//     to: isLoggedIn.value ? '/profile' : '/no-auth',
+//   },
+// ])
+
+
+const defaultNav = [
+  { label: 'Beranda', icon: 'home', to: '/' },
+  { label: 'Pesanan', icon: 'clipboard-list', to: '/orders' },
+  { label: 'Keranjang', icon: 'shopping-bag', to: '/cart', badge: isLoggedIn.value ? items.value?.length || 0 : 0, },
+  { label: 'Favorit', icon: 'heart', to: '/favorites' },
+  { label: 'Akun', icon: 'user', to: '/profile' },
+]
+
+const profileNav = [
+  { label: 'Beranda', icon: 'home', to: '/' },
+  { label: 'Jadwal', icon: 'calendar', to: '/profile/schedule' },
+  { label: 'Absensi', icon: 'qr-code', to: '/profile/absensi' },
+  { label: 'History', icon: 'history', to: '/profile/history' },
+  { label: 'Profile', icon: 'user', to: '/profile' },
+]
+
+const navItems = computed(() => {
+  return route.path.startsWith('/profile') ? profileNav : defaultNav
+})
+
 </script>
 
 <style scoped>

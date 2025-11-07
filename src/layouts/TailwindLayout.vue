@@ -17,7 +17,7 @@
     </main>
 
     <!-- Bottom Navigation -->
-    <AppBottomNavigation v-if="isMobile && isBottomActive" />
+    <AppBottomNavigation v-if="isMobile && isBottomActive"  />
     <!-- Optional: Install Prompt -->
     <InstallPrompt />
     <NgurusiWebsockets />
@@ -75,14 +75,7 @@ function getTransitionName() {
 watch(
   () => route.fullPath,
   (newPath) => {
-    console.log('route wtch', newPath)
-
-    if (!arrActive.value.includes(newPath)) {
-      isBottomActive.value = false
-    } else {
-      isBottomActive.value = true
-    }
-
+    
     // Jika riwayat kosong, ini adalah navigasi pertama
     if (routeHistory.value.length === 0) {
       routeHistory.value.push(newPath)
@@ -108,6 +101,31 @@ watch(
   },
   { immediate: true },
 )
+watch(
+  () => route.fullPath,
+  (newPath) => {
+    console.log('route wtch', newPath)
+
+    // pengecualian khusus untuk profile
+    if (newPath.startsWith('/profile')) {
+      isBottomActive.value = true
+      return
+    }
+
+    // selain profile, memakai arrActive seperti biasa
+
+    if (!arrActive.value.includes(newPath) ) {
+      isBottomActive.value = false
+    } else {
+      isBottomActive.value = true
+    }
+
+    
+  },
+  { immediate: true },
+)
+
+
 
 
 onMounted(() => {
