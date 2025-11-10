@@ -18,7 +18,7 @@ const props = defineProps({
   size: {
     type: String,
     default: 'md',
-    validator: (value) => ['xs', 'sm', 'md', 'lg', 'xl'].includes(value),
+    validator: (value) => ['xs', 'sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'].includes(value),
   },
   color: {
     type: String,
@@ -49,6 +49,9 @@ const sizeClasses = {
   md: 'w-5 h-5',
   lg: 'w-6 h-6',
   xl: 'w-8 h-8',
+  '2xl': 'w-10 h-10',
+  '3xl': 'w-12 h-12',
+  '4xl': 'w-16 h-16',
 }
 
 const colorClasses = {

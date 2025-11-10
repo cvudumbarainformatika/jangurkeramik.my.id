@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <ProfileApp>
     History Absensi
-  </div>
+  </ProfileApp>
 </template>
 
 <script setup>
-
+import ProfileApp from './comp/ProfileApp.vue'
 </script>

@@ -111,11 +111,14 @@
         </a>
       </router-link>
     </nav>
+
+    
+
   </div>
 </template>
 
 <script setup>
-import { computed, watch } from 'vue'
+import { computed } from 'vue'
 import { useAuthStore } from 'src/stores/auth-store'
 import AppIcon from '../atoms/AppIcon.vue'
 import { useCartStore } from 'src/stores/cart-store'
@@ -134,16 +137,10 @@ const route = useRoute()
 const cartStore = useCartStore()
 
 const { items } = storeToRefs(cartStore)
-
-
-watch(
-  () => route,
-  (obj) => {
-    console.log('obj', obj);
-    
-  },
-  { deep: true }
-)
+// const isAuthDialogOpen = ref(false);
+// const AppAuthDialog = defineAsyncComponent(() =>
+//   import('./AppAuthDialog.vue')
+// )
 
 // Navigation items with dynamic badges
 // const navItems = computed(() => [
@@ -179,23 +176,26 @@ watch(
 
 const defaultNav = [
   { label: 'Beranda', icon: 'home', to: '/' },
-  { label: 'Pesanan', icon: 'clipboard-list', to: '/orders' },
-  { label: 'Keranjang', icon: 'shopping-bag', to: '/cart', badge: isLoggedIn.value ? items.value?.length || 0 : 0, },
-  { label: 'Favorit', icon: 'heart', to: '/favorites' },
-  { label: 'Akun', icon: 'user', to: '/profile' },
+  { label: 'Pesanan', icon: 'clipboard-list', to: isLoggedIn.value ? '/orders' : '/no-auth'},
+  { label: 'Keranjang', icon: 'shopping-bag', to: isLoggedIn.value ? '/cart' : '/no-auth', badge: isLoggedIn.value ? items.value?.length || 0 : 0, },
+  { label: 'Favorit', icon: 'heart', to: isLoggedIn.value ? '/favorites' : '/no-auth' },
+  { label: 'Akun', icon: 'user', to: isLoggedIn.value ? '/profile' : '/no-auth' },
 ]
 
 const profileNav = [
   { label: 'Beranda', icon: 'home', to: '/' },
-  { label: 'Jadwal', icon: 'calendar', to: '/profile/schedule' },
-  { label: 'Absensi', icon: 'qr-code', to: '/profile/absensi' },
-  { label: 'History', icon: 'history', to: '/profile/history' },
-  { label: 'Profile', icon: 'user', to: '/profile' },
+  { label: 'Jadwal', icon: 'calendar', to: isLoggedIn.value ? '/profile/schedule' : '/no-auth' },
+  { label: 'Absensi', icon: 'qr-code', to: isLoggedIn.value ? '/profile/absensi' : '/no-auth' },
+  { label: 'History', icon: 'history', to: isLoggedIn.value ? '/profile/history' : '/no-auth' },
+  { label: 'Profile', icon: 'user', to: isLoggedIn.value ? '/profile' : '/no-auth' },
 ]
 
 const navItems = computed(() => {
   return route.path.startsWith('/profile') ? profileNav : defaultNav
 })
+
+
+
 
 </script>
 

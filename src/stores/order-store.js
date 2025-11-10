@@ -73,10 +73,15 @@ export const useOrderStore = defineStore('order', {
           jumlah: item.quantity,
           harga: parseFloat(item.price),
           subtotal: parseFloat(item.price) * item.quantity,
+          isi: item.product?.isi,
           satuan: item.satuan,
-          satuans: items.satuans
+          satuans: item.satuans
         }))
       }
+
+      // console.log('payload', payload);
+      // console.log('items', items);
+      
       // POST ke backend (ganti URL sesuai API Anda)
       this.loadingOrder = true
       try {

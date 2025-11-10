@@ -311,6 +311,7 @@ const AppAuthDialog = defineAsyncComponent(() =>
 const authStore = useAuthStore();
 const isLoggedIn = computed(() => authStore.isLoggedIn);
 
+
 // Cart item count (simulasi)
 // Dalam aplikasi nyata, ini akan berasal dari cart store
 // eslint-disable-next-line no-unused-vars
@@ -327,6 +328,11 @@ const isAuthDialogOpen = ref(false);
 
 // Toggle auth dialog
 const toggleAuthDialog = () => {
+
+  if (isLoggedIn.value) {
+    router.push('/profile');
+  }
+
   isAuthDialogOpen.value = !isAuthDialogOpen.value;
   
   // Update body class berdasarkan status dialog

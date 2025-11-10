@@ -12,7 +12,7 @@
               
               <!-- MASUK -->
               <div v-if="cond === 'masuk'" class="flex flex-col items-center">
-                <AppIcon name="bell-ring" size="xl" class="text-red-500" />
+                <AppIcon name="bell-ring" size="2xl" class="text-red-500 animate-bell" />
                 <div class="text-xs font-bold text-red-500 mt-3">Saatnya Absen</div>
               </div>
 
@@ -41,20 +41,13 @@
 
         <!-- Bagian Tombol -->
         <div class="w-full">
+          <RealtimeMap />
           <div class="w-full bg-white rounded-lg shadow flex">
-            
             <button
-              class="w-1/2 py-3 text-white bg-gray-900 font-semibold active:scale-95 transition"
+              class="w-full py-3 text-white bg-gray-900 font-semibold active:scale-95 transition"
               @click="toScanQr"
             >
               Scan QR
-            </button>
-
-            <button
-              class="w-1/2 py-3 text-white bg-teal-600 font-semibold active:scale-95 transition"
-              @click="toScanFace"
-            >
-              Scan Wajah
             </button>
 
           </div>
@@ -69,6 +62,7 @@
 <script setup>
 import ProfileApp from './comp/ProfileApp.vue'
 import AppIcon from '../../components/atoms/AppIcon.vue'
+import RealtimeMap from './compAbsensiPage/RealtimeMap.vue'
 
 // ✅ Dummy data sesuai permintaan
 const scheduleStorage = {
@@ -85,7 +79,29 @@ const toScanQr = () => {
   console.log('Scan QR diklik')
 }
 
-const toScanFace = () => {
-  console.log('Scan Wajah diklik')
-}
+// const toScanFace = () => {
+//   console.log('Scan Wajah diklik')
+// }
 </script>
+
+<style scoped>
+@keyframes bell-ring {
+  0% { transform: rotate(0); }
+  10% { transform: rotate(20deg); }
+  20% { transform: rotate(-18deg); }
+  30% { transform: rotate(16deg); }
+  40% { transform: rotate(-14deg); }
+  50% { transform: rotate(12deg); }
+  60% { transform: rotate(-10deg); }
+  70% { transform: rotate(8deg); }
+  80% { transform: rotate(-6deg); }
+  90% { transform: rotate(4deg); }
+  100% { transform: rotate(0); }
+}
+
+.animate-bell {
+  display: inline-block;
+  transform-origin: top center;
+  animation: bell-ring 1.2s ease-in-out infinite;
+}
+</style>
