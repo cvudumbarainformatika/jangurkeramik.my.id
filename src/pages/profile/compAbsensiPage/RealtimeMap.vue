@@ -3,24 +3,41 @@
     <!-- Map container -->
     <div id="map" class="w-full h-full rounded-lg shadow-md"></div>
 
-    <!-- Control buttons -->
-    <div class="absolute top-4 right-4 space-y-2 z-[9999]">
-      <button
-        :class="[
-          'px-4 py-2 rounded-lg font-semibold text-white shadow-md transition',
-          isTracking ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-500 hover:bg-blue-600'
-        ]"
-      >
-        {{ isTracking ? 'Berhenti' : 'Mulai' }} Tracking
-      </button>
+    <!-- Info jarak -->
+    <div
+      class="absolute bottom-4 left-4 bg-white bg-opacity-90 px-3 py-2 rounded-lg shadow text-sm font-medium z-[9999]"
+    >
+      <div>
+        📍 Jarak ke kantor:
+        <span
+          :class="distance < radiusKantor ? 'text-green-600' : 'text-red-500'"
+        >
+          {{ distance.toFixed(1) }} m
+        </span>
+      </div>
+      <div>
+        Status:
+        <span
+          :class="distance < radiusKantor ? 'text-green-600' : 'text-red-500'"
+        >
+          {{ distance < radiusKantor ? 'Di dalam area kantor' : 'Di luar area' }}
+        </span>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, onBeforeUnmount, ref } from 'vue'
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+
+const props = defineProps({
+  store: {
+    type: Object,
+    required: true
+  }
+})
 
 const map = ref(null)
 const userMarker = ref(null)
@@ -28,9 +45,12 @@ const accuracyCircle = ref(null)
 const watchId = ref(null)
 const isTracking = ref(false)
 
-// Default lokasi & zoom
+const distance = ref(0)
+const radiusKantor = 100 // dalam meter
+const kantorPos = { lat: -7.75868, lng: 113.2095 } // posisi kantor (Rumah Saya) -7.758685239074591, 113.2095317830789
+
 const defaultZoom = 16
-const defaultPosition = [-6.2, 106.8] // Jakarta
+const defaultPosition = [kantorPos.lat, kantorPos.lng]
 
 onMounted(() => {
   map.value = L.map('map', {
@@ -43,14 +63,15 @@ onMounted(() => {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map.value)
 
+  // Tandai area kantor di peta (radius biru)
+  L.circle(defaultPosition, {
+    radius: radiusKantor,
+    color: 'green',
+    fillOpacity: 0.1,
+  }).addTo(map.value)
 
   startTracking()
 })
-
-// eslint-disable-next-line no-unused-vars
-const toggleTracking = () => {
-  isTracking.value ? stopTracking() : startTracking()
-}
 
 const startTracking = () => {
   if (!navigator.geolocation) {
@@ -88,6 +109,9 @@ const stopTracking = () => {
 const updatePosition = (lat, lng, accuracy) => {
   if (!map.value) return
 
+  // Hitung jarak user ke kantor
+  distance.value = getDistanceFromLatLonInM(lat, lng, kantorPos.lat, kantorPos.lng)
+
   // Buat / update marker user
   if (!userMarker.value) {
     const icon = L.icon({
@@ -113,22 +137,39 @@ const updatePosition = (lat, lng, accuracy) => {
     accuracyCircle.value.setRadius(accuracy)
   }
 
-  // Tentukan zoom berdasarkan akurasi
-  const targetZoom =
-    accuracy < 10 ? 18 :
-    accuracy < 25 ? 17 :
-    accuracy < 50 ? 16 :
-    accuracy < 100 ? 15 :
-    accuracy < 250 ? 14 : 13
-
-  // Hanya ubah zoom jika perbedaan besar agar tidak "loncat"
-  const currentZoom = map.value.getZoom()
-  if (Math.abs(currentZoom - targetZoom) >= 1) {
-    map.value.setView([lat, lng], targetZoom, { animate: true })
-  } else {
-    map.value.panTo([lat, lng])
-  }
+  // Re-center map setiap update
+  map.value.setView([lat, lng], map.value.getZoom(), { animate: true })
 }
+
+// Fungsi Haversine: menghitung jarak dua koordinat dalam meter
+function getDistanceFromLatLonInM(lat1, lon1, lat2, lon2) {
+  const R = 6371e3 // jari-jari bumi dalam meter
+  const φ1 = lat1 * Math.PI / 180
+  const φ2 = lat2 * Math.PI / 180
+  const Δφ = (lat2 - lat1) * Math.PI / 180
+  const Δλ = (lon2 - lon1) * Math.PI / 180
+
+  const a = Math.sin(Δφ / 2) ** 2 +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ / 2) ** 2
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+  return R * c // hasil dalam meter
+}
+
+
+watch(distance, (newValue) => {
+  // console.log('watch distance', newValue);
+  
+  if (newValue < radiusKantor) {
+    // eslint-disable-next-line vue/no-mutating-props
+    props.store.bisaAbsen = true
+    console.log('watch store', props.store.bisaAbsen);
+  }
+},
+{
+  immediate: true
+})
 
 onBeforeUnmount(() => {
   stopTracking()

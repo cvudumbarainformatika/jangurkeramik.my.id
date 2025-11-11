@@ -7,6 +7,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
     token: null,
+    profile: null,
     loading: false,
     error: null,
   }),
@@ -82,7 +83,7 @@ export const useAuthStore = defineStore('auth', {
         // Hapus data dari state lokal
         this.user = null
         this.token = null
-
+        this.profile = null
         return true
       } catch (error) {
         console.error('Logout error:', error)
@@ -90,15 +91,17 @@ export const useAuthStore = defineStore('auth', {
         // Tetap hapus data lokal meskipun API call gagal
         this.user = null
         this.token = null
+
         return false
       } finally {
         this.loading = false
       }
     },
 
-    setAuth(token, user) {
+    setAuth(token, user, profile) {
       this.token = token
       this.user = user
+      this.profile = profile
       return true
     },
 
@@ -122,6 +125,9 @@ export const useAuthStore = defineStore('auth', {
           if (response.data.user) {
             this.user = response.data.user
           }
+          if (response.data.profil) {
+            this.profile = response.data.profil
+          }
           return true
         } else {
           throw new Error(response.data.message || 'Failed to refresh token')
@@ -131,6 +137,7 @@ export const useAuthStore = defineStore('auth', {
         // Jika refresh gagal, hapus data lokal
         this.user = null
         this.token = null
+        this.profile = null
         return false
       } finally {
         this.loading = false
@@ -162,11 +169,17 @@ export const useAuthStore = defineStore('auth', {
               masterStore.fetchSales(),
             ])
           }
+
+          if (response.data.profil) {
+            this.profile = response.data.profil
+          }
+
           return true
         } else {
           // Jika token tidak valid, hapus data lokal
           this.user = null
           this.token = null
+          this.profile = null
           return false
         }
       } catch (error) {
@@ -174,6 +187,7 @@ export const useAuthStore = defineStore('auth', {
         // Jika terjadi error, hapus data lokal
         this.user = null
         this.token = null
+        this.profile = null
         return false
       }
     },

@@ -327,7 +327,7 @@ const setPasswordForSocialAccount = async () => {
     
     if (response.data.success) {
       // Login berhasil setelah set password
-      await authStore.setAuth(response.data.token, response.data.user);
+      await authStore.setAuth(response.data.token, response.data.user, response?.data?.profil);
       close();
     } else {
       passwordError.value = response.data.message || 'Gagal mengatur password.';

@@ -41,13 +41,15 @@
 
         <!-- Bagian Tombol -->
         <div class="w-full">
-          <RealtimeMap />
+          <RealtimeMap :store="store" />
           <div class="w-full bg-white rounded-lg shadow flex">
             <button
-              class="w-full py-3 text-white bg-gray-900 font-semibold active:scale-95 transition"
+              class="w-full py-3 text-white font-semibold active:scale-95 transition"
+              :class="store.bisaAbsen ? 'bg-primary': 'bg-red-800'"
               @click="toScanQr"
+              :disabled="!store.bisaAbsen"
             >
-              Scan QR
+              {{ store.bisaAbsen ? 'Scan QR' : 'Jauh Dari Kantor' }}
             </button>
 
           </div>
@@ -63,6 +65,9 @@
 import ProfileApp from './comp/ProfileApp.vue'
 import AppIcon from '../../components/atoms/AppIcon.vue'
 import RealtimeMap from './compAbsensiPage/RealtimeMap.vue'
+import { useAbsenStore } from 'src/stores/absen-store'
+
+const store = useAbsenStore()
 
 // ✅ Dummy data sesuai permintaan
 const scheduleStorage = {
