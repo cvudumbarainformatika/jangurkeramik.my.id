@@ -191,7 +191,7 @@ const loginWithEmail = async () => {
     
     // Jika berhasil, simpan data user dan token
     if (response.data.success) {
-      await authStore.setAuth(response.data.token, response.data.user, 'email');
+      await authStore.setAuth(response.data.token, response.data.user, response.data.profil);
       close();
     } else if (response.data.provider) {
       // Kasus khusus: user terdaftar dengan provider sosial
@@ -247,7 +247,7 @@ const linkAccounts = async () => {
     });
     
     if (response.data.success) {
-      await authStore.setAuth(response.data.token, response.data.user);
+      await authStore.setAuth(response.data.token, response.data.user, response.data.profil);
       close();
     } else {
       loginError.value = response.data.message || 'Gagal menghubungkan akun.';
@@ -327,7 +327,8 @@ const setPasswordForSocialAccount = async () => {
     
     if (response.data.success) {
       // Login berhasil setelah set password
-      await authStore.setAuth(response.data.token, response.data.user, response?.data?.profil);
+      await authStore.setAuth(response.data.token, response.data.user, response.data.profil);
+      window.location.reload();
       close();
     } else {
       passwordError.value = response.data.message || 'Gagal mengatur password.';

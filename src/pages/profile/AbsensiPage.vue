@@ -57,17 +57,28 @@
 
       </div>
 
+
+      <ScanQrModal
+        v-if="showQrModal"
+        @close="showQrModal = false"
+        @success="handleScanSuccess"
+      />
+
     </template>
   </ProfileApp>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import ProfileApp from './comp/ProfileApp.vue'
 import AppIcon from '../../components/atoms/AppIcon.vue'
 import RealtimeMap from './compAbsensiPage/RealtimeMap.vue'
+import ScanQrModal from './compAbsensiPage/ScanQrModal.vue'
 import { useAbsenStore } from 'src/stores/absen-store'
 
 const store = useAbsenStore()
+
+const showQrModal = ref(false)
 
 // ✅ Dummy data sesuai permintaan
 const scheduleStorage = {
@@ -81,12 +92,15 @@ const cond = 'masuk'
 
 // ✅ Dummy handler
 const toScanQr = () => {
-  console.log('Scan QR diklik')
+  // console.log('Scan QR diklik')
+  showQrModal.value = true
 }
 
-// const toScanFace = () => {
-//   console.log('Scan Wajah diklik')
-// }
+const handleScanSuccess = (result) => {
+  console.log('Hasil scan:', result)
+  showQrModal.value = false
+  // TODO: panggil API absen di sini
+}
 </script>
 
 <style scoped>

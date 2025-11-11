@@ -75,6 +75,20 @@
         </div>
       </div>
     </div>
+
+
+    <!-- <AppButton label="Logout" variant="filled" color="red-500" @click="authStore.logout()" /> -->
+
+    <div class="flex flex-col items-center p-6">
+      <AppButton
+        label="logout"
+        color="danger"
+        variant="filled"
+        @click="logout"
+        class="ml-2"
+      />
+    </div>
+
   </div>
 </template>
 
@@ -82,6 +96,7 @@
 import { computed, defineAsyncComponent } from 'vue'
 import { useAuthStore } from 'src/stores/auth-store'
 import AppIcon from 'src/components/atoms/AppIcon.vue'
+import AppButton from 'src/components/atoms/AppButton.vue'
 
 const AppAvatar = defineAsyncComponent(() => import('src/components/atoms/AppAvatar.vue'))
 
@@ -93,7 +108,23 @@ function formatDate(dateStr) {
   const d = new Date(dateStr)
   return d.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })
 }
+
+
+const logout = async () => {
+  try {
+    const success = await authStore.logout()
+    if (success) {
+      window.location.href = '/'
+    } else {
+      console.error('Logout failed')
+    }
+  } catch (err) {
+    console.error('Logout error:', err)
+  }
+};
 </script>
+
+
 
 <style scoped>
 </style>

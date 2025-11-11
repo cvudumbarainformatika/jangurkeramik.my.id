@@ -29,6 +29,7 @@
 
 <script setup>
 import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
+import { useAuthStore } from 'src/stores/auth-store'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
@@ -39,6 +40,8 @@ const props = defineProps({
   }
 })
 
+const auth = useAuthStore()
+
 const map = ref(null)
 const userMarker = ref(null)
 const accuracyCircle = ref(null)
@@ -47,12 +50,15 @@ const isTracking = ref(false)
 
 const distance = ref(0)
 const radiusKantor = 100 // dalam meter
-const kantorPos = { lat: -7.75868, lng: 113.2095 } // posisi kantor (Rumah Saya) -7.758685239074591, 113.2095317830789
+const kantorPos = { lat: auth?.profile?.lat ??-7.75868, lng: auth?.profile?.lang ?? 113.2095 } // posisi kantor (Rumah Saya) -7.758685239074591, 113.2095317830789
 
 const defaultZoom = 16
 const defaultPosition = [kantorPos.lat, kantorPos.lng]
 
 onMounted(() => {
+
+  
+
   map.value = L.map('map', {
     minZoom: 3,
     maxZoom: 19,
