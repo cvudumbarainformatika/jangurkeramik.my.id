@@ -170,8 +170,11 @@ watch(distance, (newValue) => {
   if (newValue < radiusKantor) {
     // eslint-disable-next-line vue/no-mutating-props
     props.store.bisaAbsen = true
-    console.log('watch store', props.store.bisaAbsen);
+  } else {
+    // eslint-disable-next-line vue/no-mutating-props
+    props.store.bisaAbsen = false
   }
+  console.log('watch store', props.store.bisaAbsen);
 },
 {
   immediate: true

@@ -3,6 +3,9 @@
     <template #default>
       <div class="h-full flex flex-col bg-white">
 
+        <!-- 🕒 Tambahkan komponen jam digital di sini -->
+        <DigitalClock class="pt-6"/>
+
         <!-- Bagian Tengah -->
         <div class="flex-1 flex items-center justify-center">
           <div class="flex flex-col items-center text-center">
@@ -74,6 +77,7 @@ import ProfileApp from './comp/ProfileApp.vue'
 import AppIcon from '../../components/atoms/AppIcon.vue'
 import RealtimeMap from './compAbsensiPage/RealtimeMap.vue'
 import ScanQrModal from './compAbsensiPage/ScanQrModal.vue'
+import DigitalClock from './compAbsensiPage/DigitalClock.vue'
 import { useAbsenStore } from 'src/stores/absen-store'
 
 const store = useAbsenStore()

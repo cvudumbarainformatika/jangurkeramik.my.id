@@ -33,11 +33,30 @@
 </template>
 
 <script setup>
-import { defineAsyncComponent, ref } from 'vue';
+import { defineAsyncComponent, ref, watch } from 'vue';
 import AppIcon from 'src/components/atoms/AppIcon.vue';
+
+import { useAuthStore } from 'src/stores/auth-store';
+import { useRouter, useRoute } from 'vue-router';
 
 const AppAuthDialog = defineAsyncComponent(()=> import('../components/organisms/AppAuthDialog.vue'))
 
 const isAuthDialogOpen = ref(false);
+
+const auth = useAuthStore();
+const router = useRouter();
+const route = useRoute();
+
+
+watch(() => auth.user, (newVal) => {
+  if (newVal !== null && newVal !== undefined) {
+    console.log('watch on NoAuthPage user', newVal);
+
+    // ambil path tujuan dari query ?redirect=
+    const redirectPath = route.query.redirect || '/';
+    router.replace(redirectPath) // arahkan ke halaman sebelumnya
+    
+  }
+})
 
 </script>
